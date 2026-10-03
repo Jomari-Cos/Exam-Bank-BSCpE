@@ -18,13 +18,13 @@ import {
 } from 'lucide-react';
 
 export const ExamPrintView: React.FC = () => {
-  const { viewingExamId, setViewingExamId, examinations, setCurrentView } = useApp();
+  const { viewingExamId, examinations, setCurrentView } = useApp();
   const [selectedSetIndex, setSelectedSetIndex] = useState<number>(0);
   const [viewMode, setViewMode] = useState<'student' | 'answer_key'>('student');
   const [copiedText, setCopiedText] = useState(false);
   const [isPdfGenerating, setIsPdfGenerating] = useState(false);
 
-  const exam = examinations.find((e) => e.id === viewingExamId) || examinations[0];
+  const exam = viewingExamId ? examinations.find((e) => e.id === viewingExamId) : undefined;
 
   if (!exam) {
     return (

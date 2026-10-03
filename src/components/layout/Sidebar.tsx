@@ -23,7 +23,6 @@ export const Sidebar: React.FC = () => {
     currentUser,
     currentView,
     setCurrentView,
-    setEditingQuestionId,
     questions,
     signOut,
   } = useApp();
@@ -182,7 +181,8 @@ export const Sidebar: React.FC = () => {
 
   const handleNavClick = (id: string) => {
     if (id === 'create_question') {
-      setEditingQuestionId(null);
+      setCurrentView(id, { editingQuestionId: null });
+      return;
     }
     setCurrentView(id);
   };

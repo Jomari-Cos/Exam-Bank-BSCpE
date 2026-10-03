@@ -3,7 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { FileText, Printer, FileQuestion, Plus, ArrowRight, Layers, CheckCircle2 } from 'lucide-react';
 
 export const ExaminerDashboard: React.FC = () => {
-  const { examinations, questions, courses, setCurrentView, setViewingExamId } = useApp();
+  const { examinations, questions, courses, setCurrentView } = useApp();
 
   const approvedQuestions = questions.filter(
     (q) => q.status === 'Approved' || q.status === 'Published'
@@ -125,8 +125,7 @@ export const ExaminerDashboard: React.FC = () => {
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => {
-                    setViewingExamId(exam.id);
-                    setCurrentView('exam_view');
+                    setCurrentView('exam_view', { viewingExamId: exam.id });
                   }}
                   className="px-3 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-200 flex items-center gap-1.5"
                 >

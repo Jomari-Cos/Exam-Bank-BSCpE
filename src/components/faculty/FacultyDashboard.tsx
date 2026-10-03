@@ -16,7 +16,6 @@ export const FacultyDashboard: React.FC = () => {
     currentUser,
     questions,
     setCurrentView,
-    setEditingQuestionId,
     setViewingQuestionId,
   } = useApp();
 
@@ -33,8 +32,7 @@ export const FacultyDashboard: React.FC = () => {
   );
 
   const handleCreateNew = () => {
-    setEditingQuestionId(null);
-    setCurrentView('create_question');
+    setCurrentView('create_question', { editingQuestionId: null });
   };
 
   return (

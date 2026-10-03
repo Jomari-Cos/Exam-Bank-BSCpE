@@ -37,7 +37,6 @@ export const QuestionBankView: React.FC = () => {
     courses,
     currentUser,
     setViewingQuestionId,
-    setEditingQuestionId,
     setCurrentView,
     duplicateQuestion,
     createQuestion,
@@ -89,8 +88,7 @@ export const QuestionBankView: React.FC = () => {
 
   const handleDuplicate = async (id: string) => {
     const cloned = await duplicateQuestion(id);
-    setEditingQuestionId(cloned.id);
-    setCurrentView('create_question');
+    setCurrentView('create_question', { editingQuestionId: cloned.id });
   };
 
   const handleExportJSON = () => {

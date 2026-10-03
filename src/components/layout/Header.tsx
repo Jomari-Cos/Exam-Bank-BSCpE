@@ -8,14 +8,12 @@ export const Header: React.FC = () => {
     currentView,
     setCurrentView,
     systemSettings,
-    setEditingQuestionId,
     signOut,
     isFirebaseConnected,
   } = useApp();
 
   const handleCreateNew = () => {
-    setEditingQuestionId(null);
-    setCurrentView('create_question');
+    setCurrentView('create_question', { editingQuestionId: null });
   };
 
   return (

@@ -113,20 +113,26 @@ export function handleFirestoreError(
     operationType,
     path,
   };
+  // NOTE: intentionally does NOT throw. Previous implementation threw a new
+  // Error on every failure, which turned every onSnapshot error callback and
+  // every background write into an uncaught exception — writes appeared to
+  // succeed locally (optimistic state) but never reached Firestore, so other
+  // devices never saw examination sets or other updates in real time.
   console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+  return errInfo;
 }
 
 // Connection test helper
 export async function testFirestoreConnection(): Promise<boolean> {
-  try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
-    console.log('Firebase Firestore connection verified successfully.');
-    return true;
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.warn('Firebase client appears offline.');
-    }
-    return false;
-  }
+  return getDocFromServer(doc(db, 'test', 'connection'))
+    .then(() => {
+      console.log('Firebase Firestore connection verified successfully.');
+      return true;
+    })
+    .catch((error: unknown) => {
+      if (error instanceof Error && error.message.includes('the client is offline')) {
+        console.warn('Firebase client appears offline.');
+      }
+      return false;
+    });
 }

@@ -43,7 +43,6 @@ export const QuestionEditor: React.FC = () => {
     createQuestion,
     updateQuestion,
     editingQuestionId,
-    setEditingQuestionId,
     setCurrentView,
     questions,
     currentUser,
@@ -289,11 +288,18 @@ export const QuestionEditor: React.FC = () => {
   };
 
   // Save or Submit
-  const handleSave = (statusToSet: 'Draft' | 'Submitted') => {
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const handleSave = async (statusToSet: 'Draft' | 'Submitted') => {
     if (!questionText.trim()) {
       alert('Please enter the question prompt or instructions.');
       return;
     }
+
+    if (isSaving) return;
+    setIsSaving(true);
+    setSaveError(null);
 
     const payload: Partial<Question> = {
       courseId: activeCourse.id,
@@ -363,13 +369,34 @@ export const QuestionEditor: React.FC = () => {
     }
 
     if (existingQuestion) {
-      updateQuestion(existingQuestion.id, payload);
+      try {
+        // Awaited so the question is really in the shared `questions`
+        // collection (and visible to reviewers on other devices) before leaving.
+        await updateQuestion(existingQuestion.id, payload);
+        setCurrentView('my_questions');
+      } catch (err) {
+        console.error('Failed to save question:', err);
+        setSaveError(
+          'Could not save the question to the shared database. ' +
+            'It is still shown locally — please check your connection and try again.'
+        );
+      } finally {
+        setIsSaving(false);
+      }
     } else {
-      createQuestion(payload);
+      try {
+        await createQuestion(payload);
+        setCurrentView('my_questions');
+      } catch (err) {
+        console.error('Failed to save question:', err);
+        setSaveError(
+          'Could not save the question to the shared database. ' +
+            'It is still shown locally — please check your connection and try again.'
+        );
+      } finally {
+        setIsSaving(false);
+      }
     }
-
-    setEditingQuestionId(null);
-    setCurrentView('my_questions');
   };
 
   return (
@@ -379,7 +406,6 @@ export const QuestionEditor: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
-              setEditingQuestionId(null);
               setCurrentView('my_questions');
             }}
             className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
@@ -400,22 +426,30 @@ export const QuestionEditor: React.FC = () => {
           <button
             type="button"
             onClick={() => handleSave('Draft')}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-xs"
+            disabled={isSaving}
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-xs disabled:opacity-60 disabled:cursor-wait"
           >
             <Save className="w-4 h-4" />
-            <span>Save as Draft</span>
+            <span>{isSaving ? 'Saving…' : 'Save as Draft'}</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleSave('Submitted')}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-xs"
+            disabled={isSaving}
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-xs disabled:opacity-60 disabled:cursor-wait"
           >
             <Send className="w-4 h-4" />
-            <span>Submit for Review</span>
+            <span>{isSaving ? 'Saving…' : 'Submit for Review'}</span>
           </button>
         </div>
       </div>
+
+      {saveError && (
+        <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-700">
+          {saveError}
+        </div>
+      )}
 
       {/* Warning if editing an already approved question */}
       {existingQuestion && (existingQuestion.status === 'Approved' || existingQuestion.status === 'Published') && (

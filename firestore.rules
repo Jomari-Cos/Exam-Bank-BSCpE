@@ -92,10 +92,19 @@ service cloud.firestore {
       allow delete: if true;
     }
 
-    // Audit Logs collection (Append-only / Immutable)
+    // Ephemeral real-time presence heartbeats (one document per open tab).
+    // Required by the online-users listener in AppContext; without this rule
+    // the presence onSnapshot fails and no device sees who else is online.
+    match /presence/{sessionId} {
+      allow read, write: if true;
+    }
+
+    // Audit Logs collection (Append-only / Immutable for normal operation;
+    // update is allowed so database reset / JSON restore can re-seed docs
+    // with stable IDs via batch.set — deletes stay forbidden)
     match /audit_logs/{logId} {
-      allow read, create: if true;
-      allow update, delete: if false;
+      allow read, create, update: if true;
+      allow delete: if false;
     }
 
     // System Settings document
