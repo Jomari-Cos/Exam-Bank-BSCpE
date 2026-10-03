@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
+import { generateExamPdf } from '../../lib/pdfGenerator';
 import {
   FileText,
   Printer,
@@ -10,6 +11,7 @@ import {
   Clock,
   Download,
   Eye,
+  FileDown,
 } from 'lucide-react';
 
 export const ExamListView: React.FC = () => {
@@ -18,6 +20,17 @@ export const ExamListView: React.FC = () => {
   const handleOpenExam = (id: string) => {
     setViewingExamId(id);
     setCurrentView('exam_view');
+  };
+
+  const handleDirectDownloadPdf = (exam: typeof examinations[0]) => {
+    const version = exam.versions[0];
+    if (version) {
+      generateExamPdf({
+        exam,
+        version,
+        isAnswerKey: false,
+      });
+    }
   };
 
   const handleDelete = (id: string, title: string) => {
@@ -97,18 +110,28 @@ export const ExamListView: React.FC = () => {
                 Generated: {exam.dateCreated}
               </span>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => handleDirectDownloadPdf(exam)}
+                  className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors shadow-xs cursor-pointer"
+                  title="Direct download Set A as PDF"
+                >
+                  <FileDown className="w-3.5 h-3.5" />
+                  <span>PDF</span>
+                </button>
+
                 <button
                   onClick={() => handleOpenExam(exam.id)}
-                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-200"
+                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 cursor-pointer"
+                  title="Open full print and multi-version view"
                 >
-                  <Printer className="w-3.5 h-3.5" />
-                  <span>Print & View</span>
+                  <Printer className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Print / View</span>
                 </button>
 
                 <button
                   onClick={() => handleDelete(exam.id, exam.title)}
-                  className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
                   title="Delete Exam Package"
                 >
                   <Trash2 className="w-4 h-4" />

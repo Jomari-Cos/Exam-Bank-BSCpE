@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Examination, ExamVersion } from '../../types';
 import { CodeViewer } from '../common/CodeViewer';
+import { generateExamPdf } from '../../lib/pdfGenerator';
 import {
   Printer,
   Download,
@@ -12,6 +13,8 @@ import {
   Check,
   CheckCircle2,
   Layers,
+  FileDown,
+  Info,
 } from 'lucide-react';
 
 export const ExamPrintView: React.FC = () => {
@@ -19,6 +22,7 @@ export const ExamPrintView: React.FC = () => {
   const [selectedSetIndex, setSelectedSetIndex] = useState<number>(0);
   const [viewMode, setViewMode] = useState<'student' | 'answer_key'>('student');
   const [copiedText, setCopiedText] = useState(false);
+  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
 
   const exam = examinations.find((e) => e.id === viewingExamId) || examinations[0];
 
@@ -40,6 +44,39 @@ export const ExamPrintView: React.FC = () => {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadPdf = () => {
+    try {
+      setIsPdfGenerating(true);
+      generateExamPdf({
+        exam,
+        version: activeVersion,
+        isAnswerKey: viewMode === 'answer_key',
+      });
+    } catch (err) {
+      console.error('PDF generation error:', err);
+      alert('Could not generate PDF: ' + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setIsPdfGenerating(false);
+    }
+  };
+
+  const handleDownloadAllSetsPdf = () => {
+    try {
+      setIsPdfGenerating(true);
+      exam.versions.forEach((ver) => {
+        generateExamPdf({
+          exam,
+          version: ver,
+          isAnswerKey: viewMode === 'answer_key',
+        });
+      });
+    } catch (err) {
+      console.error('PDF generation error:', err);
+    } finally {
+      setIsPdfGenerating(false);
+    }
   };
 
   const handleDownloadHTML = () => {
@@ -165,10 +202,11 @@ export const ExamPrintView: React.FC = () => {
             ))}
           </div>
 
+          {/* Mode Switcher */}
           <div className="flex items-center gap-1 p-0.5 bg-slate-100 rounded-lg">
             <button
               onClick={() => setViewMode('student')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors flex items-center gap-1 ${
+              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors flex items-center gap-1 cursor-pointer ${
                 viewMode === 'student'
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
@@ -179,7 +217,7 @@ export const ExamPrintView: React.FC = () => {
             </button>
             <button
               onClick={() => setViewMode('answer_key')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors flex items-center gap-1 ${
+              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors flex items-center gap-1 cursor-pointer ${
                 viewMode === 'answer_key'
                   ? 'bg-emerald-600 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
@@ -190,22 +228,61 @@ export const ExamPrintView: React.FC = () => {
             </button>
           </div>
 
+          {/* Primary Action: Direct Download as PDF */}
+          <button
+            onClick={handleDownloadPdf}
+            disabled={isPdfGenerating}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-lg transition-all shadow-xs cursor-pointer disabled:opacity-50"
+            title={`Download ${activeVersion.versionLabel} as a PDF file`}
+          >
+            <FileDown className="w-3.5 h-3.5" />
+            <span>{isPdfGenerating ? 'Generating PDF...' : 'Download as PDF'}</span>
+          </button>
+
+          {/* Download All Sets if multiple exist */}
+          {exam.versions.length > 1 && (
+            <button
+              onClick={handleDownloadAllSetsPdf}
+              disabled={isPdfGenerating}
+              className="hidden lg:flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors cursor-pointer"
+              title="Download all sets as separate PDF files"
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>Download All Sets ({exam.versions.length})</span>
+            </button>
+          )}
+
+          {/* Secondary Action: Print or Browser Save As PDF */}
           <button
             onClick={handlePrint}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-colors shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-800 hover:text-slate-950 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition-colors shadow-xs cursor-pointer"
+            title="Open browser print dialog (select 'Save as PDF' to save)"
           >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print Paper</span>
+            <Printer className="w-3.5 h-3.5 text-slate-600" />
+            <span>Print / Browser PDF</span>
           </button>
 
           <button
             onClick={handleDownloadHTML}
-            className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200"
+            className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 cursor-pointer"
             title="Download formatted HTML / Word document"
           >
             <Download className="w-4 h-4" />
           </button>
         </div>
+      </div>
+
+      {/* PDF Export Tip Banner */}
+      <div className="no-print bg-indigo-50/80 border border-indigo-100 rounded-xl p-3 flex items-center justify-between gap-3 text-xs text-indigo-900">
+        <div className="flex items-center gap-2">
+          <Info className="w-4 h-4 text-indigo-600 shrink-0" />
+          <span>
+            <strong>PDF Export:</strong> Click <strong>Download as PDF</strong> to generate and download the file immediately, or use <strong>Print / Browser PDF</strong> and choose <em>"Save as PDF"</em> in your browser printer destination.
+          </span>
+        </div>
+        <span className="hidden sm:inline-block font-mono text-[10px] text-indigo-600 uppercase font-semibold bg-white/80 px-2 py-0.5 rounded border border-indigo-200/60 shrink-0">
+          A4 Formatted
+        </span>
       </div>
 
       {/* Printable Exam Paper Canvas */}
