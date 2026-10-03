@@ -1,0 +1,106 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    function isValidUser(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.name is string && data.name.size() <= 200 &&
+             data.email is string && data.email.size() <= 200 &&
+             data.role in ['admin', 'faculty', 'reviewer', 'examiner'] &&
+             data.active is bool;
+    }
+
+    function isValidCourse(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.code is string && data.code.size() <= 50 &&
+             data.name is string && data.name.size() <= 200 &&
+             data.category is string && data.category.size() <= 100;
+    }
+
+    function isValidQuestion(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.courseId is string && data.courseId.size() <= 128 &&
+             data.courseCode is string && data.courseCode.size() <= 50 &&
+             data.type is string && data.type.size() <= 50 &&
+             data.question is string && data.question.size() <= 50000 &&
+             data.difficulty in ['Easy', 'Medium', 'Hard'] &&
+             data.points is number && data.points >= 0 &&
+             data.authorId is string && data.authorId.size() <= 128 &&
+             data.status in ['Draft', 'Submitted', 'Under Review', 'Approved', 'Published', 'Archived'];
+    }
+
+    function isValidExamination(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.title is string && data.title.size() <= 300 &&
+             data.courseId is string && data.courseId.size() <= 128 &&
+             data.courseCode is string && data.courseCode.size() <= 50 &&
+             data.versions is list;
+    }
+
+    function isValidAuditLog(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.timestamp is string && data.timestamp.size() <= 50 &&
+             data.userId is string && data.userId.size() <= 128 &&
+             data.action is string && data.action.size() <= 100 &&
+             data.targetType is string && data.targetType.size() <= 50;
+    }
+
+    // Connection testing endpoint
+    match /test/{testId} {
+      allow read, write: if true;
+    }
+
+    // Users collection - allows system authentication and admin user management
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if isValidUser(incoming());
+      allow delete: if true;
+    }
+
+    // Courses collection
+    match /courses/{courseId} {
+      allow read: if true;
+      allow create, update: if isValidCourse(incoming());
+      allow delete: if true;
+    }
+
+    // Questions collection
+    match /questions/{questionId} {
+      allow read: if true;
+      allow create, update: if isValidQuestion(incoming());
+      allow delete: if true;
+    }
+
+    // Examinations collection
+    match /examinations/{examId} {
+      allow read: if true;
+      allow create, update: if isValidExamination(incoming());
+      allow delete: if true;
+    }
+
+    // Audit Logs collection (Append-only / Immutable)
+    match /audit_logs/{logId} {
+      allow read, create: if true;
+      allow update, delete: if false;
+    }
+
+    // System Settings document
+    match /settings/{settingDoc} {
+      allow read, write: if true;
+    }
+  }
+}

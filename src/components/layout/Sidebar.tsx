@@ -1,0 +1,286 @@
+import React from 'react';
+import { useApp } from '../../context/AppContext';
+import {
+  LayoutDashboard,
+  FolderTree,
+  Users,
+  Settings,
+  ShieldCheck,
+  FileQuestion,
+  FilePlus,
+  BookMarked,
+  CheckSquare,
+  History,
+  FileText,
+  Printer,
+  ListFilter,
+  Sparkles,
+  LogOut,
+} from 'lucide-react';
+
+export const Sidebar: React.FC = () => {
+  const {
+    currentUser,
+    currentView,
+    setCurrentView,
+    setEditingQuestionId,
+    questions,
+    signOut,
+  } = useApp();
+
+  // Compute badge counts
+  const pendingReviewCount = questions.filter(
+    (q) => q.status === 'Submitted' || q.status === 'Under Review'
+  ).length;
+
+  const myDraftCount = questions.filter(
+    (q) => q.authorId === currentUser.id && q.status === 'Draft'
+  ).length;
+
+  const approvedCount = questions.filter(
+    (q) => q.status === 'Approved' || q.status === 'Published'
+  ).length;
+
+  interface NavItem {
+    id: string;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+    badge?: number | string;
+    badgeColor?: string;
+  }
+
+  const getNavItems = (): { section: string; items: NavItem[] }[] => {
+    switch (currentUser.role) {
+      case 'admin':
+        return [
+          {
+            section: 'Core System',
+            items: [
+              { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+              { id: 'users', label: 'User Management', icon: Users },
+              { id: 'courses', label: 'Course Management', icon: FolderTree },
+              { id: 'topics', label: 'Topic & Syllabus', icon: ListFilter },
+            ],
+          },
+          {
+            section: 'Question Repository',
+            items: [
+              {
+                id: 'question_bank',
+                label: 'Question Bank',
+                icon: FileQuestion,
+                badge: approvedCount,
+                badgeColor: 'bg-emerald-100 text-emerald-800',
+              },
+              {
+                id: 'review_queue',
+                label: 'Review Queue',
+                icon: CheckSquare,
+                badge: pendingReviewCount > 0 ? pendingReviewCount : undefined,
+                badgeColor: 'bg-amber-100 text-amber-800',
+              },
+              { id: 'create_question', label: 'Create Question', icon: FilePlus },
+              { id: 'exam_generator', label: 'Exam Generator', icon: FileText },
+            ],
+          },
+          {
+            section: 'Administration',
+            items: [
+              { id: 'audit_logs', label: 'Audit Logs', icon: ShieldCheck },
+              { id: 'settings', label: 'System Settings', icon: Settings },
+            ],
+          },
+        ];
+
+      case 'faculty':
+        return [
+          {
+            section: 'Author Workspace',
+            items: [
+              { id: 'dashboard', label: 'Faculty Dashboard', icon: LayoutDashboard },
+              {
+                id: 'my_questions',
+                label: 'My Questions',
+                icon: BookMarked,
+                badge: myDraftCount > 0 ? `${myDraftCount} drafts` : undefined,
+                badgeColor: 'bg-blue-100 text-blue-800',
+              },
+              { id: 'create_question', label: 'Create Question', icon: FilePlus },
+            ],
+          },
+          {
+            section: 'Department Bank',
+            items: [
+              {
+                id: 'question_bank',
+                label: 'Question Bank',
+                icon: FileQuestion,
+                badge: approvedCount,
+                badgeColor: 'bg-emerald-100 text-emerald-800',
+              },
+              { id: 'exam_generator', label: 'Exam Generator', icon: FileText },
+              { id: 'exam_list', label: 'Examination Sets', icon: Printer },
+            ],
+          },
+        ];
+
+      case 'reviewer':
+        return [
+          {
+            section: 'Review Committee',
+            items: [
+              { id: 'dashboard', label: 'Reviewer Dashboard', icon: LayoutDashboard },
+              {
+                id: 'review_queue',
+                label: 'Questions for Review',
+                icon: CheckSquare,
+                badge: pendingReviewCount > 0 ? `${pendingReviewCount} pending` : undefined,
+                badgeColor: 'bg-amber-100 text-amber-800 font-bold animate-pulse',
+              },
+              { id: 'review_history', label: 'Review History', icon: History },
+            ],
+          },
+          {
+            section: 'Reference Repository',
+            items: [
+              {
+                id: 'question_bank',
+                label: 'Question Bank',
+                icon: FileQuestion,
+                badge: approvedCount,
+                badgeColor: 'bg-emerald-100 text-emerald-800',
+              },
+            ],
+          },
+        ];
+
+      case 'examiner':
+        return [
+          {
+            section: 'Assessment & Testing',
+            items: [
+              { id: 'dashboard', label: 'Examiner Dashboard', icon: LayoutDashboard },
+              {
+                id: 'question_bank',
+                label: 'Question Bank',
+                icon: FileQuestion,
+                badge: approvedCount,
+                badgeColor: 'bg-emerald-100 text-emerald-800',
+              },
+              { id: 'exam_generator', label: 'Exam Generator', icon: FileText },
+              { id: 'exam_list', label: 'Examination Sets', icon: Printer },
+            ],
+          },
+        ];
+
+      default:
+        return [];
+    }
+  };
+
+  const navSections = getNavItems();
+
+  const handleNavClick = (id: string) => {
+    if (id === 'create_question') {
+      setEditingQuestionId(null);
+    }
+    setCurrentView(id);
+  };
+
+  return (
+    <aside className="no-print w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 min-h-[calc(100vh-3.5rem)] border-r border-slate-800">
+      {/* Active Role Card */}
+      <div className="p-4 border-b border-slate-800 bg-slate-950/50">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-mono font-bold text-xs">
+            {currentUser.avatarInitials}
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-xs font-semibold text-white truncate">{currentUser.name}</h3>
+            <span className="text-[10px] text-slate-400 capitalize block truncate">
+              {currentUser.role} Workspace
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Sections */}
+      <div className="flex-1 py-4 px-3 space-y-6 overflow-y-auto">
+        {navSections.map((section, sIdx) => (
+          <div key={sIdx} className="space-y-1">
+            <h4 className="px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+              {section.section}
+            </h4>
+            <div className="space-y-0.5 pt-1">
+              {section.items.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentView === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavClick(item.id)}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group ${
+                      isActive
+                        ? 'bg-indigo-600 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/70'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Icon
+                        className={`w-4 h-4 transition-colors ${
+                          isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'
+                        }`}
+                      />
+                      <span>{item.label}</span>
+                    </div>
+                    {item.badge !== undefined && (
+                      <span
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-medium ${
+                          isActive
+                            ? 'bg-white/20 text-white'
+                            : item.badgeColor || 'bg-slate-800 text-slate-300'
+                        }`}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Sign Out & User Profile in Sidebar */}
+      <div className="p-3 border-t border-slate-800 bg-slate-900/50 space-y-2">
+        <div className="flex items-center gap-2 px-1">
+          <div className="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-mono font-bold text-xs shrink-0">
+            {currentUser.avatarInitials}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-bold text-white truncate">{currentUser.name}</p>
+            <p className="text-[10px] text-slate-400 font-mono truncate">{currentUser.username ? `@${currentUser.username}` : currentUser.email}</p>
+          </div>
+        </div>
+
+        <button
+          onClick={signOut}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-rose-300 hover:text-white bg-rose-500/10 hover:bg-rose-600 border border-rose-500/20 hover:border-rose-600 transition-all cursor-pointer shadow-xs active:scale-98"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span>Sign Out</span>
+        </button>
+      </div>
+
+      {/* Footer System Info */}
+      <div className="p-3 border-t border-slate-800 text-[11px] text-slate-400">
+        <div className="flex items-center justify-between">
+          <span>BSCpE Accreditation</span>
+          <span className="text-emerald-400 font-mono">v1.2</span>
+        </div>
+        <p className="text-[10px] text-slate-400 mt-0.5">CHED CMO 92 Compliant</p>
+      </div>
+    </aside>
+  );
+};

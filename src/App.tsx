@@ -1,0 +1,163 @@
+import React from 'react';
+import { AppProvider, useApp } from './context/AppContext';
+import { Header } from './components/layout/Header';
+import { Sidebar } from './components/layout/Sidebar';
+import { QuestionPreviewModal } from './components/common/QuestionPreviewModal';
+import { LoginPage } from './components/auth/LoginPage';
+
+// Admin views
+import { AdminDashboard } from './components/admin/AdminDashboard';
+import { CourseManagement } from './components/admin/CourseManagement';
+import { TopicManagement } from './components/admin/TopicManagement';
+import { UserManagement } from './components/admin/UserManagement';
+import { AuditLogView } from './components/admin/AuditLogView';
+import { SystemSettingsView } from './components/admin/SystemSettingsView';
+
+// Faculty views
+import { FacultyDashboard } from './components/faculty/FacultyDashboard';
+import { MyQuestions } from './components/faculty/MyQuestions';
+import { QuestionEditor } from './components/faculty/QuestionEditor';
+
+// Reviewer views
+import { ReviewerDashboard } from './components/reviewer/ReviewerDashboard';
+import { ReviewQueue } from './components/reviewer/ReviewQueue';
+import { ReviewHistory } from './components/reviewer/ReviewHistory';
+
+// Bank & Examiner views
+import { QuestionBankView } from './components/bank/QuestionBankView';
+import { ExaminerDashboard } from './components/examiner/ExaminerDashboard';
+import { ExamGenerator } from './components/examiner/ExamGenerator';
+import { ExamListView } from './components/examiner/ExamListView';
+import { ExamPrintView } from './components/examiner/ExamPrintView';
+
+const MainLayout: React.FC = () => {
+  const {
+    currentUser,
+    currentView,
+    setCurrentView,
+    viewingQuestionId,
+    setViewingQuestionId,
+    setEditingQuestionId,
+    submitQuestionForReview,
+    questions,
+    isAuthenticated,
+  } = useApp();
+
+  // If not authenticated, display login page
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
+
+  // Find question if currently previewing
+  const viewingQuestion = viewingQuestionId
+    ? questions.find((q) => q.id === viewingQuestionId) || null
+    : null;
+
+  const renderContent = () => {
+    // Routes accessible across roles
+    if (currentView === 'question_bank') return <QuestionBankView />;
+    if (currentView === 'exam_generator') return <ExamGenerator />;
+    if (currentView === 'exam_list') return <ExamListView />;
+    if (currentView === 'exam_view') return <ExamPrintView />;
+    if (currentView === 'create_question') return <QuestionEditor />;
+
+    // Role-specific routing
+    switch (currentUser.role) {
+      case 'admin':
+        switch (currentView) {
+          case 'dashboard':
+            return <AdminDashboard />;
+          case 'courses':
+            return <CourseManagement />;
+          case 'topics':
+            return <TopicManagement />;
+          case 'users':
+            return <UserManagement />;
+          case 'audit_logs':
+            return <AuditLogView />;
+          case 'settings':
+            return <SystemSettingsView />;
+          case 'review_queue':
+            return <ReviewQueue />;
+          default:
+            return <AdminDashboard />;
+        }
+
+      case 'faculty':
+        switch (currentView) {
+          case 'dashboard':
+            return <FacultyDashboard />;
+          case 'my_questions':
+            return <MyQuestions />;
+          default:
+            return <FacultyDashboard />;
+        }
+
+      case 'reviewer':
+        switch (currentView) {
+          case 'dashboard':
+            return <ReviewerDashboard />;
+          case 'review_queue':
+            return <ReviewQueue />;
+          case 'review_history':
+            return <ReviewHistory />;
+          default:
+            return <ReviewerDashboard />;
+        }
+
+      case 'examiner':
+        switch (currentView) {
+          case 'dashboard':
+            return <ExaminerDashboard />;
+          default:
+            return <ExaminerDashboard />;
+        }
+
+      default:
+        return <AdminDashboard />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      <Header />
+
+      <div className="flex-1 flex">
+        <Sidebar />
+
+        <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full overflow-y-auto print:p-0 print:m-0 print:max-w-none">
+          {renderContent()}
+        </main>
+      </div>
+
+      {/* Global Question Inspection Modal */}
+      {viewingQuestion && (
+        <QuestionPreviewModal
+          question={viewingQuestion}
+          onClose={() => setViewingQuestionId(null)}
+          onEdit={(id) => {
+            setViewingQuestionId(null);
+            setEditingQuestionId(id);
+            setCurrentView('create_question');
+          }}
+          onSubmitForReview={(id) => {
+            submitQuestionForReview(id);
+            setViewingQuestionId(null);
+          }}
+          onReview={() => {
+            setViewingQuestionId(null);
+            setCurrentView('review_queue');
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+export default function App() {
+  return (
+    <AppProvider>
+      <MainLayout />
+    </AppProvider>
+  );
+}
