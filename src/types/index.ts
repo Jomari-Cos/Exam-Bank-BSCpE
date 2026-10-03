@@ -128,6 +128,12 @@ export interface Question {
   dateCreated: string;
   dateModified: string;
   explanation: string;
+  /**
+   * Optimistic-concurrency revision counter. Incremented on every successful
+   * write so concurrent edits from different devices can be detected and
+   * reconciled instead of silently overwriting each other. Defaults to 0.
+   */
+  revision?: number;
   
   // Multiple Choice
   choices?: string[];
@@ -266,4 +272,18 @@ export interface SystemSettings {
   defaultTimeLimitMinutes: number;
   requireReviewBeforeExam: boolean;
   minReviewersRequired: number;
+}
+
+/**
+ * A lightweight real-time presence record written to the `presence` collection.
+ * One document per open browser session (tab/device) allows every device to see
+ * which personnel are currently online and on what kind of device.
+ */
+export interface PresenceEntry {
+  id: string; // session id (stable per browser tab)
+  userId: string;
+  userName: string;
+  role: Role;
+  device: string;
+  lastSeen: number; // epoch millis
 }

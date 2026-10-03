@@ -8,6 +8,7 @@ import {
   Examination,
   Role,
   QuestionStatus,
+  PresenceEntry,
 } from '../types';
 import {
   INITIAL_USERS,
@@ -29,11 +30,13 @@ import {
   collection,
   doc,
   onSnapshot,
+  onSnapshotsInSync,
   setDoc,
   updateDoc,
   deleteDoc,
   getDocs,
   writeBatch,
+  runTransaction,
 } from 'firebase/firestore';
 import {
   signInWithPopup,
@@ -58,6 +61,13 @@ interface AppContextType {
   isFirebaseConnected: boolean;
   isLoadingData: boolean;
 
+  // Real-time multi-device synchronization status
+  isSyncing: boolean;
+  lastSyncedAt: number | null;
+  onlineUsers: PresenceEntry[];
+  syncNotice: SyncNotice | null;
+  dismissSyncNotice: () => void;
+
   users: User[];
   addUser: (userData: Omit<User, 'id' | 'avatarInitials'>) => Promise<void>;
   updateUser: (id: string, updates: Partial<User>) => Promise<void>;
@@ -75,6 +85,7 @@ interface AppContextType {
   questions: Question[];
   createQuestion: (questionData: Partial<Question>) => Promise<Question>;
   updateQuestion: (id: string, updates: Partial<Question>) => Promise<void>;
+  forceUpdateQuestion: (id: string, updates: Partial<Question>) => Promise<void>;
   duplicateQuestion: (id: string) => Promise<Question>;
   archiveQuestion: (id: string) => Promise<void>;
   deleteQuestion: (id: string) => Promise<void>;
@@ -115,6 +126,58 @@ interface AppContextType {
   importDatabaseJson: (jsonStr: string) => Promise<boolean>;
 }
 
+/** A transient, user-facing banner describing a cross-device sync event or conflict. */
+export interface SyncNotice {
+  id: string;
+  kind: 'info' | 'warning';
+  message: string;
+  /** When present, renders a one-click "Keep My Version" action to resolve a conflict. */
+  conflictQuestionId?: string;
+}
+
+// Stable per-tab session id so presence/conflict handling can distinguish devices.
+const SESSION_STORAGE_KEY = 'bscpe_sync_session_id';
+function getSessionId(): string {
+  let id = sessionStorage.getItem(SESSION_STORAGE_KEY);
+  if (!id) {
+    id = `sess-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}`;
+    sessionStorage.setItem(SESSION_STORAGE_KEY, id);
+  }
+  return id;
+}
+
+// Human-readable label describing the current device/OS/browser for the presence roster.
+function getDeviceLabel(): string {
+  const ua = navigator.userAgent;
+  const os = /Windows/i.test(ua)
+    ? 'Windows'
+    : /Macintosh|Mac OS X/i.test(ua)
+    ? 'macOS'
+    : /Android/i.test(ua)
+    ? 'Android'
+    : /iPhone|iPad|iPod/i.test(ua)
+    ? 'iOS'
+    : /Linux/i.test(ua)
+    ? 'Linux'
+    : 'Unknown OS';
+  const browser = /Edg\//i.test(ua)
+    ? 'Edge'
+    : /OPR\//i.test(ua)
+    ? 'Opera'
+    : /Chrome\//i.test(ua)
+    ? 'Chrome'
+    : /Firefox\//i.test(ua)
+    ? 'Firefox'
+    : /Safari\//i.test(ua)
+    ? 'Safari'
+    : 'Browser';
+  return `${browser} on ${os}`;
+}
+
+const PRESENCE_HEARTBEAT_MS = 20_000;
+// A session is considered online if it checked in within this window.
+const PRESENCE_STALE_MS = 60_000;
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -131,8 +194,38 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Explicitly start at Login page unless this browser session has authenticated
     return sessionStorage.getItem('bscpe_authenticated_session') === 'true';
   });
-  const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(true);
+  const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(
+    () => (typeof navigator === 'undefined' ? true : navigator.onLine)
+  );
   const [isLoadingData, setIsLoadingData] = useState<boolean>(true);
+
+  // Real-time multi-device sync status
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
+  const [onlineUsers, setOnlineUsers] = useState<PresenceEntry[]>([]);
+  const [syncNotice, setSyncNotice] = useState<SyncNotice | null>(null);
+
+  // Signals from the local device's own writes vs. remote snapshot arrivals.
+  const localWriteRef = React.useRef<number>(0);
+  const sessionIdRef = React.useRef<string>(getSessionId());
+
+  const markSynced = (hasPendingWrites: boolean) => {
+    setIsSyncing(hasPendingWrites);
+    if (!hasPendingWrites) setLastSyncedAt(Date.now());
+  };
+
+  const dismissSyncNotice = () => setSyncNotice(null);
+
+  // Surface a transient banner; auto-dismiss informational notices after a while.
+  const pushSyncNotice = (notice: Omit<SyncNotice, 'id'>, autoDismissMs?: number) => {
+    const full: SyncNotice = { ...notice, id: `notice-${Date.now()}-${Math.random()}` };
+    setSyncNotice(full);
+    if (autoDismissMs) {
+      setTimeout(() => {
+        setSyncNotice((current) => (current && current.id === full.id ? null : current));
+      }, autoDismissMs);
+    }
+  };
 
   // Navigation states
   const [currentView, setCurrentView] = useState<string>('dashboard');
@@ -140,11 +233,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [viewingQuestionId, setViewingQuestionId] = useState<string | null>(null);
   const [viewingExamId, setViewingExamId] = useState<string | null>(null);
 
-  // 1. Initialize Firebase Auth and test connection on mount
+  // 1. Initialize Firebase Auth, then keep connection status live
   useEffect(() => {
-    testFirestoreConnection().then((connected) => {
-      setIsFirebaseConnected(connected);
+    // Verify the Firestore connection once, then rely on live signals below.
+    testFirestoreConnection().then((connected) => setIsFirebaseConnected(connected));
+
+    // Firestore notifies us whenever all local writes have been acknowledged by
+    // the server (i.e. every device is now consistent) — refresh "last synced".
+    const unsubInSync = onSnapshotsInSync(db, () => {
+      setIsFirebaseConnected(true);
+      setLastSyncedAt(Date.now());
     });
+
+    // Browser-level connectivity: react immediately to network changes.
+    const handleOnline = () => {
+      testFirestoreConnection().then((connected) => setIsFirebaseConnected(connected));
+    };
+    const handleOffline = () => setIsFirebaseConnected(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       setAuthUser(user);
@@ -182,7 +289,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     });
 
-    return () => unsubscribeAuth();
+    return () => {
+      unsubInSync();
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      unsubscribeAuth();
+    };
   }, []);
 
   // 2. Real-time sync with Firestore & Initial Cloud Seeding
@@ -245,15 +357,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     seedInitialDataIfEmpty();
 
-    // Attach real-time snapshot listeners
+    // A short grace window after a local write, used to tell our own changes
+    // apart from changes made on another device.
+    const recentlyWroteLocally = () => Date.now() - localWriteRef.current < 3000;
+    const announceRemoteChange = (label: string) => {
+      if (!isSubscribed) return;
+      if (recentlyWroteLocally()) return;
+      pushSyncNotice({ kind: 'info', message: `Updated from another device — ${label}` }, 5000);
+    };
+
+    // Attach real-time snapshot listeners.
+    // NOTE: We intentionally apply *every* snapshot — including empty ones — so
+    // that deletions performed on another device propagate here instead of the
+    // stale rows lingering forever. The authoritative id is always `d.id`.
     const unsubUsers = onSnapshot(
       collection(db, 'users'),
       (snapshot) => {
-        if (!snapshot.empty) {
-          const loaded: User[] = [];
-          snapshot.forEach((d) => loaded.push(d.data() as User));
-          setUsers(loaded);
-        }
+        const loaded: User[] = snapshot.docs.map((d) => ({ ...(d.data() as User), id: d.id }));
+        setUsers(loaded);
+        markSynced(snapshot.metadata.hasPendingWrites);
+        if (!snapshot.metadata.fromCache) announceRemoteChange('user directory changed');
       },
       (error) => handleFirestoreError(error, OperationType.GET, 'users')
     );
@@ -261,11 +384,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const unsubCourses = onSnapshot(
       collection(db, 'courses'),
       (snapshot) => {
-        if (!snapshot.empty) {
-          const loaded: Course[] = [];
-          snapshot.forEach((d) => loaded.push(d.data() as Course));
-          setCourses(loaded);
-        }
+        const loaded: Course[] = snapshot.docs.map((d) => ({ ...(d.data() as Course), id: d.id }));
+        setCourses(loaded);
+        markSynced(snapshot.metadata.hasPendingWrites);
+        if (!snapshot.metadata.fromCache) announceRemoteChange('course catalog changed');
       },
       (error) => handleFirestoreError(error, OperationType.GET, 'courses')
     );
@@ -273,12 +395,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const unsubQuestions = onSnapshot(
       collection(db, 'questions'),
       (snapshot) => {
-        if (!snapshot.empty) {
-          const loaded: Question[] = [];
-          snapshot.forEach((d) => loaded.push(d.data() as Question));
-          setQuestions(loaded);
-        }
+        const loaded: Question[] = snapshot.docs.map((d) => ({ ...(d.data() as Question), id: d.id }));
+        setQuestions(loaded);
         setIsLoadingData(false);
+        markSynced(snapshot.metadata.hasPendingWrites);
+        if (!snapshot.metadata.fromCache) announceRemoteChange('question bank changed');
       },
       (error) => {
         setIsLoadingData(false);
@@ -289,11 +410,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const unsubExams = onSnapshot(
       collection(db, 'examinations'),
       (snapshot) => {
-        if (!snapshot.empty) {
-          const loaded: Examination[] = [];
-          snapshot.forEach((d) => loaded.push(d.data() as Examination));
-          setExaminations(loaded);
-        }
+        const loaded: Examination[] = snapshot.docs.map((d) => ({
+          ...(d.data() as Examination),
+          id: d.id,
+        }));
+        setExaminations(loaded);
+        markSynced(snapshot.metadata.hasPendingWrites);
       },
       (error) => handleFirestoreError(error, OperationType.GET, 'examinations')
     );
@@ -301,13 +423,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const unsubLogs = onSnapshot(
       collection(db, 'audit_logs'),
       (snapshot) => {
-        if (!snapshot.empty) {
-          const loaded: AuditLog[] = [];
-          snapshot.forEach((d) => loaded.push(d.data() as AuditLog));
-          setAuditLogs(
-            loaded.sort((a, b) => b.timestamp.localeCompare(a.timestamp))
-          );
-        }
+        const loaded: AuditLog[] = snapshot.docs.map((d) => ({ ...(d.data() as AuditLog), id: d.id }));
+        setAuditLogs(loaded.sort((a, b) => b.timestamp.localeCompare(a.timestamp)));
+        markSynced(snapshot.metadata.hasPendingWrites);
       },
       (error) => handleFirestoreError(error, OperationType.GET, 'audit_logs')
     );
@@ -316,10 +434,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       doc(db, 'settings', 'global'),
       (snapshot) => {
         if (snapshot.exists()) {
-          setSystemSettings(snapshot.data() as SystemSettings);
+          setSystemSettings({ ...(snapshot.data() as SystemSettings) });
+          markSynced(snapshot.metadata.hasPendingWrites);
+          if (!snapshot.metadata.fromCache) announceRemoteChange('system settings changed');
         }
       },
       (error) => handleFirestoreError(error, OperationType.GET, 'settings/global')
+    );
+
+    // Presence roster: keep only sessions that checked in within the stale window.
+    const unsubPresence = onSnapshot(
+      collection(db, 'presence'),
+      (snapshot) => {
+        const now = Date.now();
+        const active: PresenceEntry[] = snapshot.docs
+          .map((d) => ({ ...(d.data() as PresenceEntry), id: d.id }))
+          .filter((p) => now - (p.lastSeen || 0) < PRESENCE_STALE_MS);
+        setOnlineUsers(active);
+      },
+      (error) => handleFirestoreError(error, OperationType.GET, 'presence')
     );
 
     return () => {
@@ -330,8 +463,49 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       unsubExams();
       unsubLogs();
       unsubSettings();
+      unsubPresence();
     };
   }, []);
+
+  // 3. Presence: publish this device's heartbeat so other devices can see it online.
+  useEffect(() => {
+    if (!isAuthenticated || !authUser) return;
+
+    const presenceRef = doc(db, 'presence', sessionIdRef.current);
+    const entry: PresenceEntry = {
+      id: sessionIdRef.current,
+      userId: currentUser.id,
+      userName: currentUser.name,
+      role: currentUser.role,
+      device: getDeviceLabel(),
+      lastSeen: Date.now(),
+    };
+
+    const publish = () => {
+      setDoc(presenceRef, { ...entry, lastSeen: Date.now() }).catch((error) =>
+        handleFirestoreError(error, OperationType.WRITE, `presence/${sessionIdRef.current}`)
+      );
+    };
+
+    publish();
+    const heartbeat = window.setInterval(publish, PRESENCE_HEARTBEAT_MS);
+
+    // Best-effort cleanup so a device disappears promptly when it leaves.
+    const retract = () => {
+      deleteDoc(presenceRef).catch(() => {
+        /* the stale-window filter will hide it anyway */
+      });
+    };
+    window.addEventListener('pagehide', retract);
+    window.addEventListener('beforeunload', retract);
+
+    return () => {
+      window.clearInterval(heartbeat);
+      window.removeEventListener('pagehide', retract);
+      window.removeEventListener('beforeunload', retract);
+      retract();
+    };
+  }, [isAuthenticated, authUser, currentUser.id, currentUser.name, currentUser.role]);
 
   const signInWithGoogle = async () => {
     try {

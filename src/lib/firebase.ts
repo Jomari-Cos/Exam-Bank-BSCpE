@@ -10,24 +10,60 @@ import {
 } from 'firebase/auth';
 import {
   getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
   doc,
   getDocFromServer,
   collection,
   onSnapshot,
+  onSnapshotsInSync,
   setDoc,
   updateDoc,
   deleteDoc,
   getDocs,
   writeBatch,
+  runTransaction,
+  serverTimestamp,
 } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
 
-// CRITICAL: The app will break without passing firestoreDatabaseId
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+// CRITICAL: The app will break without passing firestoreDatabaseId.
+// Real-time multi-device synchronization:
+//  - persistentLocalCache + persistentMultipleTabManager enables an on-disk write
+//    queue so edits made offline are cached and automatically flushed to the server
+//    (and to every other device) as soon as connectivity returns. The multi-tab
+//    manager keeps every open tab on the same device consistent too.
+//  - Falls back to the in-memory cache for environments without IndexedDB
+//    (private browsing on some browsers) so the app never hard-fails.
+function createFirestore() {
+  try {
+    return initializeFirestore(
+      app,
+      {
+        localCache: persistentLocalCache({
+          tabManager: persistentMultipleTabManager(),
+        }),
+      },
+      firebaseConfig.firestoreDatabaseId
+    );
+  } catch (error) {
+    console.warn(
+      'Persistent Firestore cache unavailable, falling back to in-memory cache:',
+      error
+    );
+    return getFirestore(app, firebaseConfig.firestoreDatabaseId);
+  }
+}
+
+export const db = createFirestore();
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+
+// Re-exported so the app layer keeps a single import surface for Firestore APIs.
+export { onSnapshotsInSync, runTransaction, serverTimestamp };
 
 export enum OperationType {
   CREATE = 'create',
