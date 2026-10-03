@@ -21,7 +21,6 @@ export const MyQuestions: React.FC = () => {
     currentUser,
     questions,
     setCurrentView,
-    setEditingQuestionId,
     setViewingQuestionId,
     submitQuestionForReview,
     duplicateQuestion,
@@ -55,8 +54,7 @@ export const MyQuestions: React.FC = () => {
   const availableCourses = Array.from(new Set(myQuestions.map((q) => q.courseCode)));
 
   const handleEdit = (id: string) => {
-    setEditingQuestionId(id);
-    setCurrentView('create_question');
+    setCurrentView('create_question', { editingQuestionId: id });
   };
 
   const handleSubmit = (id: string) => {
@@ -67,8 +65,7 @@ export const MyQuestions: React.FC = () => {
 
   const handleDuplicate = async (id: string) => {
     const duplicated = await duplicateQuestion(id);
-    setEditingQuestionId(duplicated.id);
-    setCurrentView('create_question');
+    setCurrentView('create_question', { editingQuestionId: duplicated.id });
   };
 
   const handleArchive = (id: string) => {
@@ -97,8 +94,7 @@ export const MyQuestions: React.FC = () => {
 
         <button
           onClick={() => {
-            setEditingQuestionId(null);
-            setCurrentView('create_question');
+            setCurrentView('create_question', { editingQuestionId: null });
           }}
           className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-xs"
         >

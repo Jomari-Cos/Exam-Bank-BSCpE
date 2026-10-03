@@ -15,11 +15,19 @@ import {
 } from 'lucide-react';
 
 export const ExamListView: React.FC = () => {
-  const { examinations, deleteExamination, setViewingExamId, setCurrentView } = useApp();
+  const {
+    examinations,
+    deleteExamination,
+    setCurrentView,
+    isFirebaseConnected,
+    isSyncing,
+    lastSyncedAt,
+    syncNotice,
+    dismissSyncNotice,
+  } = useApp();
 
   const handleOpenExam = (id: string) => {
-    setViewingExamId(id);
-    setCurrentView('exam_view');
+    setCurrentView('exam_view', { viewingExamId: id });
   };
 
   const handleDirectDownloadPdf = (exam: typeof examinations[0]) => {
@@ -48,6 +56,21 @@ export const ExamListView: React.FC = () => {
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             Access previous examination packages, view randomized test versions, and print master answer keys.
+            Every package is stored in the shared cloud database and updates live for all users.
+          </p>
+          <p className="text-[11px] mt-1 font-mono flex items-center gap-1.5">
+            <span
+              className={`inline-block w-1.5 h-1.5 rounded-full ${isFirebaseConnected && !isSyncing ? 'bg-emerald-500' : isFirebaseConnected ? 'bg-amber-500 animate-pulse' : 'bg-rose-500'}`}
+            />
+            <span className="text-slate-500">
+              {isFirebaseConnected
+                ? isSyncing
+                  ? 'Syncing with shared database…'
+                  : lastSyncedAt
+                    ? `Live — synced ${new Date(lastSyncedAt).toLocaleTimeString()}`
+                    : 'Live — connected to shared database'
+                : 'Offline — showing cached packages, will sync on reconnect'}
+            </span>
           </p>
         </div>
 
@@ -59,6 +82,19 @@ export const ExamListView: React.FC = () => {
           <span>Generate New Exam Set</span>
         </button>
       </div>
+
+      {/* Cross-device sync notice */}
+      {syncNotice && (
+        <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 text-xs rounded-xl border bg-indigo-50/70 border-indigo-200 text-indigo-900">
+          <span className="leading-relaxed">{syncNotice.message}</span>
+          <button
+            onClick={dismissSyncNotice}
+            className="shrink-0 px-2 py-1 text-[11px] font-semibold text-indigo-700 hover:text-indigo-900 hover:bg-indigo-100 rounded-lg transition-colors"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
 
       {/* Examinations Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

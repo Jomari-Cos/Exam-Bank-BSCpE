@@ -27,6 +27,13 @@ import {
   OperationType,
 } from '../lib/firebase';
 import {
+  DEFAULT_VIEW,
+  buildHashRoute,
+  isViewAllowedForRole,
+  parseHashRoute,
+  type RouteSelection,
+} from '../lib/navigation';
+import {
   collection,
   doc,
   onSnapshot,
@@ -99,6 +106,7 @@ interface AppContextType {
 
   examinations: Examination[];
   createExamination: (examData: Examination) => Promise<void>;
+  updateExamination: (id: string, updates: Partial<Examination>) => Promise<void>;
   deleteExamination: (id: string) => Promise<void>;
 
   auditLogs: AuditLog[];
@@ -113,7 +121,9 @@ interface AppContextType {
   updateSystemSettings: (settings: Partial<SystemSettings>) => Promise<void>;
 
   currentView: string;
-  setCurrentView: (view: string) => void;
+  setCurrentView: (view: string, selection?: RouteSelection) => void;
+  navigate: (view: string, selection?: RouteSelection) => void;
+  sessionRestored: boolean;
   editingQuestionId: string | null;
   setEditingQuestionId: (id: string | null) => void;
   viewingQuestionId: string | null;
@@ -137,6 +147,8 @@ export interface SyncNotice {
 
 // Stable per-tab session id so presence/conflict handling can distinguish devices.
 const SESSION_STORAGE_KEY = 'bscpe_sync_session_id';
+const AUTH_SESSION_KEY = 'bscpe_authenticated_session';
+const AUTH_USER_KEY = 'bscpe_authenticated_user_id';
 function getSessionId(): string {
   let id = sessionStorage.getItem(SESSION_STORAGE_KEY);
   if (!id) {
@@ -192,7 +204,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     // Explicitly start at Login page unless this browser session has authenticated
-    return sessionStorage.getItem('bscpe_authenticated_session') === 'true';
+    return sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
+  });
+  // Blocks rendering until the signed-in account is resolved. Without this a
+  // reload briefly renders with the default administrator (`INITIAL_USERS[0]`).
+  const [sessionRestored, setSessionRestored] = useState<boolean>(() => {
+    return sessionStorage.getItem(AUTH_SESSION_KEY) !== 'true';
   });
   const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(
     () => (typeof navigator === 'undefined' ? true : navigator.onLine)
@@ -208,6 +225,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Signals from the local device's own writes vs. remote snapshot arrivals.
   const localWriteRef = React.useRef<number>(0);
   const sessionIdRef = React.useRef<string>(getSessionId());
+
+  // Mark that this device just performed a local write. This (a) puts the UI
+  // into a brief "syncing" state and (b) lets snapshot handlers tell our own
+  // echo apart from genuine remote changes from another user/device.
+  const markLocalWrite = () => {
+    localWriteRef.current = Date.now();
+    setIsSyncing(true);
+  };
 
   const markSynced = (hasPendingWrites: boolean) => {
     setIsSyncing(hasPendingWrites);
@@ -227,11 +252,71 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  // Navigation states
-  const [currentView, setCurrentView] = useState<string>('dashboard');
-  const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null);
+  // Navigation states. The active view is mirrored to the URL hash so a
+  // browser reload restores the exact page instead of the dashboard.
+  const [currentView, setCurrentViewState] = useState<string>(() =>
+    parseHashRoute(window.location.hash).view
+  );
+  const [editingQuestionId, setEditingQuestionId] = useState<string | null>(
+    () => parseHashRoute(window.location.hash).editingQuestionId
+  );
   const [viewingQuestionId, setViewingQuestionId] = useState<string | null>(null);
-  const [viewingExamId, setViewingExamId] = useState<string | null>(null);
+  const [viewingExamId, setViewingExamId] = useState<string | null>(
+    () => parseHashRoute(window.location.hash).viewingExamId
+  );
+
+  const writeHashRoute = (view: string, selection: RouteSelection = {}) => {
+    const nextHash = buildHashRoute(view, selection);
+    if (window.location.hash !== nextHash) {
+      window.location.hash = nextHash;
+    }
+  };
+
+  const setCurrentView = (view: string, selection: RouteSelection = {}) => {
+    const route = parseHashRoute(buildHashRoute(view, selection));
+    setCurrentViewState(route.view);
+    // Always sync companion ids from the route (null when leaving those
+    // views) so in-memory state can never go stale relative to the URL.
+    setEditingQuestionId(route.editingQuestionId);
+    setViewingExamId(route.viewingExamId);
+    writeHashRoute(route.view, {
+      editingQuestionId: route.editingQuestionId,
+      viewingExamId: route.viewingExamId,
+    });
+  };
+
+  const navigate = (view: string, selection: RouteSelection = {}) => {
+    setCurrentView(view, selection);
+  };
+
+  // Browser back/forward buttons and manually edited URLs flow through here.
+  useEffect(() => {
+    const handleHashChange = () => {
+      const route = parseHashRoute(window.location.hash);
+      setCurrentViewState(route.view);
+      setEditingQuestionId(route.editingQuestionId);
+      setViewingExamId(route.viewingExamId);
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // Keep the URL route compatible with the restored account so a signed-in
+  // user never lands on (or can keep) a page their role cannot access.
+  useEffect(() => {
+    if (!isAuthenticated || !sessionRestored) return;
+    if (isViewAllowedForRole(currentView, currentUser.role)) return;
+    setCurrentViewState(DEFAULT_VIEW);
+    setEditingQuestionId(null);
+    setViewingExamId(null);
+    writeHashRoute(DEFAULT_VIEW, {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, sessionRestored, currentView, currentUser.role]);
+
+  const persistAuthenticatedUser = (user: User) => {
+    sessionStorage.setItem(AUTH_SESSION_KEY, 'true');
+    sessionStorage.setItem(AUTH_USER_KEY, user.id);
+  };
 
   // 1. Initialize Firebase Auth, then keep connection status live
   useEffect(() => {
@@ -256,12 +341,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       setAuthUser(user);
       // Only auto-restore authentication if session is active
-      const hasActiveSession = sessionStorage.getItem('bscpe_authenticated_session') === 'true';
+      const hasActiveSession = sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
       if (user && hasActiveSession) {
         setIsAuthenticated(true);
         // If user signs in with email, find matching user or create profile
         const existing = users.find((u) => u.email.toLowerCase() === user.email?.toLowerCase());
         if (existing) {
+          persistAuthenticatedUser(existing);
           setCurrentUserState(existing);
         } else if (user.email) {
           const newUser: User = {
@@ -284,6 +370,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           } catch (e) {
             console.error(e);
           }
+          persistAuthenticatedUser(newUser);
           setCurrentUserState(newUser);
         }
       }
@@ -300,6 +387,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // 2. Real-time sync with Firestore & Initial Cloud Seeding
   useEffect(() => {
     let isSubscribed = true;
+
+    // Guarantees Firestore writes are allowed before seeding / subscribing.
+    // Username-password logins have no Firebase Auth user, so most locked-down
+    // rules reject writes. An anonymous session satisfies `request.auth != null`
+    // without changing the app's own role/login system.
+    const ensureFirestoreAuth = async () => {
+      try {
+        if (!auth.currentUser) {
+          await signInAnonymously(auth);
+        }
+      } catch (err) {
+        console.warn('Anonymous Firestore auth unavailable:', err);
+      }
+    };
 
     // Seed helper if Firestore collections are empty or missing sample accounts
     const seedInitialDataIfEmpty = async () => {
@@ -355,7 +456,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     };
 
-    seedInitialDataIfEmpty();
+    // Anonymous auth must finish first so the initial seeding writes (and
+    // every later create/update/delete on examinations, questions, courses,
+    // users…) are accepted by Firestore security rules. Without this, writes
+    // fail with permission-denied, state only changes locally, and other users
+    // never receive the examination sets in real time.
+    ensureFirestoreAuth().then(() => {
+      if (isSubscribed) seedInitialDataIfEmpty();
+    });
 
     // A short grace window after a local write, used to tell our own changes
     // apart from changes made on another device.
@@ -416,6 +524,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }));
         setExaminations(loaded);
         markSynced(snapshot.metadata.hasPendingWrites);
+        if (!snapshot.metadata.fromCache) announceRemoteChange('examination sets changed');
       },
       (error) => handleFirestoreError(error, OperationType.GET, 'examinations')
     );
@@ -507,11 +616,66 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
   }, [isAuthenticated, authUser, currentUser.id, currentUser.name, currentUser.role]);
 
+  // Restores the signed-in account after a browser reload. This intentionally
+  // runs for every auth path (username/password quick login has no Firebase
+  // auth user), so reloads never fall through to the default administrator.
+  useEffect(() => {
+    if (sessionRestored || !isAuthenticated) return;
+
+    const storedUserId = sessionStorage.getItem(AUTH_USER_KEY);
+    if (!storedUserId) {
+      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      localStorage.removeItem('bscpe_authenticated_v1');
+      localStorage.removeItem('bscpe_current_user_v1');
+      setIsAuthenticated(false);
+      setSessionRestored(true);
+      return;
+    }
+
+    if (users.length === 0) return;
+
+    const restoredUser = users.find((user) => user.id === storedUserId);
+    if (!restoredUser || !restoredUser.active) {
+      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      sessionStorage.removeItem(AUTH_USER_KEY);
+      localStorage.removeItem('bscpe_authenticated_v1');
+      localStorage.removeItem('bscpe_current_user_v1');
+      setIsAuthenticated(false);
+      setSessionRestored(true);
+      return;
+    }
+
+    setCurrentUserState(restoredUser);
+    setSessionRestored(true);
+  }, [sessionRestored, isAuthenticated, users]);
+
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       if (result.user) {
-        sessionStorage.setItem('bscpe_authenticated_session', 'true');
+        // Resolve the directory account now so the correct role (not the
+        // default administrator) is used before the auth listener runs.
+        const directoryUser = users.find(
+          (u) => u.email.toLowerCase() === result.user.email?.toLowerCase()
+        );
+        const fallbackUser: User = {
+          id: result.user.uid,
+          name: result.user.displayName || 'Authorized Faculty',
+          email: result.user.email || '',
+          role: result.user.email === 'jcos83531@gmail.com' ? 'admin' : 'faculty',
+          department: 'Computer Engineering Department',
+          title: result.user.email === 'jcos83531@gmail.com' ? 'Administrator' : 'Faculty Member',
+          active: true,
+          avatarInitials: (result.user.displayName || result.user.email || 'AF')
+            .split(' ')
+            .map((n) => n[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase(),
+        };
+        persistAuthenticatedUser(directoryUser ?? fallbackUser);
+        setCurrentUserState(directoryUser ?? fallbackUser);
+        setSessionRestored(true);
         setIsAuthenticated(true);
         setCurrentView('dashboard');
         await logAudit(
@@ -527,7 +691,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const loginAsUser = (user: User) => {
-    sessionStorage.setItem('bscpe_authenticated_session', 'true');
+    persistAuthenticatedUser(user);
+    setSessionRestored(true);
     setCurrentUserState(user);
     setIsAuthenticated(true);
     setCurrentView('dashboard');
@@ -570,7 +735,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     // Success! Log the user in
-    sessionStorage.setItem('bscpe_authenticated_session', 'true');
+    persistAuthenticatedUser(matchedUser);
+    setSessionRestored(true);
     setCurrentUserState(matchedUser);
     setIsAuthenticated(true);
     setCurrentView('dashboard');
@@ -593,7 +759,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     setAuthUser(null);
     setIsAuthenticated(false);
-    sessionStorage.removeItem('bscpe_authenticated_session');
+    setSessionRestored(true);
+    sessionStorage.removeItem(AUTH_SESSION_KEY);
+    sessionStorage.removeItem(AUTH_USER_KEY);
     localStorage.removeItem('bscpe_authenticated_v1');
     localStorage.removeItem('bscpe_current_user_v1');
     setCurrentView('dashboard');
@@ -651,6 +819,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       avatarInitials: initials,
     };
 
+    markLocalWrite();
     setUsers((prev) => [...prev, newUser]);
 
     try {
@@ -667,6 +836,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateUser = async (id: string, updates: Partial<User>) => {
+    markLocalWrite();
     setUsers((prev) =>
       prev.map((u) => {
         if (u.id === id) {
@@ -693,6 +863,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (!target) return;
     const newActive = !target.active;
 
+    markLocalWrite();
     setUsers((prev) =>
       prev.map((u) => (u.id === id ? { ...u, active: newActive } : u))
     );
@@ -714,6 +885,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const target = users.find((u) => u.id === id);
     if (!target) return;
 
+    markLocalWrite();
     setUsers((prev) => prev.filter((u) => u.id !== id));
 
     try {
@@ -765,6 +937,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       id: newId,
     };
 
+    markLocalWrite();
     setCourses((prev) => [...prev, newCourse]);
 
     try {
@@ -781,6 +954,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateCourse = async (id: string, updates: Partial<Course>) => {
+    markLocalWrite();
     setCourses((prev) =>
       prev.map((c) => (c.id === id ? { ...c, ...updates } : c))
     );
@@ -795,6 +969,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const deleteCourse = async (id: string) => {
     const course = courses.find((c) => c.id === id);
+    markLocalWrite();
     setCourses((prev) => prev.filter((c) => c.id !== id));
 
     try {
@@ -864,18 +1039,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ],
     };
 
+    markLocalWrite();
     setQuestions((prev) => [newQuestion, ...prev]);
 
     try {
       await setDoc(doc(db, 'questions', newId), newQuestion);
-      await logAudit(
-        'Question Created',
-        'Question',
-        `Created question ${newId} (${newQuestion.type}) for ${newQuestion.courseCode}`,
-        newId
-      );
+      try {
+        await logAudit(
+          'Question Created',
+          'Question',
+          `Created question ${newId} (${newQuestion.type}) for ${newQuestion.courseCode}`,
+          newId
+        );
+      } catch (auditErr) {
+        handleFirestoreError(auditErr, OperationType.WRITE, `audit_logs (question ${newId})`);
+      }
     } catch (error) {
+      // Re-throw so the caller (QuestionEditor) can show the save error
+      // instead of navigating away as if the question reached the database.
       handleFirestoreError(error, OperationType.WRITE, `questions/${newId}`);
+      throw error;
     }
 
     return newQuestion;
@@ -900,15 +1083,46 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       history: [...(existingQ.history || []), historyEntry],
     };
 
+    markLocalWrite();
     setQuestions((prev) =>
       prev.map((q) => (q.id === id ? { ...q, ...finalUpdates } : q))
     );
 
     try {
       await updateDoc(doc(db, 'questions', id), finalUpdates);
-      await logAudit('Question Updated', 'Question', `Edited question ${id}`, id);
+      try {
+        await logAudit('Question Updated', 'Question', `Edited question ${id}`, id);
+      } catch (auditErr) {
+        handleFirestoreError(auditErr, OperationType.UPDATE, `questions/${id}`);
+      }
     } catch (error) {
       handleFirestoreError(error, OperationType.UPDATE, `questions/${id}`);
+      throw error;
+    }
+  };
+
+  const forceUpdateQuestion = async (id: string, updates: Partial<Question>) => {
+    // Bypasses the optimistic-concurrency guard (used by the conflict banner's
+    // "Keep My Version" action): applies the update unconditionally with a
+    // fresh revision so other devices converge on this version via onSnapshot.
+    const existingQ = questions.find((q) => q.id === id);
+    const now = new Date().toISOString().substring(0, 10);
+    const finalUpdates = {
+      ...updates,
+      revision: (existingQ?.revision ?? 0) + 1,
+      dateModified: now,
+    };
+
+    markLocalWrite();
+    setQuestions((prev) =>
+      prev.map((q) => (q.id === id ? { ...q, ...finalUpdates } : q))
+    );
+
+    try {
+      await updateDoc(doc(db, 'questions', id), finalUpdates);
+      await logAudit('Question Force-Updated', 'Question', `Resolved sync conflict on ${id} (kept local version)`, id);
+    } catch (error) {
+      console.error(`Failed to force-update questions/${id}:`, error);
     }
   };
 
@@ -943,6 +1157,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ],
     };
 
+    markLocalWrite();
     setQuestions((prev) => [duplicated, ...prev]);
 
     try {
@@ -978,6 +1193,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ],
     };
 
+    markLocalWrite();
     setQuestions((prev) =>
       prev.map((q) => (q.id === id ? { ...q, ...updates } : q))
     );
@@ -991,6 +1207,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const deleteQuestion = async (id: string) => {
+    markLocalWrite();
     setQuestions((prev) => prev.filter((q) => q.id !== id));
 
     try {
@@ -1020,6 +1237,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ],
     };
 
+    markLocalWrite();
     setQuestions((prev) =>
       prev.map((q) => (q.id === id ? { ...q, ...updates } : q))
     );
@@ -1077,6 +1295,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ],
     };
 
+    markLocalWrite();
     setQuestions((prev) =>
       prev.map((q) => (q.id === id ? { ...q, ...updates } : q))
     );
@@ -1096,22 +1315,46 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Examination Management
   const createExamination = async (examData: Examination) => {
+    markLocalWrite();
     setExaminations((prev) => [examData, ...prev]);
 
     try {
       await setDoc(doc(db, 'examinations', examData.id), examData);
-      await logAudit(
-        'Examination Generated',
-        'Examination',
-        `Generated examination "${examData.title}" (${examData.versions.length} versions, ${examData.questionCount} questions)`,
-        examData.id
-      );
+      try {
+        await logAudit(
+          'Examination Generated',
+          'Examination',
+          `Generated examination "${examData.title}" (${examData.versions.length} versions, ${examData.questionCount} questions)`,
+          examData.id
+        );
+      } catch (auditErr) {
+        handleFirestoreError(auditErr, OperationType.WRITE, `audit_logs (exam ${examData.id})`);
+      }
     } catch (error) {
+      // Re-throw so the caller (ExamGenerator) can keep the user on the review
+      // step and show the save error instead of navigating away as if the
+      // package reached the shared database.
       handleFirestoreError(error, OperationType.WRITE, `examinations/${examData.id}`);
+      throw error;
+    }
+  };
+
+  const updateExamination = async (id: string, updates: Partial<Examination>) => {
+    markLocalWrite();
+    setExaminations((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, ...updates } : e))
+    );
+
+    try {
+      await updateDoc(doc(db, 'examinations', id), updates);
+      await logAudit('Examination Updated', 'Examination', `Updated examination set ${id}`, id);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `examinations/${id}`);
     }
   };
 
   const deleteExamination = async (id: string) => {
+    markLocalWrite();
     setExaminations((prev) => prev.filter((e) => e.id !== id));
 
     try {
@@ -1129,6 +1372,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const updateSystemSettings = async (settings: Partial<SystemSettings>) => {
     const updated = { ...systemSettings, ...settings };
+    markLocalWrite();
     setSystemSettings(updated);
 
     try {
@@ -1234,6 +1478,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         signOut,
         isFirebaseConnected,
         isLoadingData,
+
+        // Real-time sync status (Header / Sidebar badges + conflict banner)
+        isSyncing,
+        lastSyncedAt,
+        onlineUsers,
+        syncNotice,
+        dismissSyncNotice,
         users,
         addUser,
         updateUser,
@@ -1249,6 +1500,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         questions,
         createQuestion,
         updateQuestion,
+        forceUpdateQuestion,
         duplicateQuestion,
         archiveQuestion,
         deleteQuestion,
@@ -1256,6 +1508,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         reviewQuestion,
         examinations,
         createExamination,
+        updateExamination,
         deleteExamination,
         auditLogs,
         logAudit,
@@ -1263,6 +1516,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateSystemSettings,
         currentView,
         setCurrentView,
+        navigate,
+        sessionRestored,
         editingQuestionId,
         setEditingQuestionId,
         viewingQuestionId,

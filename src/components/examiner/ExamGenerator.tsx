@@ -31,9 +31,12 @@ export const ExamGenerator: React.FC = () => {
     currentUser,
     systemSettings,
     createExamination,
+    isFirebaseConnected,
     setCurrentView,
-    setViewingExamId,
   } = useApp();
+
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Wizard Step: 1 = Exam Setup, 2 = Question Selection, 3 = Randomization & Versions, 4 = Review & Save
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -135,11 +138,15 @@ export const ExamGenerator: React.FC = () => {
   };
 
   // Generate multi-version exam package
-  const handleGenerateExam = () => {
+  const handleGenerateExam = async () => {
     if (selectedQuestionIds.length === 0) {
       alert('Please select at least one question for the examination.');
       return;
     }
+
+    if (isSaving) return;
+    setIsSaving(true);
+    setSaveError(null);
 
     const selectedQuestions = questions.filter((q) => selectedQuestionIds.includes(q.id));
     const totalPoints = selectedQuestions.reduce((acc, q) => acc + q.points, 0);
@@ -236,13 +243,34 @@ export const ExamGenerator: React.FC = () => {
       },
     };
 
-    createExamination(newExam);
-    setViewingExamId(examId);
-    setCurrentView('exam_view');
+    try {
+      // Await the Firestore write so the package is really in the shared
+      // `examinations` collection before navigating — every other signed-in
+      // user then receives it instantly through the onSnapshot listener.
+      await createExamination(newExam);
+      setCurrentView('exam_view', { viewingExamId: examId });
+    } catch (err) {
+      console.error('Failed to save examination set:', err);
+      setSaveError(
+        'Could not save the examination set to the shared database. ' +
+          'Your exam is still shown locally — please check your connection and try again.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const selectedQuestionsObjects = questions.filter((q) => selectedQuestionIds.includes(q.id));
   const currentTotalPoints = selectedQuestionsObjects.reduce((acc, q) => acc + q.points, 0);
+
+  const versionRangeText =
+    versionCount === 1
+      ? 'Set A'
+      : versionCount === 2
+      ? 'Set A through Set B'
+      : versionCount === 3
+      ? 'Set A through Set C'
+      : 'Set A through Set D';
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -798,9 +826,20 @@ export const ExamGenerator: React.FC = () => {
               </h4>
               <p className="text-emerald-800 leading-relaxed">
                 Will compile <strong>{selectedQuestionIds.length} questions</strong> into{' '}
-                <strong>{versionCount} sets</strong> ({versionCount === 1 ? 'Set A' : `Set A through ${versionCount === 2 ? 'Set B' : versionCount === 3 ? 'Set C' : 'Set D'}`}) with total point capacity of{' '}
+                <strong>{versionCount} sets</strong> ({versionRangeText}) with total point capacity of{' '}
                 <strong>{currentTotalPoints} points</strong>. Complete matching answer keys and rubric will be generated.
               </p>
+              <p className="text-emerald-800 leading-relaxed">
+                Saving stores the package in the shared cloud database &mdash; every other signed-in user sees it in real time.
+                {!isFirebaseConnected && (
+                  <span className="font-semibold text-amber-700"> You appear to be offline; the exam will sync automatically when you reconnect.</span>
+                )}
+              </p>
+              {saveError ? (
+                <p className="text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-2.5 py-1.5 leading-relaxed">
+                  {saveError}
+                </p>
+              ) : null}
             </div>
 
             {/* Navigation Buttons */}
@@ -813,10 +852,11 @@ export const ExamGenerator: React.FC = () => {
               </button>
               <button
                 onClick={handleGenerateExam}
-                className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-all shadow-md hover:shadow-lg"
+                disabled={isSaving}
+                className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-wait rounded-lg transition-all shadow-md hover:shadow-lg"
               >
                 <Layers className="w-4 h-4" />
-                <span>Compile & Generate Examination Sets</span>
+                <span>{isSaving ? 'Saving to Shared Database…' : 'Compile & Generate Examination Sets'}</span>
               </button>
             </div>
           </div>

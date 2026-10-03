@@ -34,14 +34,27 @@ const MainLayout: React.FC = () => {
   const {
     currentUser,
     currentView,
-    setCurrentView,
     viewingQuestionId,
     setViewingQuestionId,
-    setEditingQuestionId,
+    setCurrentView,
     submitQuestionForReview,
     questions,
     isAuthenticated,
+    sessionRestored,
   } = useApp();
+
+  // While the signed-in account is being restored, render a neutral loading
+  // screen. This prevents a reload from flashing the default administrator.
+  if (isAuthenticated && !sessionRestored) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
+        <div className="flex items-center gap-3 text-slate-600">
+          <span className="w-5 h-5 rounded-full border-2 border-slate-300 border-t-indigo-600 animate-spin" />
+          <span className="text-sm font-medium">Restoring your workspace…</span>
+        </div>
+      </div>
+    );
+  }
 
   // If not authenticated, display login page
   if (!isAuthenticated) {
@@ -137,8 +150,7 @@ const MainLayout: React.FC = () => {
           onClose={() => setViewingQuestionId(null)}
           onEdit={(id) => {
             setViewingQuestionId(null);
-            setEditingQuestionId(id);
-            setCurrentView('create_question');
+            setCurrentView('create_question', { editingQuestionId: id });
           }}
           onSubmitForReview={(id) => {
             submitQuestionForReview(id);
