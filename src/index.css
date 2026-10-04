@@ -650,8 +650,6 @@
     line-height: 0.875rem;
     border-radius: 0.25rem;
   }
-} /* end .nav-badge */
-
 } /* end @layer components */
 
 @media print {
