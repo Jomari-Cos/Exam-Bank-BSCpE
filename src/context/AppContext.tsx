@@ -42,6 +42,7 @@ import {
   updateDoc,
   deleteDoc,
   getDocs,
+  getDoc,
   writeBatch,
   runTransaction,
 } from 'firebase/firestore';
@@ -297,6 +298,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // as "account deleted".
   const usersHydratedRef = React.useRef<boolean>(false);
   const sessionIdRef = React.useRef<string>(getSessionId());
+  // Set once the `presence` collection reports a permission failure (e.g. the
+  // Firestore `presence` rule has not been deployed yet). Once flagged, further
+  // presence reads/writes are skipped so the online-user roster degrades quietly
+  // instead of spamming permission errors — core data sync is unaffected.
+  const presenceUnavailableRef = React.useRef<boolean>(false);
+  const handlePresenceError = (error: unknown) => {
+    if (presenceUnavailableRef.current) return;
+    presenceUnavailableRef.current = true;
+    console.info(
+      'Online-user presence is unavailable (Firestore `presence` rule not deployed). ' +
+        'Real-time data synchronization continues normally.',
+      error
+    );
+  };
 
   // Mark that this device just performed a local write. This (a) puts the UI
   // into a brief "syncing" state and (b) lets snapshot handlers tell our own
@@ -490,55 +505,42 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     };
 
-    // Seed helper if Firestore collections are empty or missing sample accounts
+    // Seed helper: guarantees every collection the UI renders actually has its
+    // sample records. Each collection is checked independently (rather than
+    // only when `users` is empty), so a database seeded before the course
+    // catalog / question bank / examinations / settings existed — or one whose
+    // collections were emptied — self-heals on the next load instead of
+    // rendering empty lists. A collection is only re-seeded when it is
+    // completely empty, so individually deleted or archived records are never
+    // resurrected.
     const seedInitialDataIfEmpty = async () => {
       try {
-        const usersSnap = await getDocs(collection(db, 'users'));
-        if (usersSnap.empty) {
-          console.log('Seeding initial BSCpE data into Firebase Firestore...');
+        const seedCollection = async (
+          name: string,
+          records: Array<{ id: string }>
+        ) => {
+          const snapshot = await getDocs(collection(db, name));
+          if (!snapshot.empty) return;
+          console.log(`Seeding ${records.length} ${name} records into Firebase Firestore...`);
           const batch = writeBatch(db);
-
-          // Seed all sample authorized personnel accounts
-          INITIAL_USERS.forEach((u) => {
-            batch.set(doc(db, 'users', u.id), u);
-          });
-
-          // Seed courses
-          INITIAL_COURSES.forEach((c) => {
-            batch.set(doc(db, 'courses', c.id), c);
-          });
-
-          // Seed questions
-          INITIAL_QUESTIONS.forEach((q) => {
-            batch.set(doc(db, 'questions', q.id), q);
-          });
-
-          // Seed examinations
-          INITIAL_EXAMINATIONS.forEach((e) => {
-            batch.set(doc(db, 'examinations', e.id), e);
-          });
-
-          // Seed audit logs
-          INITIAL_AUDIT_LOGS.forEach((l) => {
-            batch.set(doc(db, 'audit_logs', l.id), l);
-          });
-
-          // Seed settings
-          batch.set(doc(db, 'settings', 'global'), INITIAL_SETTINGS);
-
+          records.forEach((record) => batch.set(doc(db, name, record.id), record));
           await batch.commit();
-          console.log('Firebase Firestore seed successfully written.');
-        } else {
-          // Always ensure all sample accounts exist in Firestore with their credentials
-          const existingIds = new Set(usersSnap.docs.map((d) => d.id));
-          const missingUsers = INITIAL_USERS.filter((u) => !existingIds.has(u.id));
-          if (missingUsers.length > 0) {
-            console.log(`Writing ${missingUsers.length} sample users to Firebase Firestore...`);
-            const batch = writeBatch(db);
-            missingUsers.forEach((u) => batch.set(doc(db, 'users', u.id), u));
-            await batch.commit();
-          }
+        };
+
+        await seedCollection('users', INITIAL_USERS);
+        await seedCollection('courses', INITIAL_COURSES);
+        await seedCollection('questions', INITIAL_QUESTIONS);
+        await seedCollection('examinations', INITIAL_EXAMINATIONS);
+        await seedCollection('audit_logs', INITIAL_AUDIT_LOGS);
+
+        // Settings live in a single named document (not a collection).
+        const settingsSnap = await getDoc(doc(db, 'settings', 'global'));
+        if (!settingsSnap.exists()) {
+          console.log('Seeding default system settings into Firebase Firestore...');
+          await setDoc(doc(db, 'settings', 'global'), INITIAL_SETTINGS);
         }
+
+        console.log('Firebase Firestore seeding check complete.');
       } catch (err) {
         console.warn('Initial seeding note:', err);
       }
@@ -653,7 +655,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           .filter((p) => now - (p.lastSeen || 0) < PRESENCE_STALE_MS);
         setOnlineUsers(active);
       },
-      (error) => handleFirestoreError(error, OperationType.GET, 'presence')
+      (error) => handlePresenceError(error)
     );
 
     return () => {
@@ -683,9 +685,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const publish = () => {
-      setDoc(presenceRef, { ...entry, lastSeen: Date.now() }).catch((error) =>
-        handleFirestoreError(error, OperationType.WRITE, `presence/${sessionIdRef.current}`)
-      );
+      if (presenceUnavailableRef.current) return;
+      setDoc(presenceRef, { ...entry, lastSeen: Date.now() }).catch(handlePresenceError);
     };
 
     publish();
