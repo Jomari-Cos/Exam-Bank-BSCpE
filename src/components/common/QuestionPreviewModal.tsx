@@ -97,8 +97,8 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Header */}
-        <div className="flex items-start justify-between p-5 border-b border-slate-200 bg-slate-50/70">
-          <div>
+        <div className="flex items-start justify-between gap-3 p-4 sm:p-5 border-b border-slate-200 bg-slate-50/70 shrink-0">
+          <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
               <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-200 text-slate-800">
                 {question.id}
@@ -127,17 +127,18 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"
+            className="tap-target p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors shrink-0 cursor-pointer"
+            aria-label="Close question preview"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-1 px-5 pt-3 border-b border-slate-200 bg-white">
+        {/* Navigation Tabs (scrollable horizontally on small screens) */}
+        <div className="flex items-center gap-1 px-4 sm:px-5 pt-3 border-b border-slate-200 bg-white overflow-x-auto shrink-0">
           <button
             onClick={() => setActiveTab('content')}
-            className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors ${
+            className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors shrink-0 whitespace-nowrap ${
               activeTab === 'content'
                 ? 'border-indigo-600 text-indigo-700'
                 : 'border-transparent text-slate-600 hover:text-slate-900'
@@ -149,7 +150,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
           {question.testCases && question.testCases.length > 0 && (
             <button
               onClick={() => setActiveTab('testcases')}
-              className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center gap-1.5 ${
+              className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
                 activeTab === 'testcases'
                   ? 'border-indigo-600 text-indigo-700'
                   : 'border-transparent text-slate-600 hover:text-slate-900'
@@ -162,7 +163,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
           <button
             onClick={() => setActiveTab('reviews')}
-            className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center gap-1.5 ${
+            className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'reviews'
                 ? 'border-indigo-600 text-indigo-700'
                 : 'border-transparent text-slate-600 hover:text-slate-900'
@@ -174,7 +175,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
           <button
             onClick={() => setActiveTab('history')}
-            className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center gap-1.5 ${
+            className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'history'
                 ? 'border-indigo-600 text-indigo-700'
                 : 'border-transparent text-slate-600 hover:text-slate-900'
@@ -186,7 +187,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 min-h-0">
           {activeTab === 'content' && (
             <div className="space-y-6">
               {/* Question Statement */}
@@ -202,7 +203,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {/* Multiple Choice Options */}
               {question.type === 'multiple_choice' && question.choices && (
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
                       Multiple Choice Options
                     </span>
@@ -266,7 +267,8 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                     <p className="text-xs text-slate-600 italic">{question.matchingInstructions}</p>
                   )}
                   <div className="border border-slate-200 rounded-lg overflow-hidden">
-                    <table className="w-full text-xs">
+                    <div className="overflow-x-auto">
+                    <table className="w-full min-w-[340px] text-xs">
                       <thead className="bg-slate-50 border-b border-slate-200 text-slate-700">
                         <tr>
                           <th className="text-left py-2 px-3 font-semibold w-1/2">List A (Item)</th>
@@ -284,6 +286,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                         ))}
                       </tbody>
                     </table>
+                    </div>
                   </div>
                 </div>
               )}
@@ -433,7 +436,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
           {activeTab === 'testcases' && question.testCases && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h3 className="text-xs font-semibold text-slate-900">Automated Test Suites</h3>
                   <p className="text-[11px] text-slate-500">
@@ -607,7 +610,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
         </div>
 
         {/* Modal Footer Actions */}
-        <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
+        <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
           <div className="text-xs text-slate-500">
             {question.status === 'Approved' ? (
               <span className="text-emerald-700 font-medium">✓ Ready for examination sets</span>
@@ -616,7 +619,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {canEdit && onEdit && (
               <button
                 onClick={() => {

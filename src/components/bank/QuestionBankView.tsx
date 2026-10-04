@@ -183,7 +183,7 @@ export const QuestionBankView: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {(currentUser.role === 'examiner' || currentUser.role === 'admin' || currentUser.role === 'faculty') && (
             <button
               onClick={() => setCurrentView('exam_generator')}
@@ -303,7 +303,7 @@ export const QuestionBankView: React.FC = () => {
 
       {/* Questions Results Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="flex items-center justify-between p-3.5 border-b border-slate-200 bg-slate-50 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2 p-3.5 border-b border-slate-200 bg-slate-50 text-xs">
           <span className="font-semibold text-slate-700">
             Showing <strong className="text-slate-900 font-mono">{sorted.length}</strong> questions in Question Bank
           </span>
@@ -314,7 +314,7 @@ export const QuestionBankView: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left">
+          <table className="w-full min-w-[840px] text-xs text-left">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="py-3 px-4">Question ID & Course</th>

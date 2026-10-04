@@ -158,7 +158,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           {/* Domain Breakdown */}
           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
               <h3 className="text-sm font-bold text-slate-900">
                 Curriculum Domain Distribution
               </h3>
@@ -195,7 +195,7 @@ export const AdminDashboard: React.FC = () => {
 
           {/* Question Types Matrix */}
           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
               <h3 className="text-sm font-bold text-slate-900">
                 Supported Question Types Breakdown
               </h3>
@@ -263,7 +263,7 @@ export const AdminDashboard: React.FC = () => {
 
           {/* Recent Audit Logs Stream */}
           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
               <h3 className="text-sm font-bold text-slate-900">Recent Audit Logs</h3>
               <button
                 onClick={() => setCurrentView('audit_logs')}

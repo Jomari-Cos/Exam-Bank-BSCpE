@@ -99,7 +99,7 @@ export const TopicManagement: React.FC = () => {
 
             {/* Topics Section */}
             <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-bold text-slate-900">Curriculum Topics</h3>
                   <p className="text-[11px] text-slate-500">
@@ -132,7 +132,8 @@ export const TopicManagement: React.FC = () => {
 
               {/* Topics Table */}
               <div className="border border-slate-200 rounded-lg overflow-hidden">
-                <table className="w-full text-xs">
+                <div className="overflow-x-auto">
+                <table className="w-full min-w-[420px] text-xs">
                   <thead className="bg-slate-50 border-b border-slate-200 text-slate-700">
                     <tr>
                       <th className="text-left py-2 px-3 font-semibold">#</th>
@@ -168,12 +169,13 @@ export const TopicManagement: React.FC = () => {
                     })}
                   </tbody>
                 </table>
+                </div>
               </div>
             </div>
 
             {/* Course Learning Outcomes (CLOs) Section */}
             <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-bold text-slate-900">
                     Course Learning Outcomes (CLOs)

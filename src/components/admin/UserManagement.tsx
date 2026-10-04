@@ -256,7 +256,7 @@ export const UserManagement: React.FC = () => {
       {/* Users Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left">
+          <table className="w-full min-w-[720px] text-xs text-left">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="py-3 px-4">User Details</th>
@@ -387,13 +387,13 @@ export const UserManagement: React.FC = () => {
       {/* Add / Edit User Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-slate-50">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700">
+          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-200 bg-slate-50">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="p-1.5 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 shrink-0">
                   <Users className="w-4 h-4" />
                 </div>
-                <h2 className="text-sm font-bold text-slate-900">
+                <h2 className="text-sm font-bold text-slate-900 truncate">
                   {editingUser ? `Edit User: ${editingUser.name}` : 'Create Academic Personnel Account'}
                 </h2>
               </div>
@@ -405,7 +405,7 @@ export const UserManagement: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSaveUser} className="p-5 space-y-4">
+            <form onSubmit={handleSaveUser} className="p-5 space-y-4 overflow-y-auto flex-1 min-h-0">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Full Name with Academic Degrees *
@@ -551,7 +551,7 @@ export const UserManagement: React.FC = () => {
                 </label>
               </div>
 
-              <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-2">
+              <div className="sticky bottom-0 -mx-5 px-5 pt-3 pb-4 bg-white border-t border-slate-200 flex flex-wrap items-center justify-end gap-2 shrink-0 z-10">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -574,7 +574,7 @@ export const UserManagement: React.FC = () => {
       {/* Delete User Confirmation Modal */}
       {deleteModalUser && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 p-5 space-y-4">
+          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-md max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 p-5 space-y-4">
             <div className="flex items-center gap-3 text-rose-600">
               <div className="p-2 rounded-full bg-rose-50 border border-rose-100">
                 <AlertTriangle className="w-5 h-5 text-rose-600" />
