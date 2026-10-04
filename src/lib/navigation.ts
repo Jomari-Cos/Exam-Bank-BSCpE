@@ -5,6 +5,9 @@ export const DEFAULT_VIEW = 'dashboard';
 /**
  * Views rendered before role-specific routing in `App.tsx`.
  * These intentionally preserve the app's existing cross-role behavior.
+ * NOTE: `exam_list` must stay here — it is rendered as a shared route in
+ * `App.tsx`, so omitting it makes a reload from Examination Sets normalize
+ * back to the dashboard (looks like a redirect to ADMIN).
  */
 const SHARED_VIEWS = new Set([
   'question_bank',
@@ -21,6 +24,8 @@ const ROLE_VIEWS: Record<Role, Set<string>> = {
     'courses',
     'topics',
     'review_queue',
+    'review_history',
+    'my_questions',
     'audit_logs',
     'settings',
   ]),

@@ -149,6 +149,67 @@ export interface SyncNotice {
 const SESSION_STORAGE_KEY = 'bscpe_sync_session_id';
 const AUTH_SESSION_KEY = 'bscpe_authenticated_session';
 const AUTH_USER_KEY = 'bscpe_authenticated_user_id';
+// Full signed-in profile cached synchronously. The id alone is not enough on
+// reload: directory lookup is async, and starting from INITIAL_USERS[0] would
+// briefly (or permanently, for profiles absent from the seed list) render as
+// the default administrator.
+const AUTH_USER_SNAPSHOT_KEY = 'bscpe_authenticated_user_snapshot';
+// Last visited app view, so a reload without a URL hash can still land back
+// on the exact page (e.g. users list) instead of the dashboard.
+const LAST_VIEW_SNAPSHOT_KEY = 'bscpe_last_view_snapshot';
+
+interface StoredViewSnapshot {
+  view: string;
+  editingQuestionId: string | null;
+  viewingExamId: string | null;
+}
+
+/** Best-effort read of the cached signed-in profile (null when absent). */
+function readStoredUserSnapshot(): User | null {
+  try {
+    const raw = sessionStorage.getItem(AUTH_USER_SNAPSHOT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as User;
+    if (!parsed || typeof parsed.id !== 'string' || typeof parsed.role !== 'string') return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+/** Last view saved before unload / on navigation (null when absent). */
+function readStoredViewSnapshot(): StoredViewSnapshot | null {
+  try {
+    const raw = sessionStorage.getItem(LAST_VIEW_SNAPSHOT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as StoredViewSnapshot;
+    if (!parsed || typeof parsed.view !== 'string' || !parsed.view) return null;
+    return {
+      view: parsed.view,
+      editingQuestionId: parsed.editingQuestionId ?? null,
+      viewingExamId: parsed.viewingExamId ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Initial route: URL hash wins; otherwise the last visited page snapshot. */
+function readInitialRoute(): StoredViewSnapshot {
+  if (typeof window !== 'undefined' && window.location.hash) {
+    const route = parseHashRoute(window.location.hash);
+    // An empty hash normalizes to the dashboard — prefer the saved page.
+    if (window.location.hash.replace(/^#\/?/, '').trim().length > 0) {
+      return route;
+    }
+    const saved = readStoredViewSnapshot();
+    if (saved) return saved;
+    return route;
+  }
+  const saved = readStoredViewSnapshot();
+  if (saved) return saved;
+  return { view: DEFAULT_VIEW, editingQuestionId: null, viewingExamId: null };
+}
 function getSessionId(): string {
   let id = sessionStorage.getItem(SESSION_STORAGE_KEY);
   if (!id) {
@@ -200,7 +261,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(INITIAL_AUDIT_LOGS);
   const [systemSettings, setSystemSettings] = useState<SystemSettings>(INITIAL_SETTINGS);
 
-  const [currentUser, setCurrentUserState] = useState<User>(INITIAL_USERS[0]);
+  const [currentUser, setCurrentUserState] = useState<User>(() => {
+    // Restore the exact signed-in profile synchronously so the very first
+    // render already carries the correct role — never the default admin.
+    if (sessionStorage.getItem(AUTH_SESSION_KEY) === 'true') {
+      return readStoredUserSnapshot() ?? INITIAL_USERS[0];
+    }
+    return INITIAL_USERS[0];
+  });
   const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     // Explicitly start at Login page unless this browser session has authenticated
@@ -224,6 +292,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Signals from the local device's own writes vs. remote snapshot arrivals.
   const localWriteRef = React.useRef<number>(0);
+  // Tracks whether the Firestore user directory has delivered at least once,
+  // so session restore can wait for it instead of misreading "not loaded yet"
+  // as "account deleted".
+  const usersHydratedRef = React.useRef<boolean>(false);
   const sessionIdRef = React.useRef<string>(getSessionId());
 
   // Mark that this device just performed a local write. This (a) puts the UI
@@ -254,22 +326,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Navigation states. The active view is mirrored to the URL hash so a
   // browser reload restores the exact page instead of the dashboard.
-  const [currentView, setCurrentViewState] = useState<string>(() =>
-    parseHashRoute(window.location.hash).view
-  );
+  // Falls back to the last-visited snapshot when the URL has no hash
+  // (e.g. a refresh that dropped it), so reloads never reset to ADMIN.
+  const [currentView, setCurrentViewState] = useState<string>(() => readInitialRoute().view);
   const [editingQuestionId, setEditingQuestionId] = useState<string | null>(
-    () => parseHashRoute(window.location.hash).editingQuestionId
+    () => readInitialRoute().editingQuestionId
   );
   const [viewingQuestionId, setViewingQuestionId] = useState<string | null>(null);
   const [viewingExamId, setViewingExamId] = useState<string | null>(
-    () => parseHashRoute(window.location.hash).viewingExamId
+    () => readInitialRoute().viewingExamId
   );
+
+  const persistViewSnapshot = (view: string, selection: RouteSelection = {}) => {
+    try {
+      const snapshot: StoredViewSnapshot = {
+        view,
+        editingQuestionId: selection.editingQuestionId ?? null,
+        viewingExamId: selection.viewingExamId ?? null,
+      };
+      sessionStorage.setItem(LAST_VIEW_SNAPSHOT_KEY, JSON.stringify(snapshot));
+    } catch {
+      // Non-fatal: hash routing still preserves the page for this session.
+    }
+  };
 
   const writeHashRoute = (view: string, selection: RouteSelection = {}) => {
     const nextHash = buildHashRoute(view, selection);
     if (window.location.hash !== nextHash) {
       window.location.hash = nextHash;
     }
+    persistViewSnapshot(view, selection);
   };
 
   const setCurrentView = (view: string, selection: RouteSelection = {}) => {
@@ -290,15 +376,35 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   // Browser back/forward buttons and manually edited URLs flow through here.
+  // Every confirmed route is also mirrored to the snapshot so a hash-less
+  // reload restores the same page instead of the dashboard.
   useEffect(() => {
     const handleHashChange = () => {
       const route = parseHashRoute(window.location.hash);
       setCurrentViewState(route.view);
       setEditingQuestionId(route.editingQuestionId);
       setViewingExamId(route.viewingExamId);
+      persistViewSnapshot(route.view, {
+        editingQuestionId: route.editingQuestionId,
+        viewingExamId: route.viewingExamId,
+      });
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // On first mount, commit the resolved initial route (hash or last-visited
+  // snapshot) to the URL + snapshot so a later reload has something to read
+  // even if no navigation happened in this session.
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const route = readInitialRoute();
+    if (!isViewAllowedForRole(route.view, currentUser.role)) return;
+    writeHashRoute(route.view, {
+      editingQuestionId: route.editingQuestionId,
+      viewingExamId: route.viewingExamId,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Keep the URL route compatible with the restored account so a signed-in
@@ -316,6 +422,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const persistAuthenticatedUser = (user: User) => {
     sessionStorage.setItem(AUTH_SESSION_KEY, 'true');
     sessionStorage.setItem(AUTH_USER_KEY, user.id);
+    try {
+      sessionStorage.setItem(AUTH_USER_SNAPSHOT_KEY, JSON.stringify(user));
+    } catch {
+      // Storage full/blocked — the id lookup below still restores the session.
+    }
   };
 
   // 1. Initialize Firebase Auth, then keep connection status live
@@ -340,39 +451,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       setAuthUser(user);
-      // Only auto-restore authentication if session is active
+      // Only auto-restore authentication flag if a session is active.
+      // NOTE: We intentionally do NOT call persistAuthenticatedUser or
+      // setCurrentUserState here on reload, because this effect captures
+      // `users` from a stale empty-array closure ([] dependency). Any attempt
+      // to look up the user in `users` here would always fail on reload.
+      // The session restore effect (below) runs once `users` loads from
+      // Firestore and correctly finds + restores the account via AUTH_USER_KEY.
       const hasActiveSession = sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
       if (user && hasActiveSession) {
         setIsAuthenticated(true);
-        // If user signs in with email, find matching user or create profile
-        const existing = users.find((u) => u.email.toLowerCase() === user.email?.toLowerCase());
-        if (existing) {
-          persistAuthenticatedUser(existing);
-          setCurrentUserState(existing);
-        } else if (user.email) {
-          const newUser: User = {
-            id: user.uid,
-            name: user.displayName || 'Authorized Faculty',
-            email: user.email,
-            role: user.email === 'jcos83531@gmail.com' ? 'admin' : 'faculty',
-            department: 'Computer Engineering Department',
-            title: user.email === 'jcos83531@gmail.com' ? 'Administrator' : 'Faculty Member',
-            active: true,
-            avatarInitials: (user.displayName || user.email)
-              .split(' ')
-              .map((n) => n[0])
-              .join('')
-              .substring(0, 2)
-              .toUpperCase(),
-          };
-          try {
-            await setDoc(doc(db, 'users', user.uid), newUser);
-          } catch (e) {
-            console.error(e);
-          }
-          persistAuthenticatedUser(newUser);
-          setCurrentUserState(newUser);
-        }
       }
     });
 
@@ -482,11 +570,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       collection(db, 'users'),
       (snapshot) => {
         const loaded: User[] = snapshot.docs.map((d) => ({ ...(d.data() as User), id: d.id }));
+        usersHydratedRef.current = true;
         setUsers(loaded);
         markSynced(snapshot.metadata.hasPendingWrites);
         if (!snapshot.metadata.fromCache) announceRemoteChange('user directory changed');
       },
-      (error) => handleFirestoreError(error, OperationType.GET, 'users')
+      (error) => {
+        usersHydratedRef.current = true;
+        handleFirestoreError(error, OperationType.GET, 'users');
+      }
     );
 
     const unsubCourses = onSnapshot(
@@ -625,6 +717,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const storedUserId = sessionStorage.getItem(AUTH_USER_KEY);
     if (!storedUserId) {
       sessionStorage.removeItem(AUTH_SESSION_KEY);
+      sessionStorage.removeItem(AUTH_USER_SNAPSHOT_KEY);
       localStorage.removeItem('bscpe_authenticated_v1');
       localStorage.removeItem('bscpe_current_user_v1');
       setIsAuthenticated(false);
@@ -632,12 +725,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return;
     }
 
-    if (users.length === 0) return;
+    // Wait until the Firestore user directory has delivered at least once.
+    // Treating "not loaded yet" as "account deleted" is exactly what used to
+    // sign users out / fall back to admin on reload.
+    if (!usersHydratedRef.current && users.length === 0) return;
 
     const restoredUser = users.find((user) => user.id === storedUserId);
-    if (!restoredUser || !restoredUser.active) {
+    if (!restoredUser) {
+      if (!usersHydratedRef.current) return;
+      // Directory loaded but doesn't know this profile (e.g. a Google account
+      // never seeded into `users`). Keep the cached snapshot so the session
+      // — and role-gated page — survives the reload instead of resetting.
+      const snapshot = readStoredUserSnapshot();
+      if (snapshot && snapshot.id === storedUserId) {
+        setCurrentUserState(snapshot);
+        setSessionRestored(true);
+        return;
+      }
       sessionStorage.removeItem(AUTH_SESSION_KEY);
       sessionStorage.removeItem(AUTH_USER_KEY);
+      sessionStorage.removeItem(AUTH_USER_SNAPSHOT_KEY);
+      localStorage.removeItem('bscpe_authenticated_v1');
+      localStorage.removeItem('bscpe_current_user_v1');
+      setIsAuthenticated(false);
+      setSessionRestored(true);
+      return;
+    }
+    if (!restoredUser.active) {
+      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      sessionStorage.removeItem(AUTH_USER_KEY);
+      sessionStorage.removeItem(AUTH_USER_SNAPSHOT_KEY);
       localStorage.removeItem('bscpe_authenticated_v1');
       localStorage.removeItem('bscpe_current_user_v1');
       setIsAuthenticated(false);
@@ -646,6 +763,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     setCurrentUserState(restoredUser);
+    // Keep the synchronous snapshot fresh so the *next* reload starts with
+    // the latest role/profile even before Firestore delivers.
+    try {
+      sessionStorage.setItem(AUTH_USER_SNAPSHOT_KEY, JSON.stringify(restoredUser));
+    } catch {
+      // Non-fatal: restore still succeeded via the live directory lookup.
+    }
     setSessionRestored(true);
   }, [sessionRestored, isAuthenticated, users]);
 
@@ -762,6 +886,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setSessionRestored(true);
     sessionStorage.removeItem(AUTH_SESSION_KEY);
     sessionStorage.removeItem(AUTH_USER_KEY);
+    sessionStorage.removeItem(AUTH_USER_SNAPSHOT_KEY);
+    sessionStorage.removeItem(LAST_VIEW_SNAPSHOT_KEY);
     localStorage.removeItem('bscpe_authenticated_v1');
     localStorage.removeItem('bscpe_current_user_v1');
     setCurrentView('dashboard');

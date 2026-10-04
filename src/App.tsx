@@ -92,6 +92,10 @@ const MainLayout: React.FC = () => {
             return <SystemSettingsView />;
           case 'review_queue':
             return <ReviewQueue />;
+          case 'review_history':
+            return <ReviewHistory />;
+          case 'my_questions':
+            return <MyQuestions />;
           default:
             return <AdminDashboard />;
         }
