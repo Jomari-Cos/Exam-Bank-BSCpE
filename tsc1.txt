@@ -1,2 +1,0 @@
-src/context/AppContext.tsx(1226,7): error TS2740: Type '{ currentUser: User; setCurrentUser: (user: User) => void; authUser: FirebaseUser | null; isAuthenticated: boolean; loginAsUser: (user: User) => void; loginWithCredentials: (identifier: string, pass: string) => Promise<{ success: boolean; error?: string; }>; ... 41 more ...; importDatabaseJson: (jsonStr: string) => ...' is missing the following properties from type 'AppContextType': isSyncing, lastSyncedAt, onlineUsers, syncNotice, and 2 more.
-DONE_MARKER 
