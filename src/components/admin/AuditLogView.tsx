@@ -48,17 +48,17 @@ export const AuditLogView: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-xl font-bold text-ink tracking-tight">
             Security & System Audit Trail
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-ink-muted mt-1">
             Immutable log of question creation, committee approvals, examination generations, and role modifications.
           </p>
         </div>
 
         <button
           onClick={handleExportCSV}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-xs"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs"
         >
           <Download className="w-3.5 h-3.5" />
           <span>Export Audit Log (CSV)</span>
@@ -66,25 +66,25 @@ export const AuditLogView: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">
+      <div className="bg-white p-4 rounded-xl border border-line shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-ink-muted absolute left-3 top-2.5" />
           <input
             type="text"
             placeholder="Search action, user, or question ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:border-indigo-500 bg-slate-50/50"
+            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-line focus:outline-hidden focus:border-primary-500 bg-background/50"
           />
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs text-slate-400 font-medium">Role:</span>
+            <span className="text-xs text-ink-muted font-medium">Role:</span>
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="px-2 py-1 text-xs rounded-lg border border-slate-200 bg-white text-slate-700"
+              className="px-2 py-1 text-xs rounded-lg border border-line bg-white text-ink-secondary"
             >
               <option value="All">All Roles</option>
               <option value="admin">Administrator</option>
@@ -95,11 +95,11 @@ export const AuditLogView: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className="text-xs text-slate-400 font-medium">Target:</span>
+            <span className="text-xs text-ink-muted font-medium">Target:</span>
             <select
               value={targetFilter}
               onChange={(e) => setTargetFilter(e.target.value)}
-              className="px-2 py-1 text-xs rounded-lg border border-slate-200 bg-white text-slate-700"
+              className="px-2 py-1 text-xs rounded-lg border border-line bg-white text-ink-secondary"
             >
               <option value="All">All Targets</option>
               <option value="Question">Question</option>
@@ -113,10 +113,10 @@ export const AuditLogView: React.FC = () => {
       </div>
 
       {/* Logs Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="bg-white rounded-xl border border-line shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[680px] text-xs text-left">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase text-[10px] tracking-wider">
+            <thead className="bg-background border-b border-line text-ink-secondary font-semibold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="py-3 px-4">Timestamp</th>
                 <th className="py-3 px-4">Action</th>
@@ -125,31 +125,31 @@ export const AuditLogView: React.FC = () => {
                 <th className="py-3 px-4">Event Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-surface-secondary">
               {filteredLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="py-3 px-4 font-mono text-[11px] text-slate-500 whitespace-nowrap">
+                <tr key={log.id} className="hover:bg-background/80 transition-colors">
+                  <td className="py-3 px-4 font-mono text-[11px] text-ink-muted whitespace-nowrap">
                     {log.timestamp}
                   </td>
 
-                  <td className="py-3 px-4 font-semibold text-slate-900 whitespace-nowrap">
+                  <td className="py-3 px-4 font-semibold text-ink whitespace-nowrap">
                     {log.action}
                   </td>
 
                   <td className="py-3 px-4">
-                    <span className="font-medium text-slate-800">{log.userName}</span>
-                    <span className="text-[10px] text-slate-400 uppercase font-mono block">
+                    <span className="font-medium text-ink">{log.userName}</span>
+                    <span className="text-[10px] text-ink-muted uppercase font-mono block">
                       {log.role}
                     </span>
                   </td>
 
                   <td className="py-3 px-4">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-surface-secondary text-ink-secondary border border-line">
                       {log.targetType} {log.targetId ? `· ${log.targetId}` : ''}
                     </span>
                   </td>
 
-                  <td className="py-3 px-4 text-slate-600 max-w-md">
+                  <td className="py-3 px-4 text-ink-secondary max-w-md">
                     {log.details}
                   </td>
                 </tr>
@@ -159,7 +159,7 @@ export const AuditLogView: React.FC = () => {
         </div>
 
         {filteredLogs.length === 0 && (
-          <div className="p-8 text-center text-xs text-slate-400">
+          <div className="p-8 text-center text-xs text-ink-muted">
             No audit log entries matching criteria.
           </div>
         )}

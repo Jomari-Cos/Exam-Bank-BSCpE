@@ -47,8 +47,8 @@ export const LoginPage: React.FC = () => {
       password: 'admin123',
       email: 'esantos@bscpe.edu.ph',
       icon: Shield,
-      color: 'text-rose-500 bg-rose-500/10 border-rose-500/20 hover:border-rose-400',
-      badge: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+      color: 'text-danger bg-danger/10 border-danger/20 hover:border-danger-accent',
+      badge: 'bg-danger/20 text-danger-accent border-danger/30',
     },
     {
       role: 'admin' as Role,
@@ -58,8 +58,8 @@ export const LoginPage: React.FC = () => {
       password: 'admin123',
       email: 'jcos83531@gmail.com',
       icon: Shield,
-      color: 'text-rose-500 bg-rose-500/10 border-rose-500/20 hover:border-rose-400',
-      badge: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+      color: 'text-danger bg-danger/10 border-danger/20 hover:border-danger-accent',
+      badge: 'bg-danger/20 text-danger-accent border-danger/30',
     },
     {
       role: 'faculty' as Role,
@@ -69,8 +69,8 @@ export const LoginPage: React.FC = () => {
       password: 'faculty123',
       email: 'mvance@bscpe.edu.ph',
       icon: BookOpen,
-      color: 'text-blue-500 bg-blue-500/10 border-blue-500/20 hover:border-blue-400',
-      badge: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+      color: 'text-info bg-info/10 border-info/20 hover:border-info-accent',
+      badge: 'bg-info/20 text-info-accent border-info/30',
     },
     {
       role: 'faculty' as Role,
@@ -80,8 +80,8 @@ export const LoginPage: React.FC = () => {
       password: 'faculty123',
       email: 'schen@bscpe.edu.ph',
       icon: BookOpen,
-      color: 'text-blue-500 bg-blue-500/10 border-blue-500/20 hover:border-blue-400',
-      badge: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+      color: 'text-info bg-info/10 border-info/20 hover:border-info-accent',
+      badge: 'bg-info/20 text-info-accent border-info/30',
     },
     {
       role: 'reviewer' as Role,
@@ -91,8 +91,8 @@ export const LoginPage: React.FC = () => {
       password: 'reviewer123',
       email: 'rgomez@bscpe.edu.ph',
       icon: CheckCircle,
-      color: 'text-amber-500 bg-amber-500/10 border-amber-500/20 hover:border-amber-400',
-      badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+      color: 'text-warning bg-warning/10 border-warning/20 hover:border-warning-accent',
+      badge: 'bg-warning/20 text-warning-accent border-warning/30',
     },
     {
       role: 'examiner' as Role,
@@ -102,8 +102,8 @@ export const LoginPage: React.FC = () => {
       password: 'examiner123',
       email: 'preyes@bscpe.edu.ph',
       icon: FileSpreadsheet,
-      color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20 hover:border-emerald-400',
-      badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+      color: 'text-success bg-success/10 border-success/20 hover:border-success-accent',
+      badge: 'bg-success/20 text-success-accent border-success/30',
     },
   ];
 
@@ -163,61 +163,61 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between py-10 px-4 sm:px-6 lg:px-8 selection:bg-indigo-500 selection:text-white relative">
+    <div className="min-h-screen bg-ink text-surface-secondary flex flex-col justify-between py-10 px-4 sm:px-6 lg:px-8 selection:bg-primary-500 selection:text-white relative">
       {/* Background glow effects */}
       <div className="fixed inset-0 pointer-events-none opacity-20 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-indigo-600/40 blur-[130px] rounded-full" />
-        <div className="absolute bottom-0 right-10 w-[400px] h-[300px] bg-blue-600/20 blur-[100px] rounded-full" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-primary-600/40 blur-[130px] rounded-full" />
+        <div className="absolute bottom-0 right-10 w-[400px] h-[300px] bg-info/20 blur-[100px] rounded-full" />
       </div>
 
       <div className="relative max-w-xl mx-auto w-full space-y-6">
         {/* Header Institution Title */}
         <div className="text-center space-y-2.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs font-mono">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ink border border-ink text-line-strong text-xs font-mono">
+            <span className="w-2 h-2 rounded-full bg-success-accent animate-pulse" />
             <span>COLLEGE OF ENGINEERING · BSCpE DEPARTMENT</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Examination Question Data Bank
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-ink-muted max-w-md mx-auto leading-relaxed">
             Centralized academic repository for faculty question authoring, multi-stage peer review, and examination generation.
           </p>
 
           {/* Cloud Database Status */}
-          <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400 font-mono pt-1">
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-slate-900/90 border border-slate-800">
-              <Database className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="flex items-center justify-center gap-2 text-[11px] text-ink-muted font-mono pt-1">
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-ink/90 border border-ink">
+              <Database className="w-3.5 h-3.5 text-success-accent" />
               <span>Firebase Database: {isFirebaseConnected ? 'Connected (ivory-chalice-fhl8x)' : 'Connecting...'}</span>
             </div>
           </div>
         </div>
 
         {/* Primary Login Card */}
-        <div className="bg-slate-900/95 border border-slate-800 rounded-2xl p-6 sm:p-7 shadow-2xl backdrop-blur-md space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
+        <div className="bg-ink/95 border border-ink rounded-2xl p-6 sm:p-7 shadow-2xl backdrop-blur-md space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-ink">
             <div className="flex items-center gap-2 min-w-0">
-              <div className="p-1.5 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 shrink-0">
+              <div className="p-1.5 rounded-lg bg-primary-600/20 border border-primary-500/30 text-primary-300 shrink-0">
                 <Lock className="w-4 h-4" />
               </div>
               <h2 className="text-sm font-bold text-white">Sign In with Credentials</h2>
             </div>
-            <span className="text-[11px] text-slate-400 font-mono">Authorized Access Only</span>
+            <span className="text-[11px] text-ink-muted font-mono">Authorized Access Only</span>
           </div>
 
           {/* Success Banner */}
           {saveSuccessMessage && (
-            <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-2 animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-400" />
+            <div className="p-3 rounded-xl bg-success/10 border border-success/30 text-success-accent text-xs flex items-start gap-2 animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-success-accent" />
               <p className="leading-snug">{saveSuccessMessage}</p>
             </div>
           )}
 
           {/* Error Message Box */}
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2 animate-in fade-in">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
+            <div className="p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger-accent text-xs flex items-start gap-2 animate-in fade-in">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-danger-accent" />
               <p className="leading-snug">{errorMessage}</p>
             </div>
           )}
@@ -225,11 +225,11 @@ export const LoginPage: React.FC = () => {
           {/* Form */}
           <form onSubmit={handleFormSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-line-strong mb-1.5">
                 Username or Institutional Email
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-muted">
                   <UserIcon className="w-4 h-4" />
                 </div>
                 <input
@@ -239,20 +239,20 @@ export const LoginPage: React.FC = () => {
                   placeholder="e.g. admin, mvance, or esantos@bscpe.edu.ph"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-700 bg-slate-800/80 text-white placeholder-slate-500 focus:outline-hidden focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-mono"
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-ink-secondary bg-ink/80 text-white placeholder-ink-muted focus:outline-hidden focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all font-mono"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-semibold text-slate-300">
+                <label className="block text-xs font-semibold text-line-strong">
                   Password
                 </label>
-                <span className="text-[10px] text-slate-500 font-mono">Sample: admin123 / faculty123</span>
+                <span className="text-[10px] text-ink-muted font-mono">Sample: admin123 / faculty123</span>
               </div>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-muted">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
@@ -261,12 +261,12 @@ export const LoginPage: React.FC = () => {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-10 py-2 text-xs rounded-xl border border-slate-700 bg-slate-800/80 text-white placeholder-slate-500 focus:outline-hidden focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-mono"
+                  className="w-full pl-9 pr-10 py-2 text-xs rounded-xl border border-ink-secondary bg-ink/80 text-white placeholder-ink-muted focus:outline-hidden focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all font-mono"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-ink-muted hover:text-line transition-colors cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -276,7 +276,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-xl transition-all shadow-md hover:shadow-indigo-600/30 cursor-pointer disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-bold text-white bg-primary-600 hover:bg-primary-500 active:bg-primary-700 rounded-xl transition-all shadow-md hover:shadow-primary-600/30 cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
@@ -293,13 +293,13 @@ export const LoginPage: React.FC = () => {
           </form>
 
           {/* Demo Credentials Section with Save Sample to Firebase Button */}
-          <div className="pt-4 border-t border-slate-800 space-y-3">
+          <div className="pt-4 border-t border-ink space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <span className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider block">
+                <span className="text-[11px] font-semibold text-line-strong uppercase tracking-wider block">
                   Authorized Personnel Accounts
                 </span>
-                <span className="text-[10px] text-slate-500 font-mono">Sample accounts ready for testing</span>
+                <span className="text-[10px] text-ink-muted font-mono">Sample accounts ready for testing</span>
               </div>
 
               {/* Explicit Button: Save the Sample Accounts to Firebase */}
@@ -307,12 +307,12 @@ export const LoginPage: React.FC = () => {
                 type="button"
                 onClick={handleSaveSampleAccounts}
                 disabled={isSavingSample}
-                className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold text-emerald-400 hover:text-white bg-emerald-500/10 hover:bg-emerald-600 border border-emerald-500/30 hover:border-emerald-600 rounded-lg transition-all cursor-pointer shadow-xs active:scale-95 disabled:opacity-50 self-start sm:self-auto"
+                className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold text-success-accent hover:text-white bg-success/10 hover:bg-success border border-success/30 hover:border-success rounded-lg transition-all cursor-pointer shadow-xs active:scale-95 disabled:opacity-50 self-start sm:self-auto"
                 title="Save all sample authorized personnel accounts directly to your Firebase Firestore database"
               >
                 {isSavingSample ? (
                   <>
-                    <span className="w-3 h-3 border-2 border-emerald-400/30 border-t-emerald-400 rounded-full animate-spin" />
+                    <span className="w-3 h-3 border-2 border-success-accent/30 border-t-emerald-400 rounded-full animate-spin" />
                     <span>Saving to Firebase...</span>
                   </>
                 ) : (
@@ -334,8 +334,8 @@ export const LoginPage: React.FC = () => {
                     key={`${acc.role}-${acc.username}`}
                     className={`p-2.5 rounded-xl border transition-all text-left flex items-start justify-between gap-2 ${
                       isSelected
-                        ? 'border-indigo-500 bg-slate-800/90'
-                        : 'border-slate-800 bg-slate-900/60 hover:bg-slate-800/60 hover:border-slate-700'
+                        ? 'border-primary-500 bg-ink/90'
+                        : 'border-ink bg-ink/60 hover:bg-ink/60 hover:border-ink-secondary'
                     }`}
                   >
                     <div className="min-w-0 flex-1">
@@ -345,11 +345,11 @@ export const LoginPage: React.FC = () => {
                         </div>
                         <span className="text-xs font-bold text-white truncate">{acc.title}</span>
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-1 truncate">{acc.name.split(',')[0]}</p>
-                      <div className="flex items-center gap-2 mt-1 text-[10px] font-mono text-slate-400">
-                        <span>User: <strong className="text-slate-200">{acc.username}</strong></span>
+                      <p className="text-[11px] text-ink-muted mt-1 truncate">{acc.name.split(',')[0]}</p>
+                      <div className="flex items-center gap-2 mt-1 text-[10px] font-mono text-ink-muted">
+                        <span>User: <strong className="text-line">{acc.username}</strong></span>
                         <span>·</span>
-                        <span>Pass: <strong className="text-slate-200">{acc.password}</strong></span>
+                        <span>Pass: <strong className="text-line">{acc.password}</strong></span>
                       </div>
                     </div>
 
@@ -357,7 +357,7 @@ export const LoginPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleFillDemo(acc.username, acc.password)}
-                        className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-medium text-slate-300 transition-colors cursor-pointer"
+                        className="px-2 py-1 rounded bg-ink hover:bg-ink-secondary border border-ink-secondary text-[10px] font-medium text-line-strong transition-colors cursor-pointer"
                         title="Fill fields above"
                       >
                         Fill
@@ -365,7 +365,7 @@ export const LoginPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleQuickLogin(acc.username, acc.password)}
-                        className="px-2 py-1 rounded bg-indigo-600/80 hover:bg-indigo-600 border border-indigo-500/50 text-[10px] font-bold text-white transition-colors cursor-pointer"
+                        className="px-2 py-1 rounded bg-primary-600/80 hover:bg-primary-600 border border-primary-500/50 text-[10px] font-bold text-white transition-colors cursor-pointer"
                         title="Direct sign in"
                       >
                         Login
@@ -378,10 +378,10 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {/* Alternate Google Authentication */}
-          <div className="pt-2 border-t border-slate-800/80">
+          <div className="pt-2 border-t border-ink/80">
             <button
               onClick={() => signInWithGoogle()}
-              className="w-full flex items-center justify-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white bg-slate-800/50 hover:bg-slate-800 border border-slate-700 rounded-xl transition-all cursor-pointer"
+              className="w-full flex items-center justify-center gap-2.5 px-3 py-2 text-xs font-medium text-line-strong hover:text-white bg-ink/50 hover:bg-ink border border-ink-secondary rounded-xl transition-all cursor-pointer"
             >
               <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                 <path
@@ -407,7 +407,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="text-center text-[11px] text-slate-500 font-mono space-y-1">
+        <div className="text-center text-[11px] text-ink-muted font-mono space-y-1">
           <p>BSCpE Curriculum Quality Assurance & Accreditation System</p>
           <p>Commission on Higher Education (CHED) CMO 92 Compliant</p>
         </div>

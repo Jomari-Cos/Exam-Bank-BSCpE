@@ -47,10 +47,10 @@ export const AdminDashboard: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-xl font-bold text-ink tracking-tight">
             Administrator System Console
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-ink-muted mt-1">
             Global repository oversight, course curricula management, and faculty access governance.
           </p>
         </div>
@@ -58,13 +58,13 @@ export const AdminDashboard: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setCurrentView('courses')}
-            className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-xs"
+            className="px-3 py-1.5 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs"
           >
             Manage Courses
           </button>
           <button
             onClick={() => setCurrentView('users')}
-            className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-xs"
+            className="px-3 py-1.5 text-xs font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors shadow-xs"
           >
             Manage Users & Roles
           </button>
@@ -73,80 +73,80 @@ export const AdminDashboard: React.FC = () => {
 
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
+        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+          <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Total Questions</span>
-            <FileQuestion className="w-4 h-4 text-indigo-600" />
+            <FileQuestion className="w-4 h-4 text-primary-600" />
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-bold font-mono text-slate-900 tabular-nums">
+            <span className="text-2xl font-bold font-mono text-ink tabular-nums">
               {totalQuestions}
             </span>
-            <span className="text-xs text-emerald-600 font-medium font-mono">
+            <span className="text-xs text-success font-medium font-mono">
               {approvedQuestions} Approved
             </span>
           </div>
-          <div className="w-full bg-slate-100 rounded-full h-1.5 mt-3 overflow-hidden">
+          <div className="w-full bg-surface-secondary rounded-full h-1.5 mt-3 overflow-hidden">
             <div
-              className="bg-indigo-600 h-1.5 rounded-full"
+              className="bg-primary-600 h-1.5 rounded-full"
               style={{ width: `${totalQuestions > 0 ? (approvedQuestions / totalQuestions) * 100 : 0}%` }}
             />
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
+        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+          <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">BSCpE Courses</span>
-            <FolderTree className="w-4 h-4 text-blue-600" />
+            <FolderTree className="w-4 h-4 text-info" />
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-bold font-mono text-slate-900 tabular-nums">
+            <span className="text-2xl font-bold font-mono text-ink tabular-nums">
               {courses.length}
             </span>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-ink-muted">
               Across 4 Categories
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-3 truncate">
+          <p className="text-[11px] text-ink-muted mt-3 truncate">
             {courses.reduce((acc, c) => acc + c.topics.length, 0)} total curriculum topics
           </p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
+        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+          <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Pending Review</span>
-            <Clock className="w-4 h-4 text-amber-600" />
+            <Clock className="w-4 h-4 text-warning" />
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-bold font-mono text-slate-900 tabular-nums">
+            <span className="text-2xl font-bold font-mono text-ink tabular-nums">
               {pendingReviewQuestions}
             </span>
             <button
               onClick={() => setCurrentView('review_queue')}
-              className="text-xs text-amber-700 hover:underline font-medium"
+              className="text-xs text-warning-fg hover:underline font-medium"
             >
               Open Queue →
             </button>
           </div>
-          <p className="text-[11px] text-slate-400 mt-3">
+          <p className="text-[11px] text-ink-muted mt-3">
             {draftQuestions} currently drafted by authors
           </p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
+        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+          <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Examinations</span>
-            <Layers className="w-4 h-4 text-emerald-600" />
+            <Layers className="w-4 h-4 text-success" />
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-bold font-mono text-slate-900 tabular-nums">
+            <span className="text-2xl font-bold font-mono text-ink tabular-nums">
               {examinations.length}
             </span>
-            <span className="text-xs text-slate-500 font-mono">
+            <span className="text-xs text-ink-muted font-mono">
               A.Y. {systemSettings.academicYear}
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-3 truncate">
+          <p className="text-[11px] text-ink-muted mt-3 truncate">
             Multiple randomized sets generated
           </p>
         </div>
@@ -157,14 +157,14 @@ export const AdminDashboard: React.FC = () => {
         {/* Left 2 Cols: Distribution by Domain & Types */}
         <div className="lg:col-span-2 space-y-6">
           {/* Domain Breakdown */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+          <div className="bg-white rounded-xl border border-line p-5 shadow-xs">
             <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
-              <h3 className="text-sm font-bold text-slate-900">
+              <h3 className="text-sm font-bold text-ink">
                 Curriculum Domain Distribution
               </h3>
               <button
                 onClick={() => setCurrentView('courses')}
-                className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                className="text-xs text-primary-600 hover:text-primary-800 font-medium"
               >
                 View Courses
               </button>
@@ -176,14 +176,14 @@ export const AdminDashboard: React.FC = () => {
                 return (
                   <div key={cat} className="space-y-1">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-slate-700">{cat}</span>
-                      <span className="text-slate-500 font-mono tabular-nums">
+                      <span className="font-semibold text-ink-secondary">{cat}</span>
+                      <span className="text-ink-muted font-mono tabular-nums">
                         {count} questions ({percentage}%)
                       </span>
                     </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div className="w-full bg-surface-secondary rounded-full h-2 overflow-hidden">
                       <div
-                        className="bg-indigo-600 h-2 rounded-full"
+                        className="bg-primary-600 h-2 rounded-full"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
@@ -194,24 +194,24 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           {/* Question Types Matrix */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+          <div className="bg-white rounded-xl border border-line p-5 shadow-xs">
             <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
-              <h3 className="text-sm font-bold text-slate-900">
+              <h3 className="text-sm font-bold text-ink">
                 Supported Question Types Breakdown
               </h3>
-              <span className="text-xs text-slate-500">11 Evaluated Types</span>
+              <span className="text-xs text-ink-muted">11 Evaluated Types</span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {Object.entries(typeCounts).map(([type, count]) => (
                 <div
                   key={type}
-                  className="p-3 rounded-lg border border-slate-100 bg-slate-50/60 flex items-center justify-between"
+                  className="p-3 rounded-lg border border-surface-secondary bg-background/60 flex items-center justify-between"
                 >
-                  <span className="text-xs font-medium text-slate-700 capitalize truncate mr-2">
+                  <span className="text-xs font-medium text-ink-secondary capitalize truncate mr-2">
                     {type.replace('_', ' ')}
                   </span>
-                  <span className="font-mono text-xs font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200 tabular-nums">
+                  <span className="font-mono text-xs font-bold text-ink bg-white px-2 py-0.5 rounded border border-line tabular-nums">
                     {count}
                   </span>
                 </div>
@@ -223,51 +223,51 @@ export const AdminDashboard: React.FC = () => {
         {/* Right Col: Recent Audit Activities & Quick Shortcuts */}
         <div className="space-y-6">
           {/* Quick Admin Actions */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-3">
-            <h3 className="text-sm font-bold text-slate-900">Administrative Tools</h3>
+          <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-3">
+            <h3 className="text-sm font-bold text-ink">Administrative Tools</h3>
             <div className="space-y-2">
               <button
                 onClick={() => setCurrentView('courses')}
-                className="w-full text-left p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors flex items-center justify-between text-xs"
+                className="w-full text-left p-2.5 rounded-lg border border-line hover:border-line-strong hover:bg-background transition-colors flex items-center justify-between text-xs"
               >
                 <div>
-                  <p className="font-semibold text-slate-800">Add or Edit Course</p>
-                  <p className="text-[11px] text-slate-500">Update codes, units, or descriptions</p>
+                  <p className="font-semibold text-ink">Add or Edit Course</p>
+                  <p className="text-[11px] text-ink-muted">Update codes, units, or descriptions</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-400" />
+                <ArrowRight className="w-4 h-4 text-ink-muted" />
               </button>
 
               <button
                 onClick={() => setCurrentView('topics')}
-                className="w-full text-left p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors flex items-center justify-between text-xs"
+                className="w-full text-left p-2.5 rounded-lg border border-line hover:border-line-strong hover:bg-background transition-colors flex items-center justify-between text-xs"
               >
                 <div>
-                  <p className="font-semibold text-slate-800">Topic & CLO Syllabus</p>
-                  <p className="text-[11px] text-slate-500">Manage course learning outcomes</p>
+                  <p className="font-semibold text-ink">Topic & CLO Syllabus</p>
+                  <p className="text-[11px] text-ink-muted">Manage course learning outcomes</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-400" />
+                <ArrowRight className="w-4 h-4 text-ink-muted" />
               </button>
 
               <button
                 onClick={() => setCurrentView('settings')}
-                className="w-full text-left p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors flex items-center justify-between text-xs"
+                className="w-full text-left p-2.5 rounded-lg border border-line hover:border-line-strong hover:bg-background transition-colors flex items-center justify-between text-xs"
               >
                 <div>
-                  <p className="font-semibold text-slate-800">Backup & Restore DB</p>
-                  <p className="text-[11px] text-slate-500">Export JSON or reset initial data</p>
+                  <p className="font-semibold text-ink">Backup & Restore DB</p>
+                  <p className="text-[11px] text-ink-muted">Export JSON or reset initial data</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-400" />
+                <ArrowRight className="w-4 h-4 text-ink-muted" />
               </button>
             </div>
           </div>
 
           {/* Recent Audit Logs Stream */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+          <div className="bg-white rounded-xl border border-line p-5 shadow-xs">
             <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-              <h3 className="text-sm font-bold text-slate-900">Recent Audit Logs</h3>
+              <h3 className="text-sm font-bold text-ink">Recent Audit Logs</h3>
               <button
                 onClick={() => setCurrentView('audit_logs')}
-                className="text-xs text-indigo-600 hover:underline font-medium"
+                className="text-xs text-primary-600 hover:underline font-medium"
               >
                 View All
               </button>
@@ -275,15 +275,15 @@ export const AdminDashboard: React.FC = () => {
 
             <div className="space-y-3">
               {auditLogs.slice(0, 5).map((log) => (
-                <div key={log.id} className="text-xs border-b border-slate-100 pb-2.5 last:border-0 last:pb-0">
+                <div key={log.id} className="text-xs border-b border-surface-secondary pb-2.5 last:border-0 last:pb-0">
                   <div className="flex items-center justify-between gap-1">
-                    <span className="font-semibold text-slate-800 truncate">{log.action}</span>
-                    <span className="text-[10px] text-slate-400 font-mono shrink-0">
+                    <span className="font-semibold text-ink truncate">{log.action}</span>
+                    <span className="text-[10px] text-ink-muted font-mono shrink-0">
                       {log.timestamp.split(' ')[1] || log.timestamp}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 truncate mt-0.5">{log.details}</p>
-                  <span className="text-[10px] text-slate-400 block mt-0.5 font-mono">
+                  <p className="text-[11px] text-ink-muted truncate mt-0.5">{log.details}</p>
+                  <span className="text-[10px] text-ink-muted block mt-0.5 font-mono">
                     By {log.userName}
                   </span>
                 </div>

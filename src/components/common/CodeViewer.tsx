@@ -26,21 +26,21 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   const lines = code.trim().split('\n');
 
   return (
-    <div className="rounded-lg border border-slate-700 bg-slate-900 text-slate-100 overflow-hidden font-mono text-xs shadow-sm">
-      <div className="flex items-center justify-between px-3 py-1.5 bg-slate-800/80 border-b border-slate-700/60 text-slate-300">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+    <div className="rounded-lg border border-ink-secondary bg-ink text-surface-secondary overflow-hidden font-mono text-xs shadow-sm">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-ink/80 border-b border-ink-secondary/60 text-line-strong">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-ink-muted">
           {language}
         </span>
         <button
           onClick={handleCopy}
           type="button"
-          className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium text-slate-300 hover:text-white hover:bg-slate-700 transition-colors"
+          className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium text-line-strong hover:text-white hover:bg-ink-secondary transition-colors"
           title="Copy code"
         >
           {copied ? (
             <>
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-emerald-400">Copied</span>
+              <Check className="w-3.5 h-3.5 text-success-accent" />
+              <span className="text-success-accent">Copied</span>
             </>
           ) : (
             <>
@@ -55,13 +55,13 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
         <table className="w-full border-collapse">
           <tbody>
             {lines.map((line, idx) => (
-              <tr key={idx} className="hover:bg-slate-800/40">
+              <tr key={idx} className="hover:bg-ink/40">
                 {showLineNumbers && (
-                  <td className="w-8 select-none pr-3 text-right text-slate-500 font-mono text-[11px] tabular-nums align-top">
+                  <td className="w-8 select-none pr-3 text-right text-ink-muted font-mono text-[11px] tabular-nums align-top">
                     {idx + 1}
                   </td>
                 )}
-                <td className="whitespace-pre font-mono text-xs text-slate-200 leading-relaxed">
+                <td className="whitespace-pre font-mono text-xs text-line leading-relaxed">
                   {line || ' '}
                 </td>
               </tr>
