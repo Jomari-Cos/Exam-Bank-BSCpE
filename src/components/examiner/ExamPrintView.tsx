@@ -103,15 +103,15 @@ export const ExamPrintView: React.FC = () => {
   <meta charset="utf-8">
   <title>${exam.title} - ${activeVersion.versionLabel} ${isAnswerKey ? '(Answer Key)' : ''}</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; color: #111; padding: 40px; max-width: 800px; margin: 0 auto; }
-    .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 20px; }
+    body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; color: #0f172a; padding: 40px; max-width: 800px; margin: 0 auto; }
+    .header { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 20px; }
     .title { font-size: 16pt; font-weight: bold; margin: 4px 0; }
-    .student-fields { display: flex; justify-content: space-between; border-bottom: 1px solid #999; padding-bottom: 8px; margin-bottom: 16px; font-size: 10pt; }
+    .student-fields { display: flex; justify-content: space-between; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 16px; font-size: 10pt; }
     .question { margin-bottom: 24px; page-break-inside: avoid; }
     .q-num { font-weight: bold; }
     .choices { margin-left: 20px; list-style-type: upper-alpha; }
-    .key-box { background: #eef2ff; border-left: 4px solid #4f46e5; padding: 8px 12px; margin-top: 8px; font-size: 9pt; }
-    pre { background: #f3f4f6; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 9pt; }
+    .key-box { background: #eff6ff; border-left: 4px solid #2563eb; padding: 8px 12px; margin-top: 8px; font-size: 9pt; }
+    pre { background: #f1f5f9; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 9pt; }
   </style>
 </head>
 <body>

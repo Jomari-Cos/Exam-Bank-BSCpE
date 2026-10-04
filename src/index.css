@@ -195,6 +195,45 @@
     color: var(--primary-900);
   }
 
+  /* ---------- Uniform form-control baseline ----------
+     Guarantees every text-like input renders identically (white surface,
+     gray border, dark text, blue focus ring) even when a component omits the
+     .form-control class. Checkboxes/radios are intentionally excluded so they
+     keep their native appearance and accent-color. */
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+  select,
+  textarea {
+    background-color: var(--surface);
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius-control);
+    color: var(--text-primary);
+    padding: 0.375rem 0.75rem;
+  }
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file'])::placeholder,
+  textarea::placeholder {
+    color: var(--text-muted);
+  }
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--primary-600);
+    box-shadow: var(--focus-ring);
+  }
+  input:disabled,
+  select:disabled,
+  textarea:disabled {
+    background-color: var(--surface-secondary);
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  /* Checkboxes / radios use the accent color for their checked state */
+  input[type='checkbox'],
+  input[type='radio'] {
+    accent-color: var(--primary-600);
+  }
+
   /* ---------- Responsive foundations ---------- */
   html {
     -webkit-text-size-adjust: 100%;
@@ -621,7 +660,7 @@
   }
   body {
     background: white !important;
-    color: #111827 !important;
+    color: #0f172a !important;
     font-size: 11pt !important;
   }
   .print-break-inside-avoid {
