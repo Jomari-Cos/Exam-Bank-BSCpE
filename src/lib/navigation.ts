@@ -34,6 +34,70 @@ const ROLE_VIEWS: Record<Role, Set<string>> = {
   examiner: new Set(['dashboard']),
 };
 
+/**
+ * Centralized status / difficulty → class mappings.
+ *
+ * Previously each view carried its own copy-pasted ternary (status colors were
+ * duplicated across seven files). Every badge in the app now resolves through
+ * here so a status always looks the same everywhere.
+ *
+ * All classes reference the design tokens declared in `src/index.css`.
+ */
+
+/** Question lifecycle status (Draft → Submitted → Approved → Archived). */
+export type StatusTone = 'success' | 'warning' | 'danger' | 'info' | 'neutral' | 'archived';
+
+const QUESTION_STATUS_MAP: Record<string, StatusTone> = {
+  Approved: 'success',
+  Published: 'success',
+  Submitted: 'warning',
+  'Under Review': 'warning',
+  Draft: 'neutral',
+  Archived: 'archived',
+  Rejected: 'danger',
+};
+
+const REVIEW_ACTION_MAP: Record<string, StatusTone> = {
+  Approved: 'success',
+  Published: 'success',
+  Submitted: 'warning',
+  'Under Review': 'warning',
+  Returned: 'warning',
+  Draft: 'neutral',
+  Archived: 'archived',
+  Rejected: 'danger',
+};
+
+/**
+ * Badge class for a question status. Always paired with the status text so the
+ * color is never the only signal.
+ */
+export function statusBadgeClass(status: string): string {
+  const tone = QUESTION_STATUS_MAP[status] ?? 'neutral';
+  return `status-badge status-${tone}`;
+}
+
+/** Badge class for a reviewer decision recorded in the history/audit trail. */
+export function reviewActionBadgeClass(action: string): string {
+  const tone = REVIEW_ACTION_MAP[action] ?? 'warning';
+  return `status-badge status-${tone}`;
+}
+
+/**
+ * Difficulty badge. Uses the same restrained light-background/dark-text system;
+ * purple is intentionally excluded from the palette.
+ */
+export function difficultyBadgeClass(difficulty: string): string {
+  switch (difficulty) {
+    case 'Easy':
+      return 'status-badge status-success';
+    case 'Medium':
+      return 'status-badge status-info';
+    default:
+      return 'status-badge status-archived';
+  }
+}
+
 export interface ParsedRoute {
   view: string;
   editingQuestionId: string | null;
