@@ -178,16 +178,16 @@ export const ExamPrintView: React.FC = () => {
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Control Bar (Hidden on Print) */}
       <div className="no-print bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4 sticky top-16 z-20">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={() => setCurrentView('exam_list')}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors shrink-0"
             title="Back to Exam Sets"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
               <span className="font-mono font-bold text-xs px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">
                 {exam.courseCode}
               </span>
@@ -288,7 +288,7 @@ export const ExamPrintView: React.FC = () => {
       </div>
 
       {/* PDF Export Tip Banner */}
-      <div className="no-print bg-indigo-50/80 border border-indigo-100 rounded-xl p-3 flex items-center justify-between gap-3 text-xs text-indigo-900">
+      <div className="no-print bg-indigo-50/80 border border-indigo-100 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs text-indigo-900">
         <div className="flex items-center gap-2">
           <Info className="w-4 h-4 text-indigo-600 shrink-0" />
           <span>
@@ -300,8 +300,8 @@ export const ExamPrintView: React.FC = () => {
         </span>
       </div>
 
-      {/* Printable Exam Paper Canvas */}
-      <div className="bg-white rounded-xl border border-slate-300 p-8 sm:p-12 shadow-sm font-sans text-slate-900 print:border-0 print:p-0 print:shadow-none">
+      {/* Printable Exam Paper Canvas (fluid on small screens, padded on desktop) */}
+      <div className="bg-white rounded-xl border border-slate-300 p-4 sm:p-8 lg:p-12 shadow-sm font-sans text-slate-900 print:border-0 print:p-0 print:shadow-none">
         {/* University Header */}
         <div className="text-center border-b-2 border-slate-900 pb-4 mb-6">
           <p className="text-xs uppercase font-bold tracking-widest text-slate-600">
@@ -313,7 +313,7 @@ export const ExamPrintView: React.FC = () => {
           <h1 className="text-base sm:text-lg font-bold uppercase text-slate-900 mt-2">
             {exam.title}
           </h1>
-          <div className="flex items-center justify-center gap-4 text-xs font-mono text-slate-600 mt-1">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-mono text-slate-600 mt-1">
             <span>{exam.academicYear} · {exam.semester}</span>
             <span>·</span>
             <span className="font-bold text-indigo-900">

@@ -165,7 +165,7 @@ export const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between py-10 px-4 sm:px-6 lg:px-8 selection:bg-indigo-500 selection:text-white relative">
       {/* Background glow effects */}
-      <div className="fixed inset-0 pointer-events-none opacity-20">
+      <div className="fixed inset-0 pointer-events-none opacity-20 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-indigo-600/40 blur-[130px] rounded-full" />
         <div className="absolute bottom-0 right-10 w-[400px] h-[300px] bg-blue-600/20 blur-[100px] rounded-full" />
       </div>
@@ -196,9 +196,9 @@ export const LoginPage: React.FC = () => {
 
         {/* Primary Login Card */}
         <div className="bg-slate-900/95 border border-slate-800 rounded-2xl p-6 sm:p-7 shadow-2xl backdrop-blur-md space-y-5">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-indigo-400">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="p-1.5 rounded-lg bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 shrink-0">
                 <Lock className="w-4 h-4" />
               </div>
               <h2 className="text-sm font-bold text-white">Sign In with Credentials</h2>

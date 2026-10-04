@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Header } from './components/layout/Header';
 import { Sidebar } from './components/layout/Sidebar';
@@ -42,6 +42,12 @@ const MainLayout: React.FC = () => {
     isAuthenticated,
     sessionRestored,
   } = useApp();
+
+  // Mobile / tablet: sidebar is rendered as an off-canvas drawer.
+  // It is toggled by the hamburger button in the header (visible below lg).
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const closeSidebar = React.useCallback(() => setIsSidebarOpen(false), []);
+  const toggleSidebar = React.useCallback(() => setIsSidebarOpen((open) => !open), []);
 
   // While the signed-in account is being restored, render a neutral loading
   // screen. This prevents a reload from flashing the default administrator.
@@ -137,12 +143,12 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      <Header />
+      <Header isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />
 
-      <div className="flex-1 flex">
-        <Sidebar />
+      <div className="flex-1 flex min-w-0">
+        <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
-        <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full overflow-y-auto print:p-0 print:m-0 print:max-w-none">
+        <main className="flex-1 min-w-0 p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full overflow-y-auto print:p-0 print:m-0 print:max-w-none">
           {renderContent()}
         </main>
       </div>

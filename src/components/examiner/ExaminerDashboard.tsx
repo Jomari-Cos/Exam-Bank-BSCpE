@@ -87,7 +87,7 @@ export const ExaminerDashboard: React.FC = () => {
 
       {/* Recent Examinations List */}
       <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-slate-100 pb-3">
           <h3 className="text-sm font-bold text-slate-900">
             Active Examination Packages ({examinations.length})
           </h3>

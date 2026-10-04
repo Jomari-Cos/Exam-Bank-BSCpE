@@ -446,7 +446,7 @@ export const QuestionEditor: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => handleSave('Draft')}
@@ -632,11 +632,11 @@ export const QuestionEditor: React.FC = () => {
         {/* 1. Multiple Choice */}
         {type === 'multiple_choice' && (
           <div className="space-y-3 pt-3 border-t border-slate-100">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <label className="text-xs font-semibold text-slate-700">
                 Multiple Choice Options (Select radio for correct answer)
               </label>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <label className="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
                   <input
                     type="checkbox"
@@ -735,9 +735,9 @@ export const QuestionEditor: React.FC = () => {
         {/* 3. Matching Type */}
         {type === 'matching' && (
           <div className="space-y-3 pt-3 border-t border-slate-100">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <label className="text-xs font-semibold text-slate-700">Matching Pair Configuration</label>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <label className="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
                   <input
                     type="checkbox"
@@ -895,7 +895,7 @@ export const QuestionEditor: React.FC = () => {
 
             {/* Test Cases Table */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <label className="text-xs font-semibold text-slate-700">
                   Automated Test Suites ({testCases.length} Test Cases)
                 </label>
@@ -909,7 +909,8 @@ export const QuestionEditor: React.FC = () => {
               </div>
 
               <div className="border border-slate-200 rounded-lg overflow-hidden">
-                <table className="w-full text-xs">
+                <div className="overflow-x-auto">
+                <table className="w-full min-w-[560px] text-xs">
                   <thead className="bg-slate-50 border-b border-slate-200 text-slate-700">
                     <tr>
                       <th className="py-2 px-3 text-left">Input</th>
@@ -980,6 +981,7 @@ export const QuestionEditor: React.FC = () => {
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
             </div>
 
@@ -1121,7 +1123,7 @@ export const QuestionEditor: React.FC = () => {
 
             {/* Sub-questions builder */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <label className="text-xs font-semibold text-slate-700">
                   Comprehension Sub-Questions & Correct Answers
                 </label>
@@ -1195,12 +1197,12 @@ export const QuestionEditor: React.FC = () => {
       </div>
 
       {/* Bottom Save & Submit Actions */}
-      <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
-        <span className="text-xs text-slate-500 font-mono">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+        <span className="text-xs text-slate-500 font-mono min-w-0">
           Author: {currentUser.name} · Academic Term: {systemSettings.academicYear}
         </span>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => handleSave('Draft')}

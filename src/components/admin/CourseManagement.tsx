@@ -304,8 +304,8 @@ export const CourseManagement: React.FC = () => {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-slate-50">
-              <h2 className="text-sm font-bold text-slate-900">
+            <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-200 bg-slate-50">
+              <h2 className="text-sm font-bold text-slate-900 min-w-0 truncate">
                 {editingCourse ? `Edit Course: ${editingCourse.code}` : 'Add New BSCpE Course'}
               </h2>
               <button
@@ -512,8 +512,8 @@ export const CourseManagement: React.FC = () => {
                 </div>
               </div>
 
-              {/* Form buttons */}
-              <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-2">
+              {/* Form buttons (kept visible while the form scrolls) */}
+              <div className="sticky bottom-0 -mx-5 px-5 pt-3 pb-4 bg-white border-t border-slate-200 flex flex-wrap items-center justify-end gap-2 shrink-0 z-10">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}

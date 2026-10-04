@@ -93,7 +93,7 @@ export const ReviewerDashboard: React.FC = () => {
 
       {/* Main Review Queue Section */}
       <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-slate-100 pb-3">
           <h3 className="text-sm font-bold text-slate-900">
             Pending Submitted Questions ({pendingQuestions.length})
           </h3>
@@ -112,7 +112,7 @@ export const ReviewerDashboard: React.FC = () => {
               className="p-3.5 rounded-lg border border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/50 transition-colors flex items-start justify-between gap-4 text-xs"
             >
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className="font-mono font-bold text-slate-900">{q.id}</span>
                   <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-700 border border-indigo-100 font-semibold">
                     {q.courseCode}

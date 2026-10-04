@@ -43,6 +43,10 @@ function createFirestore() {
     return initializeFirestore(
       app,
       {
+        // Tolerate optional fields that are `undefined` (e.g. question formats
+        // that only populate a subset of properties) instead of rejecting the
+        // whole write, which would leave a collection partially populated.
+        ignoreUndefinedProperties: true,
         localCache: persistentLocalCache({
           tabManager: persistentMultipleTabManager(),
         }),

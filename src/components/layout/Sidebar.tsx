@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   LayoutDashboard,
@@ -16,9 +16,17 @@ import {
   ListFilter,
   Sparkles,
   LogOut,
+  X,
 } from 'lucide-react';
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  /** Mobile/tablet drawer visibility (below the lg breakpoint). */
+  isOpen: boolean;
+  /** Closes the mobile drawer (backdrop click, Escape, navigation, resize to lg). */
+  onClose: () => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const {
     currentUser,
     currentView,
@@ -179,20 +187,64 @@ export const Sidebar: React.FC = () => {
 
   const navSections = getNavItems();
 
+  // Drawer behavior: lock background scroll while open, close on Escape,
+  // and collapse automatically when the viewport grows to desktop width (lg+),
+  // where the sidebar renders statically again.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) onClose();
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   const handleNavClick = (id: string) => {
     if (id === 'create_question') {
       setCurrentView(id, { editingQuestionId: null });
+      onClose();
       return;
     }
     setCurrentView(id);
+    onClose();
   };
 
   return (
-    <aside className="no-print w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 min-h-[calc(100vh-3.5rem)] border-r border-slate-800">
+    <>
+      {/* Mobile / tablet backdrop: closes the drawer when tapped */}
+      {isOpen && (
+        <div
+          className="no-print lg:hidden fixed inset-0 top-14 z-30 bg-slate-900/50 backdrop-blur-sm"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        id="app-sidebar"
+        aria-label="Primary navigation"
+        className={`no-print w-64 shrink-0 bg-slate-900 text-slate-300 flex flex-col min-h-[calc(100vh-3.5rem)] border-r border-slate-800 fixed top-14 bottom-0 left-0 z-40 transition-transform duration-200 ease-out lg:static lg:z-auto lg:translate-x-0 ${
+          isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
+        }`}
+      >
       {/* Active Role Card */}
       <div className="p-4 border-b border-slate-800 bg-slate-950/50">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-mono font-bold text-xs">
+          <div className="w-8 h-8 rounded-lg bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-mono font-bold text-xs shrink-0">
             {currentUser.avatarInitials}
           </div>
           <div className="min-w-0 flex-1">
@@ -201,6 +253,15 @@ export const Sidebar: React.FC = () => {
               {currentUser.role} Workspace
             </span>
           </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="lg:hidden tap-target -mr-1 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0 cursor-pointer"
+            aria-label="Close navigation menu"
+            title="Close menu"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
@@ -219,7 +280,7 @@ export const Sidebar: React.FC = () => {
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group ${
+                    className={`nav-link w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group ${
                       isActive
                         ? 'bg-indigo-600 text-white shadow-xs'
                         : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/70'
@@ -266,7 +327,7 @@ export const Sidebar: React.FC = () => {
 
         <button
           onClick={signOut}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-rose-300 hover:text-white bg-rose-500/10 hover:bg-rose-600 border border-rose-500/20 hover:border-rose-600 transition-all cursor-pointer shadow-xs active:scale-98"
+          className="tap-target w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-rose-300 hover:text-white bg-rose-500/10 hover:bg-rose-600 border border-rose-500/20 hover:border-rose-600 transition-all cursor-pointer shadow-xs active:scale-98"
         >
           <LogOut className="w-3.5 h-3.5" />
           <span>Sign Out</span>
@@ -281,6 +342,7 @@ export const Sidebar: React.FC = () => {
         </div>
         <p className="text-[10px] text-slate-400 mt-0.5">CHED CMO 92 Compliant</p>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 };

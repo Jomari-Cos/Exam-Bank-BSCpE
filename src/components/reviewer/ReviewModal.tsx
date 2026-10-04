@@ -43,12 +43,12 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ question, onClose }) =
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-amber-50/50">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+        <div className="flex items-center justify-between gap-3 p-4 border-b border-slate-200 bg-amber-50/50 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
               <ShieldCheck className="w-4 h-4" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h2 className="text-sm font-bold text-slate-900">
                 Curriculum Review & Peer Verification: {question.id}
               </h2>
@@ -61,14 +61,15 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ question, onClose }) =
 
           <button
             onClick={onClose}
-            className="p-1 text-slate-400 hover:text-slate-700 rounded-lg transition-colors"
+            className="tap-target p-1 text-slate-400 hover:text-slate-700 rounded-lg transition-colors shrink-0 cursor-pointer"
+            aria-label="Close review modal"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
           {/* Question Summary Banner */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs">
             <div>
@@ -163,7 +164,8 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ question, onClose }) =
                 Automated Test Cases ({question.testCases.length})
               </span>
               <div className="border border-slate-200 rounded-lg overflow-hidden text-xs">
-                <table className="w-full">
+                <div className="overflow-x-auto">
+                <table className="w-full min-w-[420px]">
                   <thead className="bg-slate-50 border-b border-slate-200 text-slate-600">
                     <tr>
                       <th className="py-1.5 px-3 text-left">Test #</th>
@@ -183,6 +185,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ question, onClose }) =
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
             </div>
           )}
@@ -262,16 +265,16 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ question, onClose }) =
         </div>
 
         {/* Modal Decision Footer */}
-        <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
-          <div className="text-xs text-slate-500">
-            Reviewing as: <strong>{currentUser.name}</strong>
+        <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+          <div className="text-xs text-slate-500 min-w-0">
+            Reviewing as: <strong className="break-words">{currentUser.name}</strong>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => handleDecision('Returned')}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-amber-800 bg-amber-100 hover:bg-amber-200 rounded-lg transition-colors"
+              className="tap-target flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-amber-800 bg-amber-100 hover:bg-amber-200 rounded-lg transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Return for Revisions</span>
