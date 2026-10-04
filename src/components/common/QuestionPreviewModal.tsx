@@ -87,15 +87,15 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               <span className="text-xs text-ink-muted font-mono">
                 {question.points} {question.points === 1 ? 'pt' : 'pts'}
               </span>
-              <span className="text-xs text-ink-muted">Â·</span>
+              <span className="text-xs text-ink-muted">Ã‚Â·</span>
               <span className="text-xs text-ink-secondary font-medium">{question.type.replace('_', ' ').toUpperCase()}</span>
             </div>
             <h2 className="text-base font-bold text-ink leading-snug">
-              {question.courseCode} Â· {question.courseName}
+              {question.courseCode} Ã‚Â· {question.courseName}
             </h2>
             <p className="text-xs text-ink-muted mt-0.5">
               Topic: <span className="text-ink-secondary font-medium">{question.topic}</span>
-              {' Â· '}
+              {' Ã‚Â· '}
               <span className="font-mono text-[11px] text-ink-secondary">{question.learningOutcome}</span>
             </p>
           </div>
@@ -236,7 +236,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {question.type === 'matching' && question.matchingPairs && (
                 <div className="space-y-2">
                   <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
-                    Matching Pairs (List A â†” List B)
+                    Matching Pairs (List A Ã¢â€ â€ List B)
                   </span>
                   {question.matchingInstructions && (
                     <p className="text-xs text-ink-secondary italic">{question.matchingInstructions}</p>
@@ -283,7 +283,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                       <div>
                         <span className="text-ink-muted font-medium">Accepted Variants / Synonyms: </span>
                         <span className="text-ink-secondary font-mono ml-1">
-                          {question.alternativeAnswers.join(' Â· ')}
+                          {question.alternativeAnswers.join(' Ã‚Â· ')}
                         </span>
                       </div>
                     )}
@@ -337,7 +337,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                   <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                     Flowchart Diagram / Logic Structure
                   </span>
-                  <div className="p-4 bg-ink text-success-accent font-mono text-xs rounded-lg overflow-x-auto whitespace-pre leading-relaxed border border-ink">
+                  <div className="p-4 bg-navy-900 text-success-accent font-mono text-xs rounded-lg overflow-x-auto whitespace-pre leading-relaxed border border-navy-700">
                     {question.flowchartContent}
                   </div>
                 </div>
@@ -371,7 +371,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                   <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                     Expected Console Output
                   </span>
-                  <div className="p-3 bg-ink font-mono text-xs text-warning-accent rounded-lg border border-ink">
+                  <div className="p-3 bg-navy-900 font-mono text-xs text-warning-accent rounded-lg border border-navy-700">
                     {question.expectedOutput}
                   </div>
                 </div>
@@ -399,7 +399,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                 </div>
                 <div>
                   <span className="text-[11px] text-ink-muted block">Academic Term</span>
-                  <strong className="text-ink font-medium">{question.academicYear} Â· {question.semester}</strong>
+                  <strong className="text-ink font-medium">{question.academicYear} Ã‚Â· {question.semester}</strong>
                 </div>
                 <div>
                   <span className="text-[11px] text-ink-muted block">Last Modified</span>
@@ -472,11 +472,11 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 font-mono text-xs">
-                        <div className="p-2 bg-ink text-line rounded">
+                        <div className="p-2 bg-navy-900 text-line rounded">
                           <div className="text-[10px] text-ink-muted mb-1 select-none font-sans uppercase">Input:</div>
                           <pre className="whitespace-pre-wrap">{tc.input}</pre>
                         </div>
-                        <div className="p-2 bg-ink text-success-accent rounded">
+                        <div className="p-2 bg-navy-900 text-success-accent rounded">
                           <div className="text-[10px] text-ink-muted mb-1 select-none font-sans uppercase">Expected Output:</div>
                           <pre className="whitespace-pre-wrap">{tc.expectedOutput}</pre>
                         </div>
@@ -580,7 +580,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
         <div className="p-4 border-t border-line bg-background flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
           <div className="text-xs text-ink-muted">
             {question.status === 'Approved' ? (
-              <span className="text-success-fg font-medium">âœ“ Ready for examination sets</span>
+              <span className="text-success-fg font-medium">Ã¢Å“â€œ Ready for examination sets</span>
             ) : (
               <span>Status: {question.status}</span>
             )}

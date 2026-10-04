@@ -113,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({ isSidebarOpen, onToggleSidebar }
         {(currentUser.role === 'faculty' || currentUser.role === 'admin') && (
           <button
             onClick={handleCreateNew}
-            className="tap-target flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors whitespace-nowrap shadow-xs"
+            className="btn btn-primary tap-target shadow-xs"
           >
             <PlusCircle className="w-3.5 h-3.5" />
             <span className="hidden md:inline">New Question</span>
@@ -146,7 +146,7 @@ export const Header: React.FC<HeaderProps> = ({ isSidebarOpen, onToggleSidebar }
         {/* High-visibility Sign Out button (icon-only on small screens) */}
         <button
           onClick={signOut}
-          className="tap-target flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-danger-fg hover:text-white bg-danger-soft hover:bg-danger border border-danger-border hover:border-danger rounded-lg transition-all shadow-xs cursor-pointer active:scale-95"
+          className="btn btn-danger-soft tap-target transition-all shadow-xs cursor-pointer active:scale-95"
           title={`Signed in as ${currentUser.name} (${currentUser.role}). Click to Sign Out`}
           aria-label={`Sign out ${currentUser.name}`}
         >

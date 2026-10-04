@@ -26,15 +26,15 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   const lines = code.trim().split('\n');
 
   return (
-    <div className="rounded-lg border border-ink-secondary bg-ink text-surface-secondary overflow-hidden font-mono text-xs shadow-sm">
-      <div className="flex items-center justify-between px-3 py-1.5 bg-ink/80 border-b border-ink-secondary/60 text-line-strong">
+    <div className="rounded-lg border border-navy-700 bg-navy-900 text-navy-text overflow-hidden font-mono text-xs shadow-sm">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-navy-800/80 border-b border-navy-700/60 text-line-strong">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-ink-muted">
           {language}
         </span>
         <button
           onClick={handleCopy}
           type="button"
-          className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium text-line-strong hover:text-white hover:bg-ink-secondary transition-colors"
+          className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium text-line-strong hover:text-white hover:bg-navy-700 transition-colors"
           title="Copy code"
         >
           {copied ? (
@@ -55,7 +55,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
         <table className="w-full border-collapse">
           <tbody>
             {lines.map((line, idx) => (
-              <tr key={idx} className="hover:bg-ink/40">
+              <tr key={idx} className="hover:bg-navy-800/40">
                 {showLineNumbers && (
                   <td className="w-8 select-none pr-3 text-right text-ink-muted font-mono text-[11px] tabular-nums align-top">
                     {idx + 1}

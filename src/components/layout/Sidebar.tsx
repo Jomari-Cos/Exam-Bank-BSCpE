@@ -237,26 +237,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       <aside
         id="app-sidebar"
         aria-label="Primary navigation"
-        className={`no-print w-64 shrink-0 bg-ink text-line-strong flex flex-col min-h-[calc(100vh-3.5rem)] border-r border-ink fixed top-14 bottom-0 left-0 z-40 transition-transform duration-200 ease-out lg:static lg:z-auto lg:translate-x-0 ${
+        className={`no-print w-64 shrink-0 bg-navy-900 text-navy-text flex flex-col min-h-[calc(100vh-3.5rem)] border-r border-navy-800 fixed top-14 bottom-0 left-0 z-40 transition-transform duration-200 ease-out lg:static lg:z-auto lg:translate-x-0 ${
           isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
         }`}
       >
       {/* Active Role Card */}
-      <div className="p-4 border-b border-ink bg-ink/50">
+      <div className="p-4 border-b border-navy-800 bg-navy-950/50">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-primary-600/30 text-primary-300 border border-primary-500/30 flex items-center justify-center font-mono font-bold text-xs shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-primary-600/20 text-primary-300 border border-primary-500/40 flex items-center justify-center font-mono font-bold text-xs shrink-0">
             {currentUser.avatarInitials}
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="text-xs font-semibold text-white truncate">{currentUser.name}</h3>
-            <span className="text-[10px] text-ink-muted capitalize block truncate">
+            <span className="text-[10px] text-navy-muted capitalize block truncate">
               {currentUser.role} Workspace
             </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="lg:hidden tap-target -mr-1 p-1.5 rounded-lg text-ink-muted hover:text-white hover:bg-ink transition-colors shrink-0 cursor-pointer"
+            className="lg:hidden tap-target -mr-1 p-1.5 rounded-lg text-navy-muted hover:text-white hover:bg-navy-800 transition-colors shrink-0 cursor-pointer"
             aria-label="Close navigation menu"
             title="Close menu"
           >
@@ -269,9 +269,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       <div className="flex-1 py-4 px-3 space-y-6 overflow-y-auto">
         {navSections.map((section, sIdx) => (
           <div key={sIdx} className="space-y-1">
-            <h4 className="px-3 text-[10px] font-semibold text-ink-muted uppercase tracking-wider">
-              {section.section}
-            </h4>
+            <h4 className="nav-group-label">{section.section}</h4>
             <div className="space-y-0.5 pt-1">
               {section.items.map((item) => {
                 const Icon = item.icon;
@@ -280,26 +278,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`nav-link w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group ${
-                      isActive
-                        ? 'bg-primary-600 text-white shadow-xs'
-                        : 'text-ink-muted hover:text-surface-secondary hover:bg-ink/70'
-                    }`}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`nav-link group ${isActive ? 'nav-link-active' : ''}`}
                   >
                     <div className="flex items-center gap-2.5">
                       <Icon
-                        className={`w-4 h-4 transition-colors ${
-                          isActive ? 'text-white' : 'text-ink-muted group-hover:text-line'
+                        className={`w-4 h-4 shrink-0 transition-colors ${
+                          isActive ? 'text-white' : 'text-navy-muted group-hover:text-white'
                         }`}
                       />
-                      <span>{item.label}</span>
+                      <span className="truncate">{item.label}</span>
                     </div>
                     {item.badge !== undefined && (
                       <span
-                        className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-medium ${
+                        className={`nav-badge font-mono ${
                           isActive
                             ? 'bg-white/20 text-white'
-                            : item.badgeColor || 'bg-ink text-line-strong'
+                            : item.badgeColor || 'bg-navy-800 text-navy-text'
                         }`}
                       >
                         {item.badge}
@@ -314,20 +309,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       </div>
 
       {/* Sign Out & User Profile in Sidebar */}
-      <div className="p-3 border-t border-ink bg-ink/50 space-y-2">
+      <div className="p-3 border-t border-navy-800 bg-navy-950/50 space-y-2">
         <div className="flex items-center gap-2 px-1">
           <div className="w-7 h-7 rounded-full bg-primary-600 text-white flex items-center justify-center font-mono font-bold text-xs shrink-0">
             {currentUser.avatarInitials}
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-xs font-bold text-white truncate">{currentUser.name}</p>
-            <p className="text-[10px] text-ink-muted font-mono truncate">{currentUser.username ? `@${currentUser.username}` : currentUser.email}</p>
+            <p className="text-[10px] text-navy-muted font-mono truncate">{currentUser.username ? `@${currentUser.username}` : currentUser.email}</p>
           </div>
         </div>
 
         <button
           onClick={signOut}
-          className="tap-target w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-danger-accent hover:text-white bg-danger/10 hover:bg-danger border border-danger/20 hover:border-danger transition-all cursor-pointer shadow-xs active:scale-98"
+          className="tap-target w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-danger-accent hover:text-white bg-danger/10 hover:bg-danger border border-danger/30 hover:border-danger transition-all cursor-pointer shadow-xs active:scale-98"
         >
           <LogOut className="w-3.5 h-3.5" />
           <span>Sign Out</span>
@@ -335,12 +330,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       </div>
 
       {/* Footer System Info */}
-      <div className="p-3 border-t border-ink text-[11px] text-ink-muted">
+      <div className="p-3 border-t border-navy-800 text-[11px] text-navy-muted">
         <div className="flex items-center justify-between">
           <span>BSCpE Accreditation</span>
           <span className="text-success-accent font-mono">v1.2</span>
         </div>
-        <p className="text-[10px] text-ink-muted mt-0.5">CHED CMO 92 Compliant</p>
+        <p className="text-[10px] text-navy-muted mt-0.5">CHED CMO 92 Compliant</p>
       </div>
       </aside>
     </>

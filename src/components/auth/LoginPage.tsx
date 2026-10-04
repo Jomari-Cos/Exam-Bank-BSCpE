@@ -47,8 +47,8 @@ export const LoginPage: React.FC = () => {
       password: 'admin123',
       email: 'esantos@bscpe.edu.ph',
       icon: Shield,
-      color: 'text-danger bg-danger/10 border-danger/20 hover:border-danger-accent',
-      badge: 'bg-danger/20 text-danger-accent border-danger/30',
+      color: 'text-primary-300 bg-primary-600/15 border-primary-500/40',
+      badge: 'bg-primary-600/20 text-primary-300 border-primary-500/40',
     },
     {
       role: 'admin' as Role,
@@ -58,8 +58,8 @@ export const LoginPage: React.FC = () => {
       password: 'admin123',
       email: 'jcos83531@gmail.com',
       icon: Shield,
-      color: 'text-danger bg-danger/10 border-danger/20 hover:border-danger-accent',
-      badge: 'bg-danger/20 text-danger-accent border-danger/30',
+      color: 'text-primary-300 bg-primary-600/15 border-primary-500/40',
+      badge: 'bg-primary-600/20 text-primary-300 border-primary-500/40',
     },
     {
       role: 'faculty' as Role,
@@ -163,31 +163,30 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-ink text-surface-secondary flex flex-col justify-between py-10 px-4 sm:px-6 lg:px-8 selection:bg-primary-500 selection:text-white relative">
-      {/* Background glow effects */}
-      <div className="fixed inset-0 pointer-events-none opacity-20 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-primary-600/40 blur-[130px] rounded-full" />
-        <div className="absolute bottom-0 right-10 w-[400px] h-[300px] bg-info/20 blur-[100px] rounded-full" />
+    <div className="min-h-screen bg-navy-950 text-navy-text flex flex-col justify-between py-10 px-4 sm:px-6 lg:px-8 relative">
+      {/* Subtle brand wash Ã¢â‚¬â€ restrained depth cue, not a decorative gradient */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[720px] h-[340px] bg-primary-700/20 blur-[140px] rounded-full" />
       </div>
 
       <div className="relative max-w-xl mx-auto w-full space-y-6">
         {/* Header Institution Title */}
         <div className="text-center space-y-2.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ink border border-ink text-line-strong text-xs font-mono">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-900 border border-navy-800 text-navy-text text-xs font-mono">
             <span className="w-2 h-2 rounded-full bg-success-accent animate-pulse" />
-            <span>COLLEGE OF ENGINEERING · BSCpE DEPARTMENT</span>
+            <span>COLLEGE OF ENGINEERING Ãƒâ€šÃ‚Â· BSCpE DEPARTMENT</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Examination Question Data Bank
           </h1>
-          <p className="text-xs sm:text-sm text-ink-muted max-w-md mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-navy-muted max-w-md mx-auto leading-relaxed">
             Centralized academic repository for faculty question authoring, multi-stage peer review, and examination generation.
           </p>
 
           {/* Cloud Database Status */}
-          <div className="flex items-center justify-center gap-2 text-[11px] text-ink-muted font-mono pt-1">
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-ink/90 border border-ink">
+          <div className="flex items-center justify-center gap-2 text-[11px] text-navy-muted font-mono pt-1">
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-navy-900/90 border border-navy-800">
               <Database className="w-3.5 h-3.5 text-success-accent" />
               <span>Firebase Database: {isFirebaseConnected ? 'Connected (ivory-chalice-fhl8x)' : 'Connecting...'}</span>
             </div>
@@ -195,15 +194,15 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Primary Login Card */}
-        <div className="bg-ink/95 border border-ink rounded-2xl p-6 sm:p-7 shadow-2xl backdrop-blur-md space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-ink">
+        <div className="bg-navy-900/95 border border-navy-800 rounded-xl p-6 sm:p-7 shadow-2xl backdrop-blur-md space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-navy-800">
             <div className="flex items-center gap-2 min-w-0">
               <div className="p-1.5 rounded-lg bg-primary-600/20 border border-primary-500/30 text-primary-300 shrink-0">
                 <Lock className="w-4 h-4" />
               </div>
               <h2 className="text-sm font-bold text-white">Sign In with Credentials</h2>
             </div>
-            <span className="text-[11px] text-ink-muted font-mono">Authorized Access Only</span>
+            <span className="text-[11px] text-navy-muted font-mono">Authorized Access Only</span>
           </div>
 
           {/* Success Banner */}
@@ -225,11 +224,11 @@ export const LoginPage: React.FC = () => {
           {/* Form */}
           <form onSubmit={handleFormSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-line-strong mb-1.5">
+              <label className="block text-xs font-semibold text-navy-text mb-1.5">
                 Username or Institutional Email
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-muted">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-navy-muted">
                   <UserIcon className="w-4 h-4" />
                 </div>
                 <input
@@ -239,20 +238,20 @@ export const LoginPage: React.FC = () => {
                   placeholder="e.g. admin, mvance, or esantos@bscpe.edu.ph"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-ink-secondary bg-ink/80 text-white placeholder-ink-muted focus:outline-hidden focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all font-mono"
+                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-navy-800 bg-navy-900/80 text-white placeholder-navy-muted focus:outline-hidden focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all font-mono"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-semibold text-line-strong">
+                <label className="block text-xs font-semibold text-navy-text">
                   Password
                 </label>
-                <span className="text-[10px] text-ink-muted font-mono">Sample: admin123 / faculty123</span>
+                <span className="text-[10px] text-navy-muted font-mono">Sample: admin123 / faculty123</span>
               </div>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-muted">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-navy-muted">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
@@ -261,12 +260,12 @@ export const LoginPage: React.FC = () => {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-10 py-2 text-xs rounded-xl border border-ink-secondary bg-ink/80 text-white placeholder-ink-muted focus:outline-hidden focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all font-mono"
+                  className="w-full pl-9 pr-10 py-2 text-xs rounded-xl border border-navy-800 bg-navy-900/80 text-white placeholder-navy-muted focus:outline-hidden focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all font-mono"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-ink-muted hover:text-line transition-colors cursor-pointer"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-navy-muted hover:text-line transition-colors cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -293,13 +292,13 @@ export const LoginPage: React.FC = () => {
           </form>
 
           {/* Demo Credentials Section with Save Sample to Firebase Button */}
-          <div className="pt-4 border-t border-ink space-y-3">
+          <div className="pt-4 border-t border-navy-800 space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <span className="text-[11px] font-semibold text-line-strong uppercase tracking-wider block">
+                <span className="text-[11px] font-semibold text-navy-text uppercase tracking-wider block">
                   Authorized Personnel Accounts
                 </span>
-                <span className="text-[10px] text-ink-muted font-mono">Sample accounts ready for testing</span>
+                <span className="text-[10px] text-navy-muted font-mono">Sample accounts ready for testing</span>
               </div>
 
               {/* Explicit Button: Save the Sample Accounts to Firebase */}
@@ -334,8 +333,8 @@ export const LoginPage: React.FC = () => {
                     key={`${acc.role}-${acc.username}`}
                     className={`p-2.5 rounded-xl border transition-all text-left flex items-start justify-between gap-2 ${
                       isSelected
-                        ? 'border-primary-500 bg-ink/90'
-                        : 'border-ink bg-ink/60 hover:bg-ink/60 hover:border-ink-secondary'
+                        ? 'border-primary-500 bg-navy-900/90'
+                        : 'border-navy-800 bg-navy-900/60 hover:bg-navy-900/60 hover:border-navy-800'
                     }`}
                   >
                     <div className="min-w-0 flex-1">
@@ -345,10 +344,10 @@ export const LoginPage: React.FC = () => {
                         </div>
                         <span className="text-xs font-bold text-white truncate">{acc.title}</span>
                       </div>
-                      <p className="text-[11px] text-ink-muted mt-1 truncate">{acc.name.split(',')[0]}</p>
-                      <div className="flex items-center gap-2 mt-1 text-[10px] font-mono text-ink-muted">
+                      <p className="text-[11px] text-navy-muted mt-1 truncate">{acc.name.split(',')[0]}</p>
+                      <div className="flex items-center gap-2 mt-1 text-[10px] font-mono text-navy-muted">
                         <span>User: <strong className="text-line">{acc.username}</strong></span>
-                        <span>·</span>
+                        <span>Ãƒâ€šÃ‚Â·</span>
                         <span>Pass: <strong className="text-line">{acc.password}</strong></span>
                       </div>
                     </div>
@@ -357,7 +356,7 @@ export const LoginPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleFillDemo(acc.username, acc.password)}
-                        className="px-2 py-1 rounded bg-ink hover:bg-ink-secondary border border-ink-secondary text-[10px] font-medium text-line-strong transition-colors cursor-pointer"
+                        className="px-2 py-1 rounded bg-navy-900 hover:bg-navy-800 border border-navy-800 text-[10px] font-medium text-navy-text transition-colors cursor-pointer"
                         title="Fill fields above"
                       >
                         Fill
@@ -378,10 +377,10 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {/* Alternate Google Authentication */}
-          <div className="pt-2 border-t border-ink/80">
+          <div className="pt-2 border-t border-navy-800/80">
             <button
               onClick={() => signInWithGoogle()}
-              className="w-full flex items-center justify-center gap-2.5 px-3 py-2 text-xs font-medium text-line-strong hover:text-white bg-ink/50 hover:bg-ink border border-ink-secondary rounded-xl transition-all cursor-pointer"
+              className="w-full flex items-center justify-center gap-2.5 px-3 py-2 text-xs font-medium text-navy-text hover:text-white bg-navy-900/50 hover:bg-navy-900 border border-navy-800 rounded-xl transition-all cursor-pointer"
             >
               <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                 <path
@@ -407,7 +406,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="text-center text-[11px] text-ink-muted font-mono space-y-1">
+        <div className="text-center text-[11px] text-navy-muted font-mono space-y-1">
           <p>BSCpE Curriculum Quality Assurance & Accreditation System</p>
           <p>Commission on Higher Education (CHED) CMO 92 Compliant</p>
         </div>

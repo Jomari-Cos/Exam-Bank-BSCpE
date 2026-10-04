@@ -382,7 +382,7 @@ export const QuestionEditor: React.FC = () => {
         console.error('Failed to save question:', err);
         setSaveError(
           'Could not save the question to the shared database. ' +
-            'It is still shown locally â€” please check your connection and try again.'
+            'It is still shown locally Ã¢â‚¬â€ please check your connection and try again.'
         );
       } finally {
         setIsSaving(false);
@@ -395,7 +395,7 @@ export const QuestionEditor: React.FC = () => {
         console.error('Failed to save question:', err);
         setSaveError(
           'Could not save the question to the shared database. ' +
-            'It is still shown locally â€” please check your connection and try again.'
+            'It is still shown locally Ã¢â‚¬â€ please check your connection and try again.'
         );
       } finally {
         setIsSaving(false);
@@ -407,7 +407,7 @@ export const QuestionEditor: React.FC = () => {
     return (
       <div className="space-y-6 max-w-5xl">
         <div className="bg-white rounded-xl border border-line p-12 shadow-xs text-center">
-          <h2 className="text-sm font-bold text-ink">Loading question workspaceâ€¦</h2>
+          <h2 className="text-sm font-bold text-ink">Loading question workspaceÃ¢â‚¬Â¦</h2>
           <p className="text-xs text-ink-muted mt-1 max-w-md mx-auto leading-relaxed">
             Waiting for course data from the shared database. If this persists, check your
             connection or add a course under Course Management first.
@@ -416,7 +416,7 @@ export const QuestionEditor: React.FC = () => {
             onClick={() => setCurrentView('my_questions')}
             className="mt-4 px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background"
           >
-            â† Back to My Questions
+            Ã¢â€ Â Back to My Questions
           </button>
         </div>
       </div>
@@ -454,7 +454,7 @@ export const QuestionEditor: React.FC = () => {
             className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs disabled:opacity-60 disabled:cursor-wait"
           >
             <Save className="w-4 h-4" />
-            <span>{isSaving ? 'Savingâ€¦' : 'Save as Draft'}</span>
+            <span>{isSaving ? 'SavingÃ¢â‚¬Â¦' : 'Save as Draft'}</span>
           </button>
 
           <button
@@ -464,7 +464,7 @@ export const QuestionEditor: React.FC = () => {
             className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors shadow-xs disabled:opacity-60 disabled:cursor-wait"
           >
             <Send className="w-4 h-4" />
-            <span>{isSaving ? 'Savingâ€¦' : 'Submit for Review'}</span>
+            <span>{isSaving ? 'SavingÃ¢â‚¬Â¦' : 'Submit for Review'}</span>
           </button>
         </div>
       </div>
@@ -994,7 +994,7 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="// Enter working reference solution in selected language..."
                 value={expectedSolution}
                 onChange={(e) => setExpectedSolution(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-line font-mono bg-ink text-surface-secondary"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-line font-mono bg-navy-900 text-navy-text"
               />
             </div>
           </div>
@@ -1044,7 +1044,7 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="// Paste code snippet here..."
                 value={codeSnippet}
                 onChange={(e) => setCodeSnippet(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-line font-mono bg-ink text-surface-secondary"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-line font-mono bg-navy-900 text-navy-text"
               />
             </div>
           </div>
@@ -1062,7 +1062,7 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="// Buggy code snippet..."
                 value={buggyCode}
                 onChange={(e) => setBuggyCode(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-danger-border font-mono bg-ink text-danger-accent"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-danger-border font-mono bg-navy-900 text-danger-accent"
               />
             </div>
 
@@ -1075,7 +1075,7 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="// Fixed corrected code..."
                 value={expectedCorrection}
                 onChange={(e) => setExpectedCorrection(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-success-border font-mono bg-ink text-success-accent"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-success-border font-mono bg-navy-900 text-success-accent"
               />
             </div>
           </div>
@@ -1117,7 +1117,7 @@ export const QuestionEditor: React.FC = () => {
                     ? setFlowchartContent(e.target.value)
                     : setCodeSnippet(e.target.value)
                 }
-                className="w-full px-3 py-2 text-xs rounded-lg border border-line font-mono bg-ink text-surface-secondary"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-line font-mono bg-navy-900 text-navy-text"
               />
             </div>
 
@@ -1199,7 +1199,7 @@ export const QuestionEditor: React.FC = () => {
       {/* Bottom Save & Submit Actions */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-background rounded-xl border border-line">
         <span className="text-xs text-ink-muted font-mono min-w-0">
-          Author: {currentUser.name} Â· Academic Term: {systemSettings.academicYear}
+          Author: {currentUser.name} Ã‚Â· Academic Term: {systemSettings.academicYear}
         </span>
 
         <div className="flex flex-wrap items-center gap-2">
