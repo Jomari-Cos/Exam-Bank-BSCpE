@@ -292,6 +292,10 @@ export const QuestionEditor: React.FC = () => {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const handleSave = async (statusToSet: 'Draft' | 'Submitted') => {
+    if (!activeCourse) {
+      alert('No course data is available yet. Please wait for courses to load or add a course first.');
+      return;
+    }
     if (!questionText.trim()) {
       alert('Please enter the question prompt or instructions.');
       return;
@@ -398,6 +402,26 @@ export const QuestionEditor: React.FC = () => {
       }
     }
   };
+
+  if (courses.length === 0 || !activeCourse) {
+    return (
+      <div className="space-y-6 max-w-5xl">
+        <div className="bg-white rounded-xl border border-slate-200 p-12 shadow-xs text-center">
+          <h2 className="text-sm font-bold text-slate-900">Loading question workspace…</h2>
+          <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto leading-relaxed">
+            Waiting for course data from the shared database. If this persists, check your
+            connection or add a course under Course Management first.
+          </p>
+          <button
+            onClick={() => setCurrentView('my_questions')}
+            className="mt-4 px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
+          >
+            ← Back to My Questions
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-5xl">

@@ -40,7 +40,22 @@ export const ExamPrintView: React.FC = () => {
     );
   }
 
-  const activeVersion: ExamVersion = exam.versions[selectedSetIndex] || exam.versions[0];
+  const activeVersion: ExamVersion | undefined =
+    exam.versions[selectedSetIndex] || exam.versions[0];
+
+  if (!activeVersion) {
+    return (
+      <div className="p-8 text-center text-slate-500 text-xs">
+        This examination package has no generated versions yet.{' '}
+        <button
+          onClick={() => setCurrentView('exam_list')}
+          className="text-indigo-600 underline"
+        >
+          Return to Exam List
+        </button>
+      </div>
+    );
+  }
 
   const handlePrint = () => {
     window.print();
