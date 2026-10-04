@@ -41,12 +41,20 @@ export const ExamGenerator: React.FC = () => {
   // Wizard Step: 1 = Exam Setup, 2 = Question Selection, 3 = Randomization & Versions, 4 = Review & Save
   const [currentStep, setCurrentStep] = useState<number>(1);
 
-  // Exam Basic Info
+  // Exam Basic Info — courses may still be loading from Firestore, so
+  // `activeCourse` can momentarily be undefined. Every access below guards it.
   const [selectedCourseId, setSelectedCourseId] = useState<string>(courses[0]?.id || '');
   const activeCourse = courses.find((c) => c.id === selectedCourseId) || courses[0];
 
+  // Once courses arrive from Firestore, default the selection so the form is usable.
+  React.useEffect(() => {
+    if (!selectedCourseId && courses[0]) {
+      setSelectedCourseId(courses[0].id);
+    }
+  }, [courses, selectedCourseId]);
+
   const [examTitle, setExamTitle] = useState<string>(
-    `${activeCourse.code}: ${activeCourse.name} Midterm Examination`
+    `${activeCourse?.code ?? 'CPE'}: ${activeCourse?.name ?? 'Course'} Midterm Examination`
   );
   const [term, setTerm] = useState<'Prelim' | 'Midterm' | 'Semi-Final' | 'Final'>('Midterm');
   const [academicYear, setAcademicYear] = useState<string>(systemSettings.academicYear);
@@ -78,11 +86,13 @@ export const ExamGenerator: React.FC = () => {
   const [showPoints, setShowPoints] = useState<boolean>(true);
 
   // Filter approved questions for the selected course
-  const approvedPool = questions.filter(
-    (q) =>
-      (q.status === 'Approved' || q.status === 'Published') &&
-      q.courseId === activeCourse.id
-  );
+  const approvedPool = activeCourse
+    ? questions.filter(
+        (q) =>
+          (q.status === 'Approved' || q.status === 'Published') &&
+          q.courseId === activeCourse.id
+      )
+    : [];
 
   // If there are no approved questions for this course, allow selecting from all approved questions
   const availableQuestions = approvedPool.length > 0
@@ -139,6 +149,10 @@ export const ExamGenerator: React.FC = () => {
 
   // Generate multi-version exam package
   const handleGenerateExam = async () => {
+    if (!activeCourse) {
+      alert('No course data is available yet. Please wait for courses to load or add a course first.');
+      return;
+    }
     if (selectedQuestionIds.length === 0) {
       alert('Please select at least one question for the examination.');
       return;
@@ -272,6 +286,29 @@ export const ExamGenerator: React.FC = () => {
       ? 'Set A through Set C'
       : 'Set A through Set D';
 
+  // While Firestore is loading (or the DB is empty), show a friendly
+  // placeholder instead of crashing on `activeCourse.code`.
+  if (!activeCourse || courses.length === 0) {
+    return (
+      <div className="space-y-6 max-w-5xl">
+        <div className="bg-white rounded-xl border border-slate-200 p-12 shadow-xs text-center">
+          <FileText className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+          <h2 className="text-sm font-bold text-slate-900">Loading examination workspace…</h2>
+          <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto leading-relaxed">
+            Waiting for course data from the shared database. If this persists, check your
+            connection or add a course under Course Management first.
+          </p>
+          <button
+            onClick={() => setCurrentView('dashboard')}
+            className="mt-4 px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
+          >
+            ← Back to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 max-w-5xl">
       {/* Header */}
@@ -365,7 +402,9 @@ export const ExamGenerator: React.FC = () => {
                 onChange={(e) => {
                   const newTerm = e.target.value as any;
                   setTerm(newTerm);
-                  setExamTitle(`${activeCourse.code}: ${activeCourse.name} ${newTerm} Examination`);
+                  if (activeCourse) {
+                    setExamTitle(`${activeCourse.code}: ${activeCourse.name} ${newTerm} Examination`);
+                  }
                 }}
                 className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200"
               >
