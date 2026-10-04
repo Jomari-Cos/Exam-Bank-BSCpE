@@ -223,7 +223,7 @@ export const UserManagement: React.FC = () => {
       )}
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-line shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="card p-4 flex flex-col md:flex-row items-center justify-between gap-3">
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-ink-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -254,10 +254,10 @@ export const UserManagement: React.FC = () => {
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-xl border border-line shadow-xs overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[720px] text-xs text-left">
-            <thead className="bg-background border-b border-line text-ink-secondary font-semibold uppercase text-[10px] tracking-wider">
+          <table className="data-table min-w-[720px]">
+            <thead className="font-semibold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="py-3 px-4">User Details</th>
                 <th className="py-3 px-4">Login Credentials</th>
@@ -267,7 +267,7 @@ export const UserManagement: React.FC = () => {
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-surface-secondary">
+            <tbody className="divide-y divide-line">
               {filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-8 text-center text-ink-muted">
@@ -280,7 +280,7 @@ export const UserManagement: React.FC = () => {
                   const isPassRevealed = revealedPasswords[u.id];
 
                   return (
-                    <tr key={u.id} className="hover:bg-background/80 transition-colors">
+                    <tr key={u.id} className="">
                       {/* Name & Email */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
@@ -387,7 +387,7 @@ export const UserManagement: React.FC = () => {
       {/* Add / Edit User Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-ink/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-line w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
+          <div className="bg-white rounded-xl shadow-lg border border-line w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between gap-2 p-4 border-b border-line bg-background">
               <div className="flex items-center gap-2 min-w-0">
                 <div className="p-1.5 rounded-lg bg-primary-50 border border-primary-200 text-primary-700 shrink-0">
@@ -574,7 +574,7 @@ export const UserManagement: React.FC = () => {
       {/* Delete User Confirmation Modal */}
       {deleteModalUser && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-ink/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-line w-full max-w-md max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 p-5 space-y-4">
+          <div className="bg-white rounded-xl shadow-lg border border-line w-full max-w-md max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 p-5 space-y-4">
             <div className="flex items-center gap-3 text-danger">
               <div className="p-2 rounded-full bg-danger-soft border border-danger-soft">
                 <AlertTriangle className="w-5 h-5 text-danger" />

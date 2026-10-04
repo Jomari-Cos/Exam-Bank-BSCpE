@@ -101,7 +101,7 @@ export const ExamListView: React.FC = () => {
         {examinations.map((exam) => (
           <div
             key={exam.id}
-            className="bg-white rounded-xl border border-line p-5 shadow-xs hover:border-line-strong transition-colors flex flex-col justify-between"
+            className="card p-5 hover:border-line-strong transition-colors flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between gap-2 mb-2">
@@ -179,7 +179,7 @@ export const ExamListView: React.FC = () => {
 
         {examinations.length === 0 && (
           <div className="col-span-full p-12 text-center bg-white rounded-xl border border-dashed border-line text-ink-muted text-xs">
-            <FileText className="w-8 h-8 text-line-strong mx-auto mb-2" />
+            <FileText className="w-8 h-8 text-ink-muted mx-auto mb-2" />
             <p className="font-semibold text-ink-secondary">No examination packages generated yet</p>
             <p className="text-[11px] text-ink-muted mt-0.5">
               Launch the Examination Generator to assemble your first exam set.

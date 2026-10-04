@@ -382,7 +382,7 @@ export const QuestionEditor: React.FC = () => {
         console.error('Failed to save question:', err);
         setSaveError(
           'Could not save the question to the shared database. ' +
-            'It is still shown locally Ã¢â‚¬â€ please check your connection and try again.'
+            'It is still shown locally - please check your connection and try again.'
         );
       } finally {
         setIsSaving(false);
@@ -395,7 +395,7 @@ export const QuestionEditor: React.FC = () => {
         console.error('Failed to save question:', err);
         setSaveError(
           'Could not save the question to the shared database. ' +
-            'It is still shown locally Ã¢â‚¬â€ please check your connection and try again.'
+            'It is still shown locally - please check your connection and try again.'
         );
       } finally {
         setIsSaving(false);
@@ -407,16 +407,16 @@ export const QuestionEditor: React.FC = () => {
     return (
       <div className="space-y-6 max-w-5xl">
         <div className="bg-white rounded-xl border border-line p-12 shadow-xs text-center">
-          <h2 className="text-sm font-bold text-ink">Loading question workspaceÃ¢â‚¬Â¦</h2>
+          <h2 className="text-sm font-bold text-ink">Loading question workspace…</h2>
           <p className="text-xs text-ink-muted mt-1 max-w-md mx-auto leading-relaxed">
             Waiting for course data from the shared database. If this persists, check your
             connection or add a course under Course Management first.
           </p>
           <button
             onClick={() => setCurrentView('my_questions')}
-            className="mt-4 px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background"
+            className="mt-4 px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
           >
-            Ã¢â€ Â Back to My Questions
+            Back to My Questions
           </button>
         </div>
       </div>
@@ -451,10 +451,10 @@ export const QuestionEditor: React.FC = () => {
             type="button"
             onClick={() => handleSave('Draft')}
             disabled={isSaving}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs disabled:opacity-60 disabled:cursor-wait"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
           >
             <Save className="w-4 h-4" />
-            <span>{isSaving ? 'SavingÃ¢â‚¬Â¦' : 'Save as Draft'}</span>
+            <span>{isSaving ? 'Saving…' : 'Save as Draft'}</span>
           </button>
 
           <button
@@ -464,7 +464,7 @@ export const QuestionEditor: React.FC = () => {
             className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors shadow-xs disabled:opacity-60 disabled:cursor-wait"
           >
             <Send className="w-4 h-4" />
-            <span>{isSaving ? 'SavingÃ¢â‚¬Â¦' : 'Submit for Review'}</span>
+            <span>{isSaving ? 'Saving…' : 'Submit for Review'}</span>
           </button>
         </div>
       </div>
@@ -486,7 +486,7 @@ export const QuestionEditor: React.FC = () => {
       )}
 
       {/* Step 1: Course & Metadata Matrix */}
-      <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+      <div className="card p-5 space-y-4">
         <h3 className="text-xs font-bold text-ink uppercase tracking-wider text-ink-muted">
           Curriculum Classification & Rubric Points
         </h3>
@@ -577,7 +577,7 @@ export const QuestionEditor: React.FC = () => {
       </div>
 
       {/* Step 2: Question Type Selection */}
-      <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-3">
+      <div className="card p-5 space-y-3">
         <h3 className="text-xs font-bold text-ink uppercase tracking-wider text-ink-muted">
           Select Question Format (11 Evaluated Types)
         </h3>
@@ -610,7 +610,7 @@ export const QuestionEditor: React.FC = () => {
       </div>
 
       {/* Step 3: Question Prompt & Specialized Inputs */}
-      <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+      <div className="card p-5 space-y-4">
         <h3 className="text-xs font-bold text-ink uppercase tracking-wider text-ink-muted">
           Question Content & Format-Specific Configuration
         </h3>
@@ -707,7 +707,7 @@ export const QuestionEditor: React.FC = () => {
           <div className="space-y-2 pt-3 border-t border-surface-secondary">
             <label className="text-xs font-semibold text-ink-secondary">Correct Answer</label>
             <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-xs font-semibold text-ink p-2.5 rounded-lg border border-line cursor-pointer hover:bg-background">
+              <label className="flex items-center gap-2 text-xs font-semibold text-ink p-2.5 rounded-lg border border-line cursor-pointer">
                 <input
                   type="radio"
                   name="tf"
@@ -718,7 +718,7 @@ export const QuestionEditor: React.FC = () => {
                 <span>TRUE</span>
               </label>
 
-              <label className="flex items-center gap-2 text-xs font-semibold text-ink p-2.5 rounded-lg border border-line cursor-pointer hover:bg-background">
+              <label className="flex items-center gap-2 text-xs font-semibold text-ink p-2.5 rounded-lg border border-line cursor-pointer">
                 <input
                   type="radio"
                   name="tf"
@@ -910,8 +910,8 @@ export const QuestionEditor: React.FC = () => {
 
               <div className="border border-line rounded-lg overflow-hidden">
                 <div className="overflow-x-auto">
-                <table className="w-full min-w-[560px] text-xs">
-                  <thead className="bg-background border-b border-line text-ink-secondary">
+                <table className="data-table min-w-[560px]">
+                  <thead className="">
                     <tr>
                       <th className="py-2 px-3 text-left">Input</th>
                       <th className="py-2 px-3 text-left">Expected Output</th>
@@ -920,7 +920,7 @@ export const QuestionEditor: React.FC = () => {
                       <th className="py-2 px-3 text-right w-12">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-surface-secondary">
+                  <tbody className="divide-y divide-line">
                     {testCases.map((tc, idx) => (
                       <tr key={tc.id || idx}>
                         <td className="p-2">
@@ -1199,14 +1199,14 @@ export const QuestionEditor: React.FC = () => {
       {/* Bottom Save & Submit Actions */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-background rounded-xl border border-line">
         <span className="text-xs text-ink-muted font-mono min-w-0">
-          Author: {currentUser.name} Ã‚Â· Academic Term: {systemSettings.academicYear}
+          Author: {currentUser.name} · Academic Term: {systemSettings.academicYear}
         </span>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => handleSave('Draft')}
-            className="px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs"
+            className="px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
           >
             Save as Draft
           </button>

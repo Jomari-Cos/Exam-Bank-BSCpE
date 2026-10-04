@@ -41,7 +41,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ question, onClose }) =
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-ink/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl border border-line w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
+      <div className="bg-white rounded-xl shadow-lg border border-line w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
         {/* Modal Header */}
         <div className="flex items-center justify-between gap-3 p-4 border-b border-line bg-warning-soft/50 shrink-0">
           <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -53,8 +53,8 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ question, onClose }) =
                 Curriculum Review & Peer Verification: {question.id}
               </h2>
               <p className="text-xs text-ink-muted">
-                Author: <span className="text-ink-secondary font-medium">{question.authorName}</span> Â·{' '}
-                {question.courseCode} Â· {question.topic}
+                Author: <span className="text-ink-secondary font-medium">{question.authorName}</span> ·{' '}
+                {question.courseCode} · {question.topic}
               </p>
             </div>
           </div>
@@ -165,8 +165,8 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ question, onClose }) =
               </span>
               <div className="border border-line rounded-lg overflow-hidden text-xs">
                 <div className="overflow-x-auto">
-                <table className="w-full min-w-[420px]">
-                  <thead className="bg-background border-b border-line text-ink-secondary">
+                <table className="data-table min-w-[420px]">
+                  <thead className="">
                     <tr>
                       <th className="py-1.5 px-3 text-left">Test #</th>
                       <th className="py-1.5 px-3 text-left">Input</th>
@@ -174,7 +174,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ question, onClose }) =
                       <th className="py-1.5 px-3 text-right">Points</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-surface-secondary font-mono">
+                  <tbody className="divide-y divide-line font-mono">
                     {question.testCases.map((tc, idx) => (
                       <tr key={tc.id || idx}>
                         <td className="py-1.5 px-3">{idx + 1}</td>

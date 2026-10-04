@@ -55,7 +55,7 @@ const MainLayout: React.FC = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center font-sans">
         <div className="flex items-center gap-3 text-ink-secondary">
-          <span className="w-5 h-5 rounded-full border-2 border-line-strong border-t-indigo-600 animate-spin" />
+          <span className="w-5 h-5 rounded-full border-2 border-line-strong border-t-primary-600 animate-spin" />
           <span className="text-sm font-medium">Restoring your workspace…</span>
         </div>
       </div>

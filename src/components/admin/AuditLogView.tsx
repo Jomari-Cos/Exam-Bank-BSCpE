@@ -58,7 +58,7 @@ export const AuditLogView: React.FC = () => {
 
         <button
           onClick={handleExportCSV}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs"
+          className="flex items-center gap-1.5 btn btn-secondary shadow-xs"
         >
           <Download className="w-3.5 h-3.5" />
           <span>Export Audit Log (CSV)</span>
@@ -66,7 +66,7 @@ export const AuditLogView: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-line shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">
+      <div className="card p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-ink-muted absolute left-3 top-2.5" />
           <input
@@ -113,10 +113,10 @@ export const AuditLogView: React.FC = () => {
       </div>
 
       {/* Logs Table */}
-      <div className="bg-white rounded-xl border border-line shadow-xs overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[680px] text-xs text-left">
-            <thead className="bg-background border-b border-line text-ink-secondary font-semibold uppercase text-[10px] tracking-wider">
+          <table className="data-table min-w-[680px]">
+            <thead className="font-semibold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="py-3 px-4">Timestamp</th>
                 <th className="py-3 px-4">Action</th>
@@ -125,9 +125,9 @@ export const AuditLogView: React.FC = () => {
                 <th className="py-3 px-4">Event Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-surface-secondary">
+            <tbody className="divide-y divide-line">
               {filteredLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-background/80 transition-colors">
+                <tr key={log.id} className="">
                   <td className="py-3 px-4 font-mono text-[11px] text-ink-muted whitespace-nowrap">
                     {log.timestamp}
                   </td>

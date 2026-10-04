@@ -164,7 +164,7 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-navy-950 text-navy-text flex flex-col justify-between py-10 px-4 sm:px-6 lg:px-8 relative">
-      {/* Subtle brand wash Ã¢â‚¬â€ restrained depth cue, not a decorative gradient */}
+      {/* Subtle brand wash - restrained depth cue, not a decorative gradient */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[720px] h-[340px] bg-primary-700/20 blur-[140px] rounded-full" />
       </div>
@@ -174,7 +174,7 @@ export const LoginPage: React.FC = () => {
         <div className="text-center space-y-2.5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-900 border border-navy-800 text-navy-text text-xs font-mono">
             <span className="w-2 h-2 rounded-full bg-success-accent animate-pulse" />
-            <span>COLLEGE OF ENGINEERING Ãƒâ€šÃ‚Â· BSCpE DEPARTMENT</span>
+            <span>COLLEGE OF ENGINEERING · BSCpE DEPARTMENT</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -194,7 +194,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Primary Login Card */}
-        <div className="bg-navy-900/95 border border-navy-800 rounded-xl p-6 sm:p-7 shadow-2xl backdrop-blur-md space-y-5">
+        <div className="bg-navy-900/95 border border-navy-800 rounded-xl p-6 sm:p-7 shadow-lg backdrop-blur-md space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-navy-800">
             <div className="flex items-center gap-2 min-w-0">
               <div className="p-1.5 rounded-lg bg-primary-600/20 border border-primary-500/30 text-primary-300 shrink-0">
@@ -265,7 +265,7 @@ export const LoginPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-navy-muted hover:text-line transition-colors cursor-pointer"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-navy-muted hover:text-navy-text transition-colors cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -275,7 +275,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-bold text-white bg-primary-600 hover:bg-primary-500 active:bg-primary-700 rounded-xl transition-all shadow-md hover:shadow-primary-600/30 cursor-pointer disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-bold text-white bg-primary-600 hover:bg-primary-500 active:bg-primary-700 rounded-xl transition-all shadow-xs hover:shadow-sm cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
@@ -346,9 +346,9 @@ export const LoginPage: React.FC = () => {
                       </div>
                       <p className="text-[11px] text-navy-muted mt-1 truncate">{acc.name.split(',')[0]}</p>
                       <div className="flex items-center gap-2 mt-1 text-[10px] font-mono text-navy-muted">
-                        <span>User: <strong className="text-line">{acc.username}</strong></span>
-                        <span>Ãƒâ€šÃ‚Â·</span>
-                        <span>Pass: <strong className="text-line">{acc.password}</strong></span>
+                        <span>User: <strong className="text-navy-text">{acc.username}</strong></span>
+                        <span>·</span>
+                        <span>Pass: <strong className="text-navy-text">{acc.password}</strong></span>
                       </div>
                     </div>
 

@@ -159,7 +159,7 @@ export const CourseManagement: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-line shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">
+      <div className="card p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-ink-muted absolute left-3 top-2.5" />
           <input
@@ -215,7 +215,7 @@ export const CourseManagement: React.FC = () => {
           return (
             <div
               key={course.id}
-              className="bg-white rounded-xl border border-line p-5 shadow-xs flex flex-col justify-between hover:border-line-strong transition-colors"
+              className="card p-5 flex flex-col justify-between hover:border-line-strong transition-colors"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
@@ -294,7 +294,7 @@ export const CourseManagement: React.FC = () => {
 
       {filteredCourses.length === 0 && (
         <div className="p-12 text-center bg-white rounded-xl border border-dashed border-line">
-          <BookOpen className="w-8 h-8 text-line-strong mx-auto mb-2" />
+          <BookOpen className="w-8 h-8 text-ink-muted mx-auto mb-2" />
           <p className="text-xs font-semibold text-ink-secondary">No courses match your search criteria</p>
           <p className="text-[11px] text-ink-muted mt-0.5">Try clearing filters or add a new course.</p>
         </div>
@@ -303,7 +303,7 @@ export const CourseManagement: React.FC = () => {
       {/* Add / Edit Course Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-ink/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl border border-line w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
+          <div className="bg-white rounded-xl shadow-lg border border-line w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between gap-2 p-4 border-b border-line bg-background">
               <h2 className="text-sm font-bold text-ink min-w-0 truncate">
                 {editingCourse ? `Edit Course: ${editingCourse.code}` : 'Add New BSCpE Course'}

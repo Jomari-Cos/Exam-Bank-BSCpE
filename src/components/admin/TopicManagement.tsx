@@ -44,7 +44,7 @@ export const TopicManagement: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Course Selection List */}
-        <div className="bg-white rounded-xl border border-line p-4 shadow-xs space-y-2 max-h-[75vh] overflow-y-auto">
+        <div className="card p-4 space-y-2 max-h-[75vh] overflow-y-auto">
           <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-2 px-1">
             Select Course ({courses.length})
           </span>
@@ -86,7 +86,7 @@ export const TopicManagement: React.FC = () => {
         {activeCourse && (
           <div className="lg:col-span-2 space-y-6">
             {/* Header info */}
-            <div className="bg-white rounded-xl border border-line p-5 shadow-xs">
+            <div className="card p-5">
               <div className="flex items-center gap-2 mb-1">
                 <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-primary-50 text-primary-700 border border-primary-100">
                   {activeCourse.code}
@@ -98,7 +98,7 @@ export const TopicManagement: React.FC = () => {
             </div>
 
             {/* Topics Section */}
-            <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+            <div className="card p-5 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-bold text-ink">Curriculum Topics</h3>
@@ -133,8 +133,8 @@ export const TopicManagement: React.FC = () => {
               {/* Topics Table */}
               <div className="border border-line rounded-lg overflow-hidden">
                 <div className="overflow-x-auto">
-                <table className="w-full min-w-[420px] text-xs">
-                  <thead className="bg-background border-b border-line text-ink-secondary">
+                <table className="data-table min-w-[420px]">
+                  <thead className="">
                     <tr>
                       <th className="text-left py-2 px-3 font-semibold">#</th>
                       <th className="text-left py-2 px-3 font-semibold">Topic Title</th>
@@ -142,14 +142,14 @@ export const TopicManagement: React.FC = () => {
                       <th className="text-right py-2 px-3 font-semibold">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-surface-secondary">
+                  <tbody className="divide-y divide-line">
                     {activeCourse.topics.map((t, idx) => {
                       const topicQuestions = questions.filter(
                         (q) => q.courseId === activeCourse.id && q.topic === t
                       ).length;
 
                       return (
-                        <tr key={idx} className="hover:bg-background/80">
+                        <tr key={idx} className="">
                           <td className="py-2 px-3 text-ink-muted font-mono w-10">{idx + 1}</td>
                           <td className="py-2 px-3 font-medium text-ink">{t}</td>
                           <td className="py-2 px-3 text-right font-mono text-ink-secondary">
@@ -174,7 +174,7 @@ export const TopicManagement: React.FC = () => {
             </div>
 
             {/* Course Learning Outcomes (CLOs) Section */}
-            <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+            <div className="card p-5 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-bold text-ink">

@@ -293,7 +293,7 @@ export const ExamGenerator: React.FC = () => {
     return (
       <div className="space-y-6 max-w-5xl">
         <div className="bg-white rounded-xl border border-line p-12 shadow-xs text-center">
-          <FileText className="w-10 h-10 text-line-strong mx-auto mb-3" />
+          <FileText className="w-10 h-10 text-ink-muted mx-auto mb-3" />
           <h2 className="text-sm font-bold text-ink">Loading examination workspace…</h2>
           <p className="text-xs text-ink-muted mt-1 max-w-md mx-auto leading-relaxed">
             Waiting for course data from the shared database. If this persists, check your
@@ -301,7 +301,7 @@ export const ExamGenerator: React.FC = () => {
           </p>
           <button
             onClick={() => setCurrentView('dashboard')}
-            className="mt-4 px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background"
+            className="mt-4 px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
           >
             ← Back to Dashboard
           </button>
@@ -365,7 +365,7 @@ export const ExamGenerator: React.FC = () => {
 
       {/* STEP 1: EXAM DETAILS */}
       {currentStep === 1 && (
-        <div className="bg-white rounded-xl border border-line p-6 shadow-xs space-y-5">
+        <div className="card p-6 space-y-5">
           <h2 className="text-sm font-bold text-ink uppercase tracking-wider text-ink-muted">
             Step 1: Examination Header & Academic Context
           </h2>
@@ -497,7 +497,7 @@ export const ExamGenerator: React.FC = () => {
       {currentStep === 2 && (
         <div className="space-y-6">
           {/* Top selection mode switcher & stats */}
-          <div className="bg-white p-4 rounded-xl border border-line shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2 p-1 bg-surface-secondary rounded-lg">
               <button
                 type="button"
@@ -622,7 +622,7 @@ export const ExamGenerator: React.FC = () => {
           )}
 
           {/* Search & Filter Bar */}
-          <div className="bg-white p-4 rounded-xl border border-line shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">
+          <div className="card p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
             <div className="relative w-full sm:w-80">
               <Search className="w-4 h-4 text-ink-muted absolute left-3 top-2.5" />
               <input
@@ -666,7 +666,7 @@ export const ExamGenerator: React.FC = () => {
           </div>
 
           {/* Questions Pool Table */}
-          <div className="bg-white rounded-xl border border-line shadow-xs overflow-hidden">
+          <div className="card overflow-hidden">
             <div className="p-3 border-b border-line bg-background flex items-center justify-between text-xs">
               <span className="font-semibold text-ink-secondary">
                 Available Approved Questions Pool ({filteredPool.length})
@@ -688,7 +688,7 @@ export const ExamGenerator: React.FC = () => {
               </button>
             </div>
 
-            <div className="divide-y divide-surface-secondary max-h-[500px] overflow-y-auto">
+            <div className="divide-y divide-line max-h-[500px] overflow-y-auto">
               {filteredPool.map((q) => {
                 const isSelected = selectedQuestionIds.includes(q.id);
 
@@ -750,7 +750,7 @@ export const ExamGenerator: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
             <button
               onClick={() => setCurrentStep(1)}
-              className="px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background"
+              className="px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
             >
               ← Back to Details
             </button>
@@ -773,7 +773,7 @@ export const ExamGenerator: React.FC = () => {
       {/* STEP 3: RANDOMIZATION & SET GENERATION */}
       {currentStep === 3 && (
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-line p-6 shadow-xs space-y-5">
+          <div className="card p-6 space-y-5">
             <h2 className="text-sm font-bold text-ink uppercase tracking-wider text-ink-muted">
               Step 3: Anti-Cheating Randomization & Multi-Version Sets
             </h2>
@@ -852,7 +852,7 @@ export const ExamGenerator: React.FC = () => {
 
             {/* Summary Box */}
             <div className="p-4 bg-success-soft/70 border border-success-border rounded-xl text-xs space-y-2">
-              <h4 className="font-bold text-emerald-900 flex items-center gap-1.5">
+              <h4 className="font-bold text-success-fg flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-success" />
                 <span>Ready to Generate Examination Set</span>
               </h4>
@@ -878,14 +878,14 @@ export const ExamGenerator: React.FC = () => {
             <div className="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-surface-secondary">
               <button
                 onClick={() => setCurrentStep(2)}
-                className="px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background"
+                className="px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
               >
                 ← Back to Questions
               </button>
               <button
                 onClick={handleGenerateExam}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-60 disabled:cursor-wait rounded-lg transition-all shadow-md hover:shadow-lg"
+                className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-60 disabled:cursor-wait rounded-lg transition-all shadow-xs"
               >
                 <Layers className="w-4 h-4" />
                 <span>{isSaving ? 'Saving to Shared Database…' : 'Compile & Generate Examination Sets'}</span>

@@ -105,7 +105,7 @@ export const MyQuestions: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-line shadow-xs flex flex-col md:flex-row gap-3 items-center justify-between">
+      <div className="card p-4 flex flex-col md:flex-row gap-3 items-center justify-between">
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-ink-muted absolute left-3 top-2.5" />
           <input
@@ -150,10 +150,10 @@ export const MyQuestions: React.FC = () => {
       </div>
 
       {/* Questions Table / List */}
-      <div className="bg-white rounded-xl border border-line shadow-xs overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[780px] text-xs text-left">
-            <thead className="bg-background border-b border-line text-ink-secondary font-semibold uppercase text-[10px] tracking-wider">
+          <table className="data-table min-w-[780px]">
+            <thead className="font-semibold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="py-3 px-4">Question ID & Topic</th>
                 <th className="py-3 px-4">Question Summary</th>
@@ -162,12 +162,12 @@ export const MyQuestions: React.FC = () => {
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-surface-secondary">
+            <tbody className="divide-y divide-line">
               {filteredQuestions.map((q) => {
                 const latestReview = q.reviews && q.reviews.length > 0 ? q.reviews[q.reviews.length - 1] : null;
 
                 return (
-                  <tr key={q.id} className="hover:bg-background/80 transition-colors">
+                  <tr key={q.id} className="">
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-mono font-bold text-ink">{q.id}</span>

@@ -289,6 +289,9 @@
   }
   .nav-link {
     min-height: 2.75rem;
+  }
+}
+
 /* ==========================================================================
    COMPONENT CLASSES
    Collapses the repeated utility strings (buttons, cards, badges, forms,
@@ -328,7 +331,7 @@
 
   .btn-primary {
     background-color: var(--primary-600);
-    color: #ffffff;
+    color: var(--surface);
   }
   .btn-primary:hover:not(:disabled) {
     background-color: var(--primary-700);
@@ -345,7 +348,7 @@
 
   .btn-danger {
     background-color: var(--danger);
-    color: #ffffff;
+    color: var(--surface);
   }
   .btn-danger:hover:not(:disabled) {
     background-color: var(--danger-strong);
@@ -353,7 +356,7 @@
 
   .btn-success {
     background-color: var(--success);
-    color: #ffffff;
+    color: var(--surface);
   }
   .btn-success:hover:not(:disabled) {
     background-color: var(--success-strong);
@@ -361,7 +364,7 @@
 
   .btn-warning {
     background-color: var(--warning);
-    color: #ffffff;
+    color: var(--surface);
   }
   .btn-warning:hover:not(:disabled) {
     background-color: var(--warning-strong);
@@ -624,12 +627,12 @@
   }
   .nav-link:hover {
     background-color: var(--navy-800);
-    color: #ffffff;
+    color: var(--surface);
   }
   .nav-link-active,
   .nav-link-active:hover {
     background-color: var(--primary-600);
-    color: #ffffff;
+    color: var(--surface);
   }
   .nav-group-label {
     display: block;
@@ -647,9 +650,9 @@
     line-height: 0.875rem;
     border-radius: 0.25rem;
   }
-}
-  }
-}
+} /* end .nav-badge */
+
+} /* end @layer components */
 
 @media print {
   .no-print {
@@ -659,8 +662,8 @@
     display: block !important;
   }
   body {
-    background: white !important;
-    color: #0f172a !important;
+    background: var(--surface) !important;
+    color: var(--text-primary) !important;
     font-size: 11pt !important;
   }
   .print-break-inside-avoid {

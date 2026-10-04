@@ -70,12 +70,12 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-ink/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl border border-line w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white rounded-xl shadow-lg border border-line w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Header */}
         <div className="flex items-start justify-between gap-3 p-4 sm:p-5 border-b border-line bg-background/70 shrink-0">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-line text-ink">
+              <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-surface-secondary text-ink">
                 {question.id}
               </span>
               <span className={statusBadgeClass(question.status)}>
@@ -87,22 +87,22 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               <span className="text-xs text-ink-muted font-mono">
                 {question.points} {question.points === 1 ? 'pt' : 'pts'}
               </span>
-              <span className="text-xs text-ink-muted">Ã‚Â·</span>
+              <span className="text-xs text-ink-muted">·</span>
               <span className="text-xs text-ink-secondary font-medium">{question.type.replace('_', ' ').toUpperCase()}</span>
             </div>
             <h2 className="text-base font-bold text-ink leading-snug">
-              {question.courseCode} Ã‚Â· {question.courseName}
+              {question.courseCode} · {question.courseName}
             </h2>
             <p className="text-xs text-ink-muted mt-0.5">
               Topic: <span className="text-ink-secondary font-medium">{question.topic}</span>
-              {' Ã‚Â· '}
+              {' · '}
               <span className="font-mono text-[11px] text-ink-secondary">{question.learningOutcome}</span>
             </p>
           </div>
 
           <button
             onClick={onClose}
-            className="tap-target p-1.5 rounded-lg text-ink-muted hover:text-ink-secondary hover:bg-line transition-colors shrink-0 cursor-pointer"
+            className="tap-target p-1.5 rounded-lg text-ink-muted hover:text-ink-secondary hover:bg-surface-secondary transition-colors shrink-0 cursor-pointer"
             aria-label="Close question preview"
           >
             <X className="w-5 h-5" />
@@ -236,21 +236,21 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {question.type === 'matching' && question.matchingPairs && (
                 <div className="space-y-2">
                   <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
-                    Matching Pairs (List A Ã¢â€ â€ List B)
+                    Matching Pairs (List A - List B)
                   </span>
                   {question.matchingInstructions && (
                     <p className="text-xs text-ink-secondary italic">{question.matchingInstructions}</p>
                   )}
                   <div className="border border-line rounded-lg overflow-hidden">
                     <div className="overflow-x-auto">
-                    <table className="w-full min-w-[340px] text-xs">
-                      <thead className="bg-background border-b border-line text-ink-secondary">
+                    <table className="data-table min-w-[340px]">
+                      <thead className="">
                         <tr>
                           <th className="text-left py-2 px-3 font-semibold w-1/2">List A (Item)</th>
                           <th className="text-left py-2 px-3 font-semibold w-1/2">List B (Correct Match)</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-surface-secondary">
+                      <tbody className="divide-y divide-line">
                         {question.matchingPairs.map((pair, i) => (
                           <tr key={pair.id || i} className="hover:bg-background">
                             <td className="py-2.5 px-3 font-medium text-ink">{pair.itemA}</td>
@@ -283,7 +283,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                       <div>
                         <span className="text-ink-muted font-medium">Accepted Variants / Synonyms: </span>
                         <span className="text-ink-secondary font-mono ml-1">
-                          {question.alternativeAnswers.join(' Ã‚Â· ')}
+                          {question.alternativeAnswers.join(' · ')}
                         </span>
                       </div>
                     )}
@@ -399,7 +399,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                 </div>
                 <div>
                   <span className="text-[11px] text-ink-muted block">Academic Term</span>
-                  <strong className="text-ink font-medium">{question.academicYear} Ã‚Â· {question.semester}</strong>
+                  <strong className="text-ink font-medium">{question.academicYear} · {question.semester}</strong>
                 </div>
                 <div>
                   <span className="text-[11px] text-ink-muted block">Last Modified</span>
@@ -472,12 +472,12 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 font-mono text-xs">
-                        <div className="p-2 bg-navy-900 text-line rounded">
-                          <div className="text-[10px] text-ink-muted mb-1 select-none font-sans uppercase">Input:</div>
+                        <div className="p-2 bg-navy-950 text-navy-text rounded">
+                          <div className="text-[10px] text-navy-muted mb-1 select-none font-sans uppercase">Input:</div>
                           <pre className="whitespace-pre-wrap">{tc.input}</pre>
                         </div>
-                        <div className="p-2 bg-navy-900 text-success-accent rounded">
-                          <div className="text-[10px] text-ink-muted mb-1 select-none font-sans uppercase">Expected Output:</div>
+                        <div className="p-2 bg-navy-950 text-success-accent rounded">
+                          <div className="text-[10px] text-navy-muted mb-1 select-none font-sans uppercase">Expected Output:</div>
                           <pre className="whitespace-pre-wrap">{tc.expectedOutput}</pre>
                         </div>
                       </div>
@@ -498,7 +498,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
             <div className="space-y-4">
               <h3 className="text-xs font-semibold text-ink">Review Committee Deliberation</h3>
               {!question.reviews || question.reviews.length === 0 ? (
-                <div className="text-center py-10 bg-background rounded-lg border border-dashed border-line text-ink-muted text-xs">
+                <div className="empty-state">
                   No review feedback submitted yet.
                 </div>
               ) : (
@@ -550,7 +550,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
             <div className="space-y-4">
               <h3 className="text-xs font-semibold text-ink">Audit Trail & Version History</h3>
               {!question.history || question.history.length === 0 ? (
-                <div className="text-center py-10 bg-background rounded-lg border border-dashed border-line text-ink-muted text-xs">
+                <div className="empty-state">
                   No audit entries recorded.
                 </div>
               ) : (
@@ -580,7 +580,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
         <div className="p-4 border-t border-line bg-background flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
           <div className="text-xs text-ink-muted">
             {question.status === 'Approved' ? (
-              <span className="text-success-fg font-medium">Ã¢Å“â€œ Ready for examination sets</span>
+              <span className="text-success-fg font-medium">✓ Ready for examination sets</span>
             ) : (
               <span>Status: {question.status}</span>
             )}
@@ -593,7 +593,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                   onClose();
                   onEdit(question.id);
                 }}
-                className="px-3 py-1.5 text-xs font-medium text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors"
+                className="btn btn-secondary"
               >
                 Edit Question
               </button>
@@ -625,7 +625,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
             <button
               onClick={onClose}
-              className="px-4 py-1.5 text-xs font-medium text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors"
+              className="btn btn-secondary"
             >
               Close
             </button>

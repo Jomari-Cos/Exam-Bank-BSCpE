@@ -58,13 +58,13 @@ export const AdminDashboard: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setCurrentView('courses')}
-            className="px-3 py-1.5 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs"
+            className="btn btn-secondary shadow-xs"
           >
             Manage Courses
           </button>
           <button
             onClick={() => setCurrentView('users')}
-            className="px-3 py-1.5 text-xs font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors shadow-xs"
+            className="btn btn-primary shadow-xs"
           >
             Manage Users & Roles
           </button>
@@ -73,7 +73,7 @@ export const AdminDashboard: React.FC = () => {
 
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Total Questions</span>
             <FileQuestion className="w-4 h-4 text-primary-600" />
@@ -94,7 +94,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">BSCpE Courses</span>
             <FolderTree className="w-4 h-4 text-info" />
@@ -112,7 +112,7 @@ export const AdminDashboard: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Pending Review</span>
             <Clock className="w-4 h-4 text-warning" />
@@ -133,7 +133,7 @@ export const AdminDashboard: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Examinations</span>
             <Layers className="w-4 h-4 text-success" />
@@ -157,7 +157,7 @@ export const AdminDashboard: React.FC = () => {
         {/* Left 2 Cols: Distribution by Domain & Types */}
         <div className="lg:col-span-2 space-y-6">
           {/* Domain Breakdown */}
-          <div className="bg-white rounded-xl border border-line p-5 shadow-xs">
+          <div className="card p-5">
             <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
               <h3 className="text-sm font-bold text-ink">
                 Curriculum Domain Distribution
@@ -194,7 +194,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           {/* Question Types Matrix */}
-          <div className="bg-white rounded-xl border border-line p-5 shadow-xs">
+          <div className="card p-5">
             <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
               <h3 className="text-sm font-bold text-ink">
                 Supported Question Types Breakdown
@@ -223,7 +223,7 @@ export const AdminDashboard: React.FC = () => {
         {/* Right Col: Recent Audit Activities & Quick Shortcuts */}
         <div className="space-y-6">
           {/* Quick Admin Actions */}
-          <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-3">
+          <div className="card p-5 space-y-3">
             <h3 className="text-sm font-bold text-ink">Administrative Tools</h3>
             <div className="space-y-2">
               <button
@@ -262,7 +262,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           {/* Recent Audit Logs Stream */}
-          <div className="bg-white rounded-xl border border-line p-5 shadow-xs">
+          <div className="card p-5">
             <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
               <h3 className="text-sm font-bold text-ink">Recent Audit Logs</h3>
               <button

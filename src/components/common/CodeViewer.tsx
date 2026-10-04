@@ -27,14 +27,14 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
 
   return (
     <div className="rounded-lg border border-navy-700 bg-navy-900 text-navy-text overflow-hidden font-mono text-xs shadow-sm">
-      <div className="flex items-center justify-between px-3 py-1.5 bg-navy-800/80 border-b border-navy-700/60 text-line-strong">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-ink-muted">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-navy-800/80 border-b border-navy-700/60 text-navy-muted">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-navy-muted">
           {language}
         </span>
         <button
           onClick={handleCopy}
           type="button"
-          className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium text-line-strong hover:text-white hover:bg-navy-700 transition-colors"
+          className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium text-navy-muted hover:text-white hover:bg-navy-700 transition-colors"
           title="Copy code"
         >
           {copied ? (
@@ -57,11 +57,11 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
             {lines.map((line, idx) => (
               <tr key={idx} className="hover:bg-navy-800/40">
                 {showLineNumbers && (
-                  <td className="w-8 select-none pr-3 text-right text-ink-muted font-mono text-[11px] tabular-nums align-top">
+                  <td className="w-8 select-none pr-3 text-right text-navy-muted font-mono text-[11px] tabular-nums align-top">
                     {idx + 1}
                   </td>
                 )}
-                <td className="whitespace-pre font-mono text-xs text-line leading-relaxed">
+                <td className="whitespace-pre font-mono text-xs text-navy-text leading-relaxed">
                   {line || ' '}
                 </td>
               </tr>

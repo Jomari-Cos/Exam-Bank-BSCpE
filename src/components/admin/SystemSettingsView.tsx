@@ -94,7 +94,7 @@ export const SystemSettingsView: React.FC = () => {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Academic Terms */}
-        <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+        <div className="card p-5 space-y-4">
           <h3 className="text-sm font-bold text-ink border-b border-surface-secondary pb-2">
             Academic Calendar & Terms
           </h3>
@@ -131,7 +131,7 @@ export const SystemSettingsView: React.FC = () => {
         </div>
 
         {/* Institution & Examination Templates */}
-        <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+        <div className="card p-5 space-y-4">
           <h3 className="text-sm font-bold text-ink border-b border-surface-secondary pb-2">
             Institutional Exam Header Templates
           </h3>
@@ -183,7 +183,7 @@ export const SystemSettingsView: React.FC = () => {
         </div>
 
         {/* Quality Assurance Policy */}
-        <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+        <div className="card p-5 space-y-4">
           <h3 className="text-sm font-bold text-ink border-b border-surface-secondary pb-2">
             Question Bank Quality & Security Rules
           </h3>
@@ -223,7 +223,7 @@ export const SystemSettingsView: React.FC = () => {
       </form>
 
       {/* Backup, Restore, and Reset */}
-      <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+      <div className="card p-5 space-y-4">
         <h3 className="text-sm font-bold text-ink border-b border-surface-secondary pb-2">
           Data Preservation & Backups
         </h3>
@@ -239,7 +239,7 @@ export const SystemSettingsView: React.FC = () => {
             <button
               type="button"
               onClick={handleExportBackup}
-              className="mt-3 w-full flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs"
+              className="mt-3 w-full flex items-center justify-center gap-1.5 btn btn-secondary shadow-xs"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Download JSON Backup</span>
@@ -253,7 +253,7 @@ export const SystemSettingsView: React.FC = () => {
                 Upload a previous BSCpE Data Bank JSON archive to restore state.
               </p>
             </div>
-            <label className="mt-3 w-full flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs cursor-pointer">
+            <label className="mt-3 w-full flex items-center justify-center gap-1.5 btn btn-secondary shadow-xs cursor-pointer">
               <Upload className="w-3.5 h-3.5" />
               <span>Select File to Restore</span>
               <input

@@ -59,7 +59,7 @@ export const FacultyDashboard: React.FC = () => {
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">My Questions</span>
             <FileQuestion className="w-4 h-4 text-primary-600" />
@@ -72,13 +72,13 @@ export const FacultyDashboard: React.FC = () => {
               onClick={() => setCurrentView('my_questions')}
               className="text-xs text-primary-600 hover:underline font-medium"
             >
-              View All â†’
+              View All →
             </button>
           </div>
           <p className="text-[11px] text-ink-muted mt-3">Total authored items in bank</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Drafts in Progress</span>
             <Clock className="w-4 h-4 text-ink-secondary" />
@@ -92,7 +92,7 @@ export const FacultyDashboard: React.FC = () => {
           <p className="text-[11px] text-ink-muted mt-3">Ready to finalize and submit</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Under Committee Review</span>
             <Send className="w-4 h-4 text-warning" />
@@ -106,7 +106,7 @@ export const FacultyDashboard: React.FC = () => {
           <p className="text-[11px] text-ink-muted mt-3">Awaiting reviewer feedback</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Approved for Exams</span>
             <CheckCircle2 className="w-4 h-4 text-success" />
@@ -146,7 +146,7 @@ export const FacultyDashboard: React.FC = () => {
 
       {/* Two Column Layout: Recent Questions & Quick Navigation */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+        <div className="lg:col-span-2 card p-5 space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-2 border-b border-surface-secondary pb-3">
             <h3 className="text-sm font-bold text-ink">My Authored Questions</h3>
             <button
@@ -170,7 +170,7 @@ export const FacultyDashboard: React.FC = () => {
                     <span className="font-mono px-1.5 py-0.2 rounded bg-primary-50 text-primary-700 border border-primary-100 text-[10px]">
                       {q.courseCode}
                     </span>
-                    <span className="text-ink-muted">Â·</span>
+                    <span className="text-ink-muted">·</span>
                     <span className="text-ink-muted text-[11px] truncate">{q.topic}</span>
                   </div>
                   <p className="font-medium text-ink line-clamp-2 leading-relaxed">
@@ -201,7 +201,7 @@ export const FacultyDashboard: React.FC = () => {
 
         {/* Quick Launch & Examination Hub */}
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-3">
+          <div className="card p-5 space-y-3">
             <h3 className="text-sm font-bold text-ink">Faculty Actions</h3>
             <button
               onClick={handleCreateNew}

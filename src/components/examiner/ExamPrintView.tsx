@@ -103,6 +103,10 @@ export const ExamPrintView: React.FC = () => {
   <meta charset="utf-8">
   <title>${exam.title} - ${activeVersion.versionLabel} ${isAnswerKey ? '(Answer Key)' : ''}</title>
   <style>
+    /* Standalone print document: literal hex values below intentionally mirror
+       the app design tokens (primary-900 #0f172a, border-dark #cbd5e1,
+       primary-50 #eff6ff, primary-600 #2563eb, surface-secondary #f1f5f9)
+       so the printed exam matches the on-screen palette without external CSS. */
     body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; color: #0f172a; padding: 40px; max-width: 800px; margin: 0 auto; }
     .header { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 20px; }
     .title { font-size: 16pt; font-weight: bold; margin: 4px 0; }
@@ -118,8 +122,8 @@ export const ExamPrintView: React.FC = () => {
   <div class="header">
     <div style="font-size: 11pt; font-weight: bold;">${exam.settings.headerInstitution}</div>
     <div style="font-size: 10pt;">${exam.settings.departmentName}</div>
-    <div class="title">${exam.title} (${activeVersion.versionLabel}) ${isAnswerKey ? 'Â· MASTER ANSWER KEY' : ''}</div>
-    <div style="font-size: 9pt;">A.Y. ${exam.academicYear} Â· ${exam.semester} Â· Time Limit: ${exam.timeLimitMinutes} minutes</div>
+    <div class="title">${exam.title} (${activeVersion.versionLabel}) ${isAnswerKey ? '· MASTER ANSWER KEY' : ''}</div>
+    <div style="font-size: 9pt;">A.Y. ${exam.academicYear} · ${exam.semester} · Time Limit: ${exam.timeLimitMinutes} minutes</div>
   </div>
 
   ${!isAnswerKey ? `
@@ -177,7 +181,7 @@ export const ExamPrintView: React.FC = () => {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Control Bar (Hidden on Print) */}
-      <div className="no-print bg-white p-4 rounded-xl border border-line shadow-xs flex flex-col md:flex-row items-center justify-between gap-4 sticky top-16 z-20">
+      <div className="no-print card p-4 flex flex-col md:flex-row items-center justify-between gap-4 sticky top-16 z-20">
         <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={() => setCurrentView('exam_list')}
@@ -194,7 +198,7 @@ export const ExamPrintView: React.FC = () => {
               <h2 className="text-sm font-bold text-ink truncate max-w-xs">{exam.title}</h2>
             </div>
             <p className="text-[11px] text-ink-muted">
-              {exam.versions.length} versions generated Â· Total Points: {activeVersion.totalPoints}
+              {exam.versions.length} versions generated · Total Points: {activeVersion.totalPoints}
             </p>
           </div>
         </div>
@@ -314,12 +318,12 @@ export const ExamPrintView: React.FC = () => {
             {exam.title}
           </h1>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-mono text-ink-secondary mt-1">
-            <span>{exam.academicYear} Â· {exam.semester}</span>
-            <span>Â·</span>
+            <span>{exam.academicYear} · {exam.semester}</span>
+            <span>·</span>
             <span className="font-bold text-primary-900">
-              {activeVersion.versionLabel} {viewMode === 'answer_key' ? 'Â· MASTER ANSWER KEY' : ''}
+              {activeVersion.versionLabel} {viewMode === 'answer_key' ? '· MASTER ANSWER KEY' : ''}
             </span>
-            <span>Â·</span>
+            <span>·</span>
             <span>Time Limit: {exam.timeLimitMinutes} mins</span>
           </div>
         </div>
@@ -503,9 +507,9 @@ export const ExamPrintView: React.FC = () => {
 
         {/* Paper Footer */}
         <div className="mt-12 pt-4 border-t border-line-strong flex items-center justify-between text-[10px] text-ink-muted font-mono">
-          <span>End of Examination Â· BSCpE Accredited</span>
+          <span>End of Examination · BSCpE Accredited</span>
           <span>
-            {exam.settings.examCode} Â· {activeVersion.versionLabel} Â· Page 1 of 1
+            {exam.settings.examCode} · {activeVersion.versionLabel} · Page 1 of 1
           </span>
         </div>
       </div>

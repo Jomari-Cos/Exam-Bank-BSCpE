@@ -38,7 +38,7 @@ export const ReviewerDashboard: React.FC = () => {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Awaiting Evaluation</span>
             <Clock className="w-4 h-4 text-warning" />
@@ -57,7 +57,7 @@ export const ReviewerDashboard: React.FC = () => {
           <p className="text-[11px] text-ink-muted mt-3">Submitted by faculty members</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Approved for Bank</span>
             <CheckCircle2 className="w-4 h-4 text-success" />
@@ -71,7 +71,7 @@ export const ReviewerDashboard: React.FC = () => {
           <p className="text-[11px] text-ink-muted mt-3">Ready for examination sets</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Total Committee Reviews</span>
             <ShieldCheck className="w-4 h-4 text-primary-600" />
@@ -92,7 +92,7 @@ export const ReviewerDashboard: React.FC = () => {
       </div>
 
       {/* Main Review Queue Section */}
-      <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+      <div className="card p-5 space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2 border-b border-surface-secondary pb-3">
           <h3 className="text-sm font-bold text-ink">
             Pending Submitted Questions ({pendingQuestions.length})

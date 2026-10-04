@@ -188,7 +188,7 @@ export const QuestionBankView: React.FC = () => {
           {(currentUser.role === 'examiner' || currentUser.role === 'admin' || currentUser.role === 'faculty') && (
             <button
               onClick={() => setCurrentView('exam_generator')}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors shadow-xs"
+              className="flex items-center gap-1.5 btn btn-primary shadow-xs"
             >
               <FileText className="w-3.5 h-3.5" />
               <span>Launch Exam Generator</span>
@@ -197,14 +197,14 @@ export const QuestionBankView: React.FC = () => {
 
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs"
+            className="flex items-center gap-1.5 btn btn-secondary shadow-xs"
             title="Export filtered questions as CSV"
           >
             <Download className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Export CSV</span>
           </button>
 
-          <label className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors shadow-xs cursor-pointer">
+          <label className="flex items-center gap-1.5 btn btn-secondary shadow-xs cursor-pointer">
             <Upload className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Bulk Import</span>
             <input type="file" accept=".json" onChange={handleImportJSON} className="hidden" />
@@ -213,7 +213,7 @@ export const QuestionBankView: React.FC = () => {
       </div>
 
       {/* Filter Matrix */}
-      <div className="bg-white p-4 rounded-xl border border-line shadow-xs space-y-3">
+      <div className="card p-4 space-y-3">
         {/* Search input */}
         <div className="relative w-full">
           <Search className="w-4 h-4 text-ink-muted absolute left-3 top-2.5" />
@@ -303,7 +303,7 @@ export const QuestionBankView: React.FC = () => {
       </div>
 
       {/* Questions Results Table */}
-      <div className="bg-white rounded-xl border border-line shadow-xs overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-2 p-3.5 border-b border-line bg-background text-xs">
           <span className="font-semibold text-ink-secondary">
             Showing <strong className="text-ink font-mono">{sorted.length}</strong> questions in Question Bank
@@ -315,8 +315,8 @@ export const QuestionBankView: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[840px] text-xs text-left">
-            <thead className="bg-background border-b border-line text-ink-secondary font-semibold uppercase text-[10px] tracking-wider">
+          <table className="data-table min-w-[840px]">
+            <thead className="font-semibold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="py-3 px-4">Question ID & Course</th>
                 <th className="py-3 px-4">Question Statement</th>
@@ -325,9 +325,9 @@ export const QuestionBankView: React.FC = () => {
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-surface-secondary">
+            <tbody className="divide-y divide-line">
               {sorted.map((q) => (
-                <tr key={q.id} className="hover:bg-background/80 transition-colors">
+                <tr key={q.id} className="">
                   <td className="py-3.5 px-4 whitespace-nowrap">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-mono font-bold text-ink">{q.id}</span>
@@ -378,7 +378,7 @@ export const QuestionBankView: React.FC = () => {
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => setViewingQuestionId(q.id)}
-                        className="px-2.5 py-1 text-xs font-medium text-ink-secondary bg-white border border-line-strong rounded-lg hover:bg-background transition-colors"
+                        className="px-2.5 py-1 text-xs font-medium text-ink-secondary bg-white border border-line-strong rounded-lg"
                         title="View Full Details"
                       >
                         Inspect
@@ -401,7 +401,7 @@ export const QuestionBankView: React.FC = () => {
 
         {sorted.length === 0 && (
           <div className="p-12 text-center text-ink-muted text-xs">
-            <FileQuestion className="w-8 h-8 text-line-strong mx-auto mb-2" />
+            <FileQuestion className="w-8 h-8 text-ink-muted mx-auto mb-2" />
             <p className="font-semibold text-ink-secondary">No questions match the current filter matrix</p>
             <p className="text-[11px] text-ink-muted mt-0.5">Try widening your search or reset filters.</p>
           </div>

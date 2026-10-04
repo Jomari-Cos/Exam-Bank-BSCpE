@@ -238,7 +238,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         id="app-sidebar"
         aria-label="Primary navigation"
         className={`no-print w-64 shrink-0 bg-navy-900 text-navy-text flex flex-col min-h-[calc(100vh-3.5rem)] border-r border-navy-800 fixed top-14 bottom-0 left-0 z-40 transition-transform duration-200 ease-out lg:static lg:z-auto lg:translate-x-0 ${
-          isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
+          isOpen ? 'translate-x-0 shadow-lg' : '-translate-x-full'
         }`}
       >
       {/* Active Role Card */}

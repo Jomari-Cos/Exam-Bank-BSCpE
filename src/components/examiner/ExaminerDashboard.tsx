@@ -32,7 +32,7 @@ export const ExaminerDashboard: React.FC = () => {
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Approved Question Bank</span>
             <FileQuestion className="w-4 h-4 text-success" />
@@ -51,7 +51,7 @@ export const ExaminerDashboard: React.FC = () => {
           <p className="text-[11px] text-ink-muted mt-3">Verified by Curriculum Committee</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">Generated Exam Sets</span>
             <Layers className="w-4 h-4 text-primary-600" />
@@ -70,7 +70,7 @@ export const ExaminerDashboard: React.FC = () => {
           <p className="text-[11px] text-ink-muted mt-3">With Set A / Set B randomized versions</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-line shadow-xs">
+        <div className="card p-4">
           <div className="flex items-center justify-between text-ink-muted mb-2">
             <span className="text-xs font-medium uppercase tracking-wider">BSCpE Courses Covered</span>
             <FileText className="w-4 h-4 text-info" />
@@ -86,7 +86,7 @@ export const ExaminerDashboard: React.FC = () => {
       </div>
 
       {/* Recent Examinations List */}
-      <div className="bg-white rounded-xl border border-line p-5 shadow-xs space-y-4">
+      <div className="card p-5 space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2 border-b border-surface-secondary pb-3">
           <h3 className="text-sm font-bold text-ink">
             Active Examination Packages ({examinations.length})
