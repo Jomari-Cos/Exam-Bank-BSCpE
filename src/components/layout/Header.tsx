@@ -45,7 +45,11 @@ export const Header: React.FC<HeaderProps> = ({ isSidebarOpen, onToggleSidebar }
           }}
           className="min-w-0 flex items-center gap-2 text-base font-bold tracking-tight text-ink hover:text-primary-600 transition-colors"
         >
-          <span className="w-2.5 h-2.5 rounded-full bg-primary-600 shrink-0" />
+          <img
+            src="/Computer_Engineer_Logo.png"
+            alt="Computer Engineering logo"
+            className="w-8 h-8 rounded-lg object-contain bg-white ring-1 ring-line shrink-0"
+          />
           <span className="truncate">
             <span className="sm:hidden">BSCpE</span>
             <span className="hidden sm:inline md:hidden">BSCpE Data Bank</span>

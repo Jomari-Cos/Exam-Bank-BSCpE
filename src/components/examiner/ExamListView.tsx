@@ -30,10 +30,10 @@ export const ExamListView: React.FC = () => {
     setCurrentView('exam_view', { viewingExamId: id });
   };
 
-  const handleDirectDownloadPdf = (exam: typeof examinations[0]) => {
+  const handleDirectDownloadPdf = async (exam: typeof examinations[0]) => {
     const version = exam.versions[0];
     if (version) {
-      generateExamPdf({
+      await generateExamPdf({
         exam,
         version,
         isAnswerKey: false,

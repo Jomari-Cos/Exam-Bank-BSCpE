@@ -172,6 +172,13 @@ export const LoginPage: React.FC = () => {
       <div className="relative max-w-xl mx-auto w-full space-y-6">
         {/* Header Institution Title */}
         <div className="text-center space-y-2.5">
+          <div className="flex justify-center">
+            <img
+              src="/Computer_Engineer_Logo.png"
+              alt="Computer Engineering logo"
+              className="w-24 h-24 rounded-2xl object-contain bg-white ring-1 ring-navy-800 shadow-lg p-1"
+            />
+          </div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-900 border border-navy-800 text-navy-text text-xs font-mono">
             <span className="w-2 h-2 rounded-full bg-success-accent animate-pulse" />
             <span>COLLEGE OF ENGINEERING · BSCpE DEPARTMENT</span>

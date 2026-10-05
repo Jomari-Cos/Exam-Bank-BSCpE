@@ -7,7 +7,31 @@ export interface GeneratePdfOptions {
   isAnswerKey: boolean;
 }
 
-export function generateExamPdf({ exam, version, isAnswerKey }: GeneratePdfOptions): void {
+export function loadBrandLogoDataUrl(): Promise<string | null> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(null);
+          return;
+        }
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      } catch {
+        resolve(null);
+      }
+    };
+    img.onerror = () => resolve(null);
+    img.src = '/Computer_Engineer_Logo.png';
+  });
+}
+
+export async function generateExamPdf({ exam, version, isAnswerKey }: GeneratePdfOptions): Promise<void> {
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
@@ -44,6 +68,18 @@ export function generateExamPdf({ exam, version, isAnswerKey }: GeneratePdfOptio
   };
 
   // 1. First Page Main University Header
+  try {
+    const logoDataUrl = await loadBrandLogoDataUrl();
+    if (logoDataUrl) {
+      const logoWidth = 26;
+      const logoHeight = 26;
+      doc.addImage(logoDataUrl, 'PNG', pageWidth / 2 - logoWidth / 2, currentY, logoWidth, logoHeight);
+      currentY += logoHeight + 3;
+    }
+  } catch {
+    // Continue with text-only header when the logo cannot be embedded.
+  }
+
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   doc.setTextColor(50, 50, 50);
