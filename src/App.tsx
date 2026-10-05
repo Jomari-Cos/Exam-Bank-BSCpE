@@ -53,9 +53,9 @@ const MainLayout: React.FC = () => {
   // screen. This prevents a reload from flashing the default administrator.
   if (isAuthenticated && !sessionRestored) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans">
-        <div className="flex items-center gap-3 text-slate-600">
-          <span className="w-5 h-5 rounded-full border-2 border-slate-300 border-t-indigo-600 animate-spin" />
+      <div className="min-h-screen bg-background flex items-center justify-center font-sans">
+        <div className="flex items-center gap-3 text-ink-secondary">
+          <span className="w-5 h-5 rounded-full border-2 border-line-strong border-t-primary-600 animate-spin" />
           <span className="text-sm font-medium">Restoring your workspace…</span>
         </div>
       </div>
@@ -142,7 +142,7 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-background flex flex-col font-sans">
       <Header isSidebarOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} />
 
       <div className="flex-1 flex min-w-0">

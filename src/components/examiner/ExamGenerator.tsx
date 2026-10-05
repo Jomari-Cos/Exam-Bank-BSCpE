@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { difficultyBadgeClass } from '../../lib/navigation';
 import {
   Question,
   Examination,
@@ -291,16 +292,16 @@ export const ExamGenerator: React.FC = () => {
   if (!activeCourse || courses.length === 0) {
     return (
       <div className="space-y-6 max-w-5xl">
-        <div className="bg-white rounded-xl border border-slate-200 p-12 shadow-xs text-center">
-          <FileText className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <h2 className="text-sm font-bold text-slate-900">Loading examination workspace…</h2>
-          <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto leading-relaxed">
+        <div className="bg-white rounded-xl border border-line p-12 shadow-xs text-center">
+          <FileText className="w-10 h-10 text-ink-muted mx-auto mb-3" />
+          <h2 className="text-sm font-bold text-ink">Loading examination workspace…</h2>
+          <p className="text-xs text-ink-muted mt-1 max-w-md mx-auto leading-relaxed">
             Waiting for course data from the shared database. If this persists, check your
             connection or add a course under Course Management first.
           </p>
           <button
             onClick={() => setCurrentView('dashboard')}
-            className="mt-4 px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
+            className="mt-4 px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
           >
             ← Back to Dashboard
           </button>
@@ -312,19 +313,19 @@ export const ExamGenerator: React.FC = () => {
   return (
     <div className="space-y-6 max-w-5xl">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
         <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={() => setCurrentView('dashboard')}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-surface-secondary transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+            <h1 className="text-xl font-bold text-ink tracking-tight">
               Examination Generation Suite
             </h1>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-ink-muted">
               Select accredited questions, calibrate difficulty, shuffle choices, and generate randomized exam versions.
             </p>
           </div>
@@ -335,8 +336,8 @@ export const ExamGenerator: React.FC = () => {
           <div
             className={`px-3 py-1 rounded-full font-semibold ${
               currentStep === 1
-                ? 'bg-indigo-600 text-white'
-                : 'bg-slate-100 text-slate-600'
+                ? 'bg-primary-600 text-white'
+                : 'bg-surface-secondary text-ink-secondary'
             }`}
           >
             1. Details
@@ -344,8 +345,8 @@ export const ExamGenerator: React.FC = () => {
           <div
             className={`px-3 py-1 rounded-full font-semibold ${
               currentStep === 2
-                ? 'bg-indigo-600 text-white'
-                : 'bg-slate-100 text-slate-600'
+                ? 'bg-primary-600 text-white'
+                : 'bg-surface-secondary text-ink-secondary'
             }`}
           >
             2. Questions ({selectedQuestionIds.length})
@@ -353,8 +354,8 @@ export const ExamGenerator: React.FC = () => {
           <div
             className={`px-3 py-1 rounded-full font-semibold ${
               currentStep === 3
-                ? 'bg-indigo-600 text-white'
-                : 'bg-slate-100 text-slate-600'
+                ? 'bg-primary-600 text-white'
+                : 'bg-surface-secondary text-ink-secondary'
             }`}
           >
             3. Versions & Output
@@ -364,14 +365,14 @@ export const ExamGenerator: React.FC = () => {
 
       {/* STEP 1: EXAM DETAILS */}
       {currentStep === 1 && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-5">
-          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider text-slate-400">
+        <div className="card p-6 space-y-5">
+          <h2 className="text-sm font-bold text-ink uppercase tracking-wider text-ink-muted">
             Step 1: Examination Header & Academic Context
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 Course Selection *
               </label>
               <select
@@ -383,7 +384,7 @@ export const ExamGenerator: React.FC = () => {
                     setExamTitle(`${c.code}: ${c.name} ${term} Examination`);
                   }
                 }}
-                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
               >
                 {courses.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -394,7 +395,7 @@ export const ExamGenerator: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 Grading Term *
               </label>
               <select
@@ -406,7 +407,7 @@ export const ExamGenerator: React.FC = () => {
                     setExamTitle(`${activeCourse.code}: ${activeCourse.name} ${newTerm} Examination`);
                   }
                 }}
-                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200"
+                className="w-full px-3 py-1.5 text-xs rounded-lg border border-line"
               >
                 <option value="Prelim">Prelim Examination</option>
                 <option value="Midterm">Midterm Examination</option>
@@ -417,7 +418,7 @@ export const ExamGenerator: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-ink-secondary mb-1">
               Examination Paper Title *
             </label>
             <input
@@ -425,37 +426,37 @@ export const ExamGenerator: React.FC = () => {
               required
               value={examTitle}
               onChange={(e) => setExamTitle(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-semibold"
+              className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-semibold"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 Academic Year
               </label>
               <input
                 type="text"
                 value={academicYear}
                 onChange={(e) => setAcademicYear(e.target.value)}
-                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 Semester
               </label>
               <input
                 type="text"
                 value={semester}
                 onChange={(e) => setSemester(e.target.value)}
-                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200"
+                className="w-full px-3 py-1.5 text-xs rounded-lg border border-line"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 Time Limit (Minutes)
               </label>
               <input
@@ -464,27 +465,27 @@ export const ExamGenerator: React.FC = () => {
                 max="300"
                 value={timeLimitMinutes}
                 onChange={(e) => setTimeLimitMinutes(parseInt(e.target.value) || 90)}
-                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-ink-secondary mb-1">
               General Examination Instructions (Printed on Top of Student Paper)
             </label>
             <textarea
               rows={3}
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 leading-relaxed font-sans"
+              className="w-full px-3 py-2 text-xs rounded-lg border border-line leading-relaxed font-sans"
             />
           </div>
 
-          <div className="pt-4 border-t border-slate-100 flex justify-end">
+          <div className="pt-4 border-t border-surface-secondary flex justify-end">
             <button
               onClick={() => setCurrentStep(2)}
-              className="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors shadow-xs"
+              className="px-4 py-2 text-xs font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors shadow-xs"
             >
               Continue to Question Selection →
             </button>
@@ -496,15 +497,15 @@ export const ExamGenerator: React.FC = () => {
       {currentStep === 2 && (
         <div className="space-y-6">
           {/* Top selection mode switcher & stats */}
-          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-2 p-1 bg-slate-100 rounded-lg">
+          <div className="card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2 p-1 bg-surface-secondary rounded-lg">
               <button
                 type="button"
                 onClick={() => setSelectionMode('manual')}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
                   selectionMode === 'manual'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-ink shadow-xs'
+                    : 'text-ink-secondary hover:text-ink'
                 }`}
               >
                 Manual Selection ({selectedQuestionIds.length})
@@ -514,8 +515,8 @@ export const ExamGenerator: React.FC = () => {
                 onClick={() => setSelectionMode('rule_based')}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 ${
                   selectionMode === 'rule_based'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-ink shadow-xs'
+                    : 'text-ink-secondary hover:text-ink'
                 }`}
               >
                 <Sliders className="w-3.5 h-3.5" />
@@ -525,35 +526,35 @@ export const ExamGenerator: React.FC = () => {
 
             <div className="flex flex-wrap items-center gap-3 text-xs">
               <div className="text-right">
-                <span className="font-bold text-slate-900 font-mono text-sm">
+                <span className="font-bold text-ink font-mono text-sm">
                   {selectedQuestionIds.length}
                 </span>{' '}
-                <span className="text-slate-500">questions selected</span>
-                <span className="text-slate-300 mx-2">|</span>
-                <span className="font-bold text-indigo-700 font-mono text-sm">
+                <span className="text-ink-muted">questions selected</span>
+                <span className="text-line-strong mx-2">|</span>
+                <span className="font-bold text-primary-700 font-mono text-sm">
                   {currentTotalPoints}
                 </span>{' '}
-                <span className="text-slate-500">total points</span>
+                <span className="text-ink-muted">total points</span>
               </div>
             </div>
           </div>
 
           {/* Rule-Based Generator Panel */}
           {selectionMode === 'rule_based' && (
-            <div className="bg-white p-5 rounded-xl border border-indigo-200 bg-indigo-50/20 shadow-xs space-y-4">
+            <div className="bg-white p-5 rounded-xl border border-primary-200 bg-primary-50/20 shadow-xs space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h3 className="text-xs font-bold text-indigo-950 uppercase tracking-wider">
+                  <h3 className="text-xs font-bold text-primary-900 uppercase tracking-wider">
                     Automated Table of Specifications (TOS) Calibrator
                   </h3>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-[11px] text-ink-muted">
                     Specify question volume and difficulty bracket distribution.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={handleRunAutoGenerator}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors shadow-xs"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors shadow-xs"
                 >
                   <Shuffle className="w-3.5 h-3.5" />
                   <span>Run Auto-Picker</span>
@@ -562,7 +563,7 @@ export const ExamGenerator: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
                 <div>
-                  <label className="block text-slate-700 font-semibold mb-1">
+                  <label className="block text-ink-secondary font-semibold mb-1">
                     Target Question Count
                   </label>
                   <input
@@ -571,12 +572,12 @@ export const ExamGenerator: React.FC = () => {
                     max="50"
                     value={targetCount}
                     onChange={(e) => setTargetCount(parseInt(e.target.value) || 10)}
-                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-mono"
+                    className="w-full px-3 py-1.5 rounded-lg border border-line bg-white font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-emerald-800 font-semibold mb-1">
+                  <label className="block text-success-fg font-semibold mb-1">
                     Easy Bracket (%)
                   </label>
                   <input
@@ -585,12 +586,12 @@ export const ExamGenerator: React.FC = () => {
                     max="100"
                     value={easyPercent}
                     onChange={(e) => setEasyPercent(parseInt(e.target.value) || 30)}
-                    className="w-full px-3 py-1.5 rounded-lg border border-emerald-200 bg-white font-mono"
+                    className="w-full px-3 py-1.5 rounded-lg border border-success-border bg-white font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-blue-800 font-semibold mb-1">
+                  <label className="block text-info-fg font-semibold mb-1">
                     Medium Bracket (%)
                   </label>
                   <input
@@ -599,12 +600,12 @@ export const ExamGenerator: React.FC = () => {
                     max="100"
                     value={mediumPercent}
                     onChange={(e) => setMediumPercent(parseInt(e.target.value) || 50)}
-                    className="w-full px-3 py-1.5 rounded-lg border border-blue-200 bg-white font-mono"
+                    className="w-full px-3 py-1.5 rounded-lg border border-info-border bg-white font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-purple-800 font-semibold mb-1">
+                  <label className="block text-archived-fg font-semibold mb-1">
                     Hard Bracket (%)
                   </label>
                   <input
@@ -613,7 +614,7 @@ export const ExamGenerator: React.FC = () => {
                     max="100"
                     value={hardPercent}
                     onChange={(e) => setHardPercent(parseInt(e.target.value) || 20)}
-                    className="w-full px-3 py-1.5 rounded-lg border border-purple-200 bg-white font-mono"
+                    className="w-full px-3 py-1.5 rounded-lg border border-archived-border bg-white font-mono"
                   />
                 </div>
               </div>
@@ -621,15 +622,15 @@ export const ExamGenerator: React.FC = () => {
           )}
 
           {/* Search & Filter Bar */}
-          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row gap-3 items-center justify-between">
+          <div className="card p-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
             <div className="relative w-full sm:w-80">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+              <Search className="w-4 h-4 text-ink-muted absolute left-3 top-2.5" />
               <input
                 type="text"
                 placeholder="Search approved questions..."
                 value={filterSearch}
                 onChange={(e) => setFilterSearch(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:border-indigo-500 bg-slate-50/50"
+                className="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-line focus:outline-hidden focus:border-primary-500 bg-background/50"
               />
             </div>
 
@@ -637,7 +638,7 @@ export const ExamGenerator: React.FC = () => {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 bg-white"
+                className="px-2.5 py-1.5 text-xs rounded-lg border border-line bg-white"
               >
                 <option value="All">All Question Formats</option>
                 <option value="multiple_choice">Multiple Choice</option>
@@ -654,7 +655,7 @@ export const ExamGenerator: React.FC = () => {
               <select
                 value={filterDifficulty}
                 onChange={(e) => setFilterDifficulty(e.target.value)}
-                className="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 bg-white"
+                className="px-2.5 py-1.5 text-xs rounded-lg border border-line bg-white"
               >
                 <option value="All">All Difficulties</option>
                 <option value="Easy">Easy</option>
@@ -665,9 +666,9 @@ export const ExamGenerator: React.FC = () => {
           </div>
 
           {/* Questions Pool Table */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-            <div className="p-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-700">
+          <div className="card overflow-hidden">
+            <div className="p-3 border-b border-line bg-background flex items-center justify-between text-xs">
+              <span className="font-semibold text-ink-secondary">
                 Available Approved Questions Pool ({filteredPool.length})
               </span>
               <button
@@ -679,7 +680,7 @@ export const ExamGenerator: React.FC = () => {
                     setSelectedQuestionIds(filteredPool.map((q) => q.id));
                   }
                 }}
-                className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold"
+                className="text-xs text-primary-600 hover:text-primary-800 font-semibold"
               >
                 {selectedQuestionIds.length === filteredPool.length
                   ? 'Deselect All'
@@ -687,7 +688,7 @@ export const ExamGenerator: React.FC = () => {
               </button>
             </div>
 
-            <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
+            <div className="divide-y divide-line max-h-[500px] overflow-y-auto">
               {filteredPool.map((q) => {
                 const isSelected = selectedQuestionIds.includes(q.id);
 
@@ -696,48 +697,40 @@ export const ExamGenerator: React.FC = () => {
                     key={q.id}
                     onClick={() => handleToggleQuestion(q.id)}
                     className={`p-3.5 flex items-start gap-3 transition-colors cursor-pointer text-xs ${
-                      isSelected ? 'bg-indigo-50/50' : 'hover:bg-slate-50'
+                      isSelected ? 'bg-primary-50/50' : 'hover:bg-background'
                     }`}
                   >
                     <input
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => {}} // handled by row click
-                      className="mt-1 rounded text-indigo-600 focus:ring-indigo-500"
+                      className="mt-1 rounded text-primary-600 focus:ring-primary-500"
                     />
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="font-mono font-bold text-slate-900">{q.id}</span>
-                        <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-700 border border-indigo-100 font-semibold">
+                        <span className="font-mono font-bold text-ink">{q.id}</span>
+                        <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-primary-50 text-primary-700 border border-primary-100 font-semibold">
                           {q.courseCode}
                         </span>
-                        <span className="text-slate-400">·</span>
-                        <span className="text-slate-600 font-medium">{q.topic}</span>
-                        <span className="text-slate-400">·</span>
-                        <span className="capitalize text-slate-500">{q.type.replace('_', ' ')}</span>
+                        <span className="text-ink-muted">·</span>
+                        <span className="text-ink-secondary font-medium">{q.topic}</span>
+                        <span className="text-ink-muted">·</span>
+                        <span className="capitalize text-ink-muted">{q.type.replace('_', ' ')}</span>
                       </div>
-                      <p className="font-medium text-slate-800 line-clamp-2 leading-relaxed">
+                      <p className="font-medium text-ink line-clamp-2 leading-relaxed">
                         {q.question}
                       </p>
-                      <span className="text-[10px] text-slate-400 font-mono mt-0.5 block">
+                      <span className="text-[10px] text-ink-muted font-mono mt-0.5 block">
                         CLO: {q.learningOutcome}
                       </span>
                     </div>
 
                     <div className="text-right shrink-0 flex flex-col items-end gap-1">
-                      <span
-                        className={`text-[10px] px-1.5 py-0.2 rounded border font-semibold ${
-                          q.difficulty === 'Easy'
-                            ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
-                            : q.difficulty === 'Medium'
-                            ? 'text-blue-700 bg-blue-50 border-blue-200'
-                            : 'text-purple-700 bg-purple-50 border-purple-200'
-                        }`}
-                      >
+                      <span className={difficultyBadgeClass(q.difficulty)}>
                         {q.difficulty}
                       </span>
-                      <span className="font-mono font-bold text-slate-800 text-xs">
+                      <span className="font-mono font-bold text-ink text-xs">
                         {q.points} {q.points === 1 ? 'pt' : 'pts'}
                       </span>
                     </div>
@@ -746,7 +739,7 @@ export const ExamGenerator: React.FC = () => {
               })}
 
               {filteredPool.length === 0 && (
-                <div className="p-8 text-center text-slate-400 text-xs">
+                <div className="p-8 text-center text-ink-muted text-xs">
                   No approved questions found for this filter.
                 </div>
               )}
@@ -757,7 +750,7 @@ export const ExamGenerator: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
             <button
               onClick={() => setCurrentStep(1)}
-              className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
+              className="px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
             >
               ← Back to Details
             </button>
@@ -769,7 +762,7 @@ export const ExamGenerator: React.FC = () => {
                 }
                 setCurrentStep(3);
               }}
-              className="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors shadow-xs"
+              className="px-4 py-2 text-xs font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors shadow-xs"
             >
               Configure Randomization & Sets →
             </button>
@@ -780,42 +773,42 @@ export const ExamGenerator: React.FC = () => {
       {/* STEP 3: RANDOMIZATION & SET GENERATION */}
       {currentStep === 3 && (
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-5">
-            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider text-slate-400">
+          <div className="card p-6 space-y-5">
+            <h2 className="text-sm font-bold text-ink uppercase tracking-wider text-ink-muted">
               Step 3: Anti-Cheating Randomization & Multi-Version Sets
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+              <div className="p-4 rounded-xl border border-line bg-background/50 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-800">
+                  <span className="text-xs font-bold text-ink">
                     Randomize Question Ordering
                   </span>
                   <input
                     type="checkbox"
                     checked={randomizeQuestions}
                     onChange={(e) => setRandomizeQuestions(e.target.checked)}
-                    className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                    className="rounded text-primary-600 focus:ring-primary-500 w-4 h-4"
                   />
                 </div>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-ink-muted">
                   Each examination version (Set A, Set B) will scramble question positions so neighboring students cannot copy.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+              <div className="p-4 rounded-xl border border-line bg-background/50 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-800">
+                  <span className="text-xs font-bold text-ink">
                     Randomize Multiple Choice Options
                   </span>
                   <input
                     type="checkbox"
                     checked={randomizeChoices}
                     onChange={(e) => setRandomizeChoices(e.target.checked)}
-                    className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                    className="rounded text-primary-600 focus:ring-primary-500 w-4 h-4"
                   />
                 </div>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-ink-muted">
                   Scramble choices (A, B, C, D) within each multiple choice and matching question, automatically recalculating the key.
                 </p>
               </div>
@@ -823,13 +816,13 @@ export const ExamGenerator: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-ink-secondary mb-1">
                   Number of Distinct Exam Sets to Generate
                 </label>
                 <select
                   value={versionCount}
                   onChange={(e) => setVersionCount(parseInt(e.target.value) || 2)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
                 >
                   <option value="1">1 Version (Master Set A Only)</option>
                   <option value="2">2 Versions (Set A & Set B)</option>
@@ -839,7 +832,7 @@ export const ExamGenerator: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-ink-secondary mb-1">
                   Point Values Visibility
                 </label>
                 <div className="flex items-center gap-2 pt-1.5">
@@ -848,9 +841,9 @@ export const ExamGenerator: React.FC = () => {
                     id="showPointsCheckbox"
                     checked={showPoints}
                     onChange={(e) => setShowPoints(e.target.checked)}
-                    className="rounded text-indigo-600 focus:ring-indigo-500"
+                    className="rounded text-primary-600 focus:ring-primary-500"
                   />
-                  <label htmlFor="showPointsCheckbox" className="text-xs text-slate-700">
+                  <label htmlFor="showPointsCheckbox" className="text-xs text-ink-secondary">
                     Display points per question on student test paper
                   </label>
                 </div>
@@ -858,41 +851,41 @@ export const ExamGenerator: React.FC = () => {
             </div>
 
             {/* Summary Box */}
-            <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl text-xs space-y-2">
-              <h4 className="font-bold text-emerald-900 flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <div className="p-4 bg-success-soft/70 border border-success-border rounded-xl text-xs space-y-2">
+              <h4 className="font-bold text-success-fg flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-success" />
                 <span>Ready to Generate Examination Set</span>
               </h4>
-              <p className="text-emerald-800 leading-relaxed">
+              <p className="text-success-fg leading-relaxed">
                 Will compile <strong>{selectedQuestionIds.length} questions</strong> into{' '}
                 <strong>{versionCount} sets</strong> ({versionRangeText}) with total point capacity of{' '}
                 <strong>{currentTotalPoints} points</strong>. Complete matching answer keys and rubric will be generated.
               </p>
-              <p className="text-emerald-800 leading-relaxed">
+              <p className="text-success-fg leading-relaxed">
                 Saving stores the package in the shared cloud database &mdash; every other signed-in user sees it in real time.
                 {!isFirebaseConnected && (
-                  <span className="font-semibold text-amber-700"> You appear to be offline; the exam will sync automatically when you reconnect.</span>
+                  <span className="font-semibold text-warning-fg"> You appear to be offline; the exam will sync automatically when you reconnect.</span>
                 )}
               </p>
               {saveError ? (
-                <p className="text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-2.5 py-1.5 leading-relaxed">
+                <p className="text-danger-fg bg-danger-soft border border-danger-border rounded-lg px-2.5 py-1.5 leading-relaxed">
                   {saveError}
                 </p>
               ) : null}
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-slate-100">
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-surface-secondary">
               <button
                 onClick={() => setCurrentStep(2)}
-                className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
+                className="px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
               >
                 ← Back to Questions
               </button>
               <button
                 onClick={handleGenerateExam}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-wait rounded-lg transition-all shadow-md hover:shadow-lg"
+                className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-60 disabled:cursor-wait rounded-lg transition-all shadow-xs"
               >
                 <Layers className="w-4 h-4" />
                 <span>{isSaving ? 'Saving to Shared Database…' : 'Compile & Generate Examination Sets'}</span>

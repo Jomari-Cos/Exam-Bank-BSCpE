@@ -1,0 +1,21 @@
+{
+  "version": 1.1,
+  "atRules": [
+    {
+      "name": "@theme",
+      "description": "Tailwind CSS v4 directive that maps design tokens into Tailwind's theme namespace so utilities (e.g. bg-primary-600) are generated from CSS variables."
+    },
+    {
+      "name": "@utility",
+      "description": "Tailwind CSS v4 directive for defining custom single-purpose utilities."
+    },
+    {
+      "name": "@variant",
+      "description": "Tailwind CSS v4 directive for defining custom variants."
+    },
+    {
+      "name": "@apply",
+      "description": "Tailwind CSS directive for inlining utility styles into custom CSS."
+    }
+  ]
+}

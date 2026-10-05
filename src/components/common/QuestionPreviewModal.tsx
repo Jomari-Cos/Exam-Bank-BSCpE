@@ -3,6 +3,11 @@ import { useApp } from '../../context/AppContext';
 import { Question, TestCase } from '../../types';
 import { CodeViewer } from './CodeViewer';
 import {
+  statusBadgeClass,
+  reviewActionBadgeClass,
+  difficultyBadgeClass,
+} from '../../lib/navigation';
+import {
   X,
   Clock,
   User as UserIcon,
@@ -51,36 +56,6 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
     }, 450);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Approved':
-      case 'Published':
-        return 'text-emerald-700 bg-emerald-50 border-emerald-200';
-      case 'Submitted':
-      case 'Under Review':
-        return 'text-amber-700 bg-amber-50 border-amber-200';
-      case 'Draft':
-        return 'text-slate-700 bg-slate-100 border-slate-200';
-      case 'Archived':
-        return 'text-slate-400 bg-slate-50 border-slate-200';
-      default:
-        return 'text-slate-600 bg-slate-50 border-slate-200';
-    }
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Easy':
-        return 'text-emerald-700 bg-emerald-50 border-emerald-200';
-      case 'Medium':
-        return 'text-blue-700 bg-blue-50 border-blue-200';
-      case 'Hard':
-        return 'text-purple-700 bg-purple-50 border-purple-200';
-      default:
-        return 'text-slate-600';
-    }
-  };
-
   const canEdit =
     (currentUser.role === 'admin' || currentUser.id === question.authorId) &&
     question.status === 'Draft';
@@ -94,40 +69,40 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
     question.status === 'Submitted';
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-ink/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-lg border border-line w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Header */}
-        <div className="flex items-start justify-between gap-3 p-4 sm:p-5 border-b border-slate-200 bg-slate-50/70 shrink-0">
+        <div className="flex items-start justify-between gap-3 p-4 sm:p-5 border-b border-line bg-background/70 shrink-0">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-200 text-slate-800">
+              <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-surface-secondary text-ink">
                 {question.id}
               </span>
-              <span className={`text-xs px-2 py-0.5 rounded border font-medium ${getStatusColor(question.status)}`}>
+              <span className={statusBadgeClass(question.status)}>
                 {question.status}
               </span>
-              <span className={`text-xs px-2 py-0.5 rounded border font-medium ${getDifficultyColor(question.difficulty)}`}>
+              <span className={difficultyBadgeClass(question.difficulty)}>
                 {question.difficulty}
               </span>
-              <span className="text-xs text-slate-500 font-mono">
+              <span className="text-xs text-ink-muted font-mono">
                 {question.points} {question.points === 1 ? 'pt' : 'pts'}
               </span>
-              <span className="text-xs text-slate-400">·</span>
-              <span className="text-xs text-slate-600 font-medium">{question.type.replace('_', ' ').toUpperCase()}</span>
+              <span className="text-xs text-ink-muted">·</span>
+              <span className="text-xs text-ink-secondary font-medium">{question.type.replace('_', ' ').toUpperCase()}</span>
             </div>
-            <h2 className="text-base font-bold text-slate-900 leading-snug">
+            <h2 className="text-base font-bold text-ink leading-snug">
               {question.courseCode} · {question.courseName}
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Topic: <span className="text-slate-700 font-medium">{question.topic}</span>
+            <p className="text-xs text-ink-muted mt-0.5">
+              Topic: <span className="text-ink-secondary font-medium">{question.topic}</span>
               {' · '}
-              <span className="font-mono text-[11px] text-slate-600">{question.learningOutcome}</span>
+              <span className="font-mono text-[11px] text-ink-secondary">{question.learningOutcome}</span>
             </p>
           </div>
 
           <button
             onClick={onClose}
-            className="tap-target p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors shrink-0 cursor-pointer"
+            className="tap-target p-1.5 rounded-lg text-ink-muted hover:text-ink-secondary hover:bg-surface-secondary transition-colors shrink-0 cursor-pointer"
             aria-label="Close question preview"
           >
             <X className="w-5 h-5" />
@@ -135,13 +110,13 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
         </div>
 
         {/* Navigation Tabs (scrollable horizontally on small screens) */}
-        <div className="flex items-center gap-1 px-4 sm:px-5 pt-3 border-b border-slate-200 bg-white overflow-x-auto shrink-0">
+        <div className="flex items-center gap-1 px-4 sm:px-5 pt-3 border-b border-line bg-white overflow-x-auto shrink-0">
           <button
             onClick={() => setActiveTab('content')}
             className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors shrink-0 whitespace-nowrap ${
               activeTab === 'content'
-                ? 'border-indigo-600 text-indigo-700'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
+                ? 'border-primary-600 text-primary-700'
+                : 'border-transparent text-ink-secondary hover:text-ink'
             }`}
           >
             Question & Solution
@@ -152,8 +127,8 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               onClick={() => setActiveTab('testcases')}
               className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
                 activeTab === 'testcases'
-                  ? 'border-indigo-600 text-indigo-700'
-                  : 'border-transparent text-slate-600 hover:text-slate-900'
+                  ? 'border-primary-600 text-primary-700'
+                  : 'border-transparent text-ink-secondary hover:text-ink'
               }`}
             >
               <FileCode2 className="w-3.5 h-3.5" />
@@ -165,8 +140,8 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
             onClick={() => setActiveTab('reviews')}
             className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'reviews'
-                ? 'border-indigo-600 text-indigo-700'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
+                ? 'border-primary-600 text-primary-700'
+                : 'border-transparent text-ink-secondary hover:text-ink'
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
@@ -177,8 +152,8 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
             onClick={() => setActiveTab('history')}
             className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
               activeTab === 'history'
-                ? 'border-indigo-600 text-indigo-700'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
+                ? 'border-primary-600 text-primary-700'
+                : 'border-transparent text-ink-secondary hover:text-ink'
             }`}
           >
             <Clock className="w-3.5 h-3.5" />
@@ -192,10 +167,10 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
             <div className="space-y-6">
               {/* Question Statement */}
               <div className="space-y-2">
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                   Question Prompt / Problem Statement
                 </span>
-                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-sm whitespace-pre-wrap leading-relaxed font-sans font-medium">
+                <div className="p-4 rounded-lg bg-background border border-line text-ink text-sm whitespace-pre-wrap leading-relaxed font-sans font-medium">
                   {question.question}
                 </div>
               </div>
@@ -204,11 +179,11 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {question.type === 'multiple_choice' && question.choices && (
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                    <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                       Multiple Choice Options
                     </span>
                     {question.randomizeChoices && (
-                      <span className="text-[11px] text-slate-500 italic">Randomize choices enabled</span>
+                      <span className="text-[11px] text-ink-muted italic">Randomize choices enabled</span>
                     )}
                   </div>
                   <div className="grid gap-2">
@@ -220,20 +195,20 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                           key={index}
                           className={`flex items-start gap-3 p-3 rounded-lg border text-xs ${
                             isCorrect
-                              ? 'bg-emerald-50 border-emerald-300 text-emerald-950 font-semibold'
-                              : 'bg-white border-slate-200 text-slate-700'
+                              ? 'bg-success-soft border-success-accent text-success-fg font-semibold'
+                              : 'bg-white border-line text-ink-secondary'
                           }`}
                         >
                           <span
                             className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-mono font-bold shrink-0 ${
-                              isCorrect ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'
+                              isCorrect ? 'bg-success text-white' : 'bg-surface-secondary text-ink-secondary'
                             }`}
                           >
                             {letter}
                           </span>
                           <span className="flex-1 mt-0.5">{choice}</span>
                           {isCorrect && (
-                            <span className="text-[11px] uppercase font-bold text-emerald-700 px-2 py-0.5 bg-emerald-100 rounded">
+                            <span className="text-[11px] uppercase font-bold text-success-fg px-2 py-0.5 bg-success-soft rounded">
                               Correct Answer
                             </span>
                           )}
@@ -247,11 +222,11 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {/* True or False */}
               {question.type === 'true_false' && (
                 <div className="space-y-2">
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                     Correct Answer
                   </span>
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-900 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <div className="p-3 bg-success-soft border border-success-border rounded-lg text-success-fg text-sm font-semibold flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-success" />
                     <span>Statement is {question.trueFalseAnswer ? 'TRUE' : 'FALSE'}</span>
                   </div>
                 </div>
@@ -260,26 +235,26 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {/* Matching Type */}
               {question.type === 'matching' && question.matchingPairs && (
                 <div className="space-y-2">
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                    Matching Pairs (List A ↔ List B)
+                  <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
+                    Matching Pairs (List A - List B)
                   </span>
                   {question.matchingInstructions && (
-                    <p className="text-xs text-slate-600 italic">{question.matchingInstructions}</p>
+                    <p className="text-xs text-ink-secondary italic">{question.matchingInstructions}</p>
                   )}
-                  <div className="border border-slate-200 rounded-lg overflow-hidden">
+                  <div className="border border-line rounded-lg overflow-hidden">
                     <div className="overflow-x-auto">
-                    <table className="w-full min-w-[340px] text-xs">
-                      <thead className="bg-slate-50 border-b border-slate-200 text-slate-700">
+                    <table className="data-table min-w-[340px]">
+                      <thead className="">
                         <tr>
                           <th className="text-left py-2 px-3 font-semibold w-1/2">List A (Item)</th>
                           <th className="text-left py-2 px-3 font-semibold w-1/2">List B (Correct Match)</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100">
+                      <tbody className="divide-y divide-line">
                         {question.matchingPairs.map((pair, i) => (
-                          <tr key={pair.id || i} className="hover:bg-slate-50">
-                            <td className="py-2.5 px-3 font-medium text-slate-800">{pair.itemA}</td>
-                            <td className="py-2.5 px-3 text-emerald-800 bg-emerald-50/50 font-medium">
+                          <tr key={pair.id || i} className="hover:bg-background">
+                            <td className="py-2.5 px-3 font-medium text-ink">{pair.itemA}</td>
+                            <td className="py-2.5 px-3 text-success-fg bg-success-soft/50 font-medium">
                               {pair.itemB}
                             </td>
                           </tr>
@@ -294,25 +269,25 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {/* Fill in the Blanks */}
               {question.type === 'fill_blank' && (
                 <div className="space-y-3">
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                     Blank Answer Key & Accepted Alternatives
                   </span>
-                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-2">
+                  <div className="p-3 bg-background border border-line rounded-lg text-xs space-y-2">
                     <div>
-                      <span className="text-slate-500 font-medium">Primary Accepted Answer: </span>
-                      <strong className="text-emerald-700 font-mono text-sm ml-1">
+                      <span className="text-ink-muted font-medium">Primary Accepted Answer: </span>
+                      <strong className="text-success-fg font-mono text-sm ml-1">
                         {question.blankCorrectAnswers?.join(', ') || question.correctAnswer}
                       </strong>
                     </div>
                     {question.alternativeAnswers && question.alternativeAnswers.length > 0 && (
                       <div>
-                        <span className="text-slate-500 font-medium">Accepted Variants / Synonyms: </span>
-                        <span className="text-slate-700 font-mono ml-1">
+                        <span className="text-ink-muted font-medium">Accepted Variants / Synonyms: </span>
+                        <span className="text-ink-secondary font-mono ml-1">
                           {question.alternativeAnswers.join(' · ')}
                         </span>
                       </div>
                     )}
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-[11px] text-ink-muted">
                       Case Sensitivity: {question.isCaseSensitive ? 'Strict Case Match' : 'Case Insensitive'}
                     </p>
                   </div>
@@ -322,7 +297,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {/* Coding Problem / Code Snippets */}
               {question.codeSnippet && (
                 <div className="space-y-2">
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                     Code Snippet ({question.programmingLanguage || 'Code'})
                   </span>
                   <CodeViewer code={question.codeSnippet} language={question.programmingLanguage || 'c'} />
@@ -331,7 +306,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
               {question.expectedSolution && (
                 <div className="space-y-2">
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                     Expected Reference Solution ({question.programmingLanguage || 'Code'})
                   </span>
                   <CodeViewer code={question.expectedSolution} language={question.programmingLanguage || 'c'} />
@@ -342,13 +317,13 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {question.type === 'debugging' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <span className="text-[11px] font-semibold text-rose-600 uppercase tracking-wider flex items-center gap-1">
+                    <span className="text-[11px] font-semibold text-danger uppercase tracking-wider flex items-center gap-1">
                       <AlertTriangle className="w-3 h-3" /> Buggy Code Given to Student
                     </span>
                     <CodeViewer code={question.buggyCode || ''} language={question.programmingLanguage || 'c'} />
                   </div>
                   <div className="space-y-2">
-                    <span className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider flex items-center gap-1">
+                    <span className="text-[11px] font-semibold text-success uppercase tracking-wider flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" /> Expected Correction
                     </span>
                     <CodeViewer code={question.expectedCorrection || ''} language={question.programmingLanguage || 'c'} />
@@ -359,10 +334,10 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {/* Flowchart or Diagram Description */}
               {question.type === 'flowchart' && question.flowchartContent && (
                 <div className="space-y-2">
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                     Flowchart Diagram / Logic Structure
                   </span>
-                  <div className="p-4 bg-slate-900 text-emerald-400 font-mono text-xs rounded-lg overflow-x-auto whitespace-pre leading-relaxed border border-slate-800">
+                  <div className="p-4 bg-navy-900 text-success-accent font-mono text-xs rounded-lg overflow-x-auto whitespace-pre leading-relaxed border border-navy-700">
                     {question.flowchartContent}
                   </div>
                 </div>
@@ -371,17 +346,17 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {/* Sub-questions for Flowchart, Algorithm Tracing, Pseudocode */}
               {question.subQuestions && question.subQuestions.length > 0 && (
                 <div className="space-y-2">
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                     Sub-Questions & Expected Responses
                   </span>
                   <div className="space-y-2">
                     {question.subQuestions.map((sq, i) => (
-                      <div key={sq.id || i} className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1">
-                        <div className="flex items-center justify-between text-slate-700 font-semibold">
+                      <div key={sq.id || i} className="p-3 bg-background border border-line rounded-lg text-xs space-y-1">
+                        <div className="flex items-center justify-between text-ink-secondary font-semibold">
                           <span>Q{i + 1}. {sq.prompt}</span>
-                          <span className="text-slate-500 font-mono text-[11px]">{sq.points} pts</span>
+                          <span className="text-ink-muted font-mono text-[11px]">{sq.points} pts</span>
                         </div>
-                        <div className="text-emerald-800 font-medium pl-2 border-l-2 border-emerald-500">
+                        <div className="text-success-fg font-medium pl-2 border-l-2 border-success">
                           Answer: {sq.answer}
                         </div>
                       </div>
@@ -393,10 +368,10 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
               {/* Expected Output for Code Output */}
               {question.expectedOutput && (
                 <div className="space-y-2">
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                     Expected Console Output
                   </span>
-                  <div className="p-3 bg-slate-900 font-mono text-xs text-amber-300 rounded-lg border border-slate-800">
+                  <div className="p-3 bg-navy-900 font-mono text-xs text-warning-accent rounded-lg border border-navy-700">
                     {question.expectedOutput}
                   </div>
                 </div>
@@ -404,31 +379,31 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
               {/* Derivation / Explanation */}
               <div className="space-y-2">
-                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                   Detailed Solution & Pedagogical Explanation
                 </span>
-                <div className="p-4 bg-indigo-50/60 border border-indigo-100 rounded-lg text-xs text-indigo-950 whitespace-pre-wrap leading-relaxed">
+                <div className="p-4 bg-primary-50/60 border border-primary-100 rounded-lg text-xs text-primary-900 whitespace-pre-wrap leading-relaxed">
                   {question.explanation || 'No explanation provided.'}
                 </div>
               </div>
 
               {/* Metadata details */}
-              <div className="pt-4 border-t border-slate-200 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-slate-600">
+              <div className="pt-4 border-t border-line grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-ink-secondary">
                 <div>
-                  <span className="text-[11px] text-slate-400 block">Author</span>
-                  <strong className="text-slate-800 font-medium">{question.authorName}</strong>
+                  <span className="text-[11px] text-ink-muted block">Author</span>
+                  <strong className="text-ink font-medium">{question.authorName}</strong>
                 </div>
                 <div>
-                  <span className="text-[11px] text-slate-400 block">Reviewer</span>
-                  <strong className="text-slate-800 font-medium">{question.reviewerName || 'Unassigned'}</strong>
+                  <span className="text-[11px] text-ink-muted block">Reviewer</span>
+                  <strong className="text-ink font-medium">{question.reviewerName || 'Unassigned'}</strong>
                 </div>
                 <div>
-                  <span className="text-[11px] text-slate-400 block">Academic Term</span>
-                  <strong className="text-slate-800 font-medium">{question.academicYear} · {question.semester}</strong>
+                  <span className="text-[11px] text-ink-muted block">Academic Term</span>
+                  <strong className="text-ink font-medium">{question.academicYear} · {question.semester}</strong>
                 </div>
                 <div>
-                  <span className="text-[11px] text-slate-400 block">Last Modified</span>
-                  <strong className="text-slate-800 font-medium">{question.dateModified}</strong>
+                  <span className="text-[11px] text-ink-muted block">Last Modified</span>
+                  <strong className="text-ink font-medium">{question.dateModified}</strong>
                 </div>
               </div>
             </div>
@@ -438,15 +413,15 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
             <div className="space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h3 className="text-xs font-semibold text-slate-900">Automated Test Suites</h3>
-                  <p className="text-[11px] text-slate-500">
+                  <h3 className="text-xs font-semibold text-ink">Automated Test Suites</h3>
+                  <p className="text-[11px] text-ink-muted">
                     Test cases validated against expected solution during examination scoring.
                   </p>
                 </div>
                 <button
                   onClick={runAllTestCases}
                   disabled={isRunningTests}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
                 >
                   {isRunningTests ? (
                     <>
@@ -468,47 +443,47 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                   return (
                     <div
                       key={tc.id || index}
-                      className="border border-slate-200 rounded-lg p-3 bg-white space-y-2 text-xs"
+                      className="border border-line rounded-lg p-3 bg-white space-y-2 text-xs"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-slate-900">
+                          <span className="font-mono font-bold text-ink">
                             Test Case #{index + 1}
                           </span>
                           {tc.isHidden ? (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-100 text-slate-600 border border-slate-200">
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-surface-secondary text-ink-secondary border border-line">
                               Hidden Test Case
                             </span>
                           ) : (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-blue-50 text-blue-700 border border-blue-200">
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-info-soft text-info-fg border border-info-border">
                               Public Sample
                             </span>
                           )}
-                          <span className="text-slate-500 font-mono text-[11px]">
+                          <span className="text-ink-muted font-mono text-[11px]">
                             {tc.points} {tc.points === 1 ? 'pt' : 'pts'}
                           </span>
                         </div>
 
                         {passed !== undefined && (
-                          <span className="flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          <span className="flex items-center gap-1 text-[11px] font-semibold text-success-fg bg-success-soft px-2 py-0.5 rounded border border-success-border">
                             <CheckCircle2 className="w-3.5 h-3.5" /> Passed
                           </span>
                         )}
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 font-mono text-xs">
-                        <div className="p-2 bg-slate-900 text-slate-200 rounded">
-                          <div className="text-[10px] text-slate-400 mb-1 select-none font-sans uppercase">Input:</div>
+                        <div className="p-2 bg-navy-950 text-navy-text rounded">
+                          <div className="text-[10px] text-navy-muted mb-1 select-none font-sans uppercase">Input:</div>
                           <pre className="whitespace-pre-wrap">{tc.input}</pre>
                         </div>
-                        <div className="p-2 bg-slate-900 text-emerald-300 rounded">
-                          <div className="text-[10px] text-slate-400 mb-1 select-none font-sans uppercase">Expected Output:</div>
+                        <div className="p-2 bg-navy-950 text-success-accent rounded">
+                          <div className="text-[10px] text-navy-muted mb-1 select-none font-sans uppercase">Expected Output:</div>
                           <pre className="whitespace-pre-wrap">{tc.expectedOutput}</pre>
                         </div>
                       </div>
 
                       {tc.explanation && (
-                        <p className="text-[11px] text-slate-500 italic">
+                        <p className="text-[11px] text-ink-muted italic">
                           Note: {tc.explanation}
                         </p>
                       )}
@@ -521,9 +496,9 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
           {activeTab === 'reviews' && (
             <div className="space-y-4">
-              <h3 className="text-xs font-semibold text-slate-900">Review Committee Deliberation</h3>
+              <h3 className="text-xs font-semibold text-ink">Review Committee Deliberation</h3>
               {!question.reviews || question.reviews.length === 0 ? (
-                <div className="text-center py-10 bg-slate-50 rounded-lg border border-dashed border-slate-200 text-slate-500 text-xs">
+                <div className="empty-state">
                   No review feedback submitted yet.
                 </div>
               ) : (
@@ -531,44 +506,36 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                   {question.reviews.map((rev) => (
                     <div
                       key={rev.id}
-                      className="border border-slate-200 rounded-lg p-4 bg-white space-y-2 text-xs"
+                      className="border border-line rounded-lg p-4 bg-white space-y-2 text-xs"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <UserIcon className="w-4 h-4 text-slate-400" />
-                          <strong className="text-slate-800">{rev.reviewerName}</strong>
-                          <span className="text-slate-400 font-mono text-[11px]">{rev.date}</span>
+                          <UserIcon className="w-4 h-4 text-ink-muted" />
+                          <strong className="text-ink">{rev.reviewerName}</strong>
+                          <span className="text-ink-muted font-mono text-[11px]">{rev.date}</span>
                         </div>
-                        <span
-                          className={`px-2 py-0.5 rounded text-xs font-semibold border ${
-                            rev.action === 'Approved'
-                              ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
-                              : rev.action === 'Returned'
-                              ? 'text-amber-700 bg-amber-50 border-amber-200'
-                              : 'text-rose-700 bg-rose-50 border-rose-200'
-                          }`}
-                        >
+                        <span className={reviewActionBadgeClass(rev.action)}>
                           {rev.action}
                         </span>
                       </div>
 
-                      <p className="text-slate-700 whitespace-pre-wrap bg-slate-50 p-3 rounded border border-slate-100">
+                      <p className="text-ink-secondary whitespace-pre-wrap bg-background p-3 rounded border border-surface-secondary">
                         {rev.comments}
                       </p>
 
                       {rev.criteriaChecks && (
-                        <div className="pt-2 grid grid-cols-2 gap-2 text-[11px] text-slate-600">
+                        <div className="pt-2 grid grid-cols-2 gap-2 text-[11px] text-ink-secondary">
                           <div className="flex items-center gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Syllabus Aligned
+                            <CheckCircle2 className="w-3.5 h-3.5 text-success" /> Syllabus Aligned
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Clarity Verified
+                            <CheckCircle2 className="w-3.5 h-3.5 text-success" /> Clarity Verified
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Answer Key Verified
+                            <CheckCircle2 className="w-3.5 h-3.5 text-success" /> Answer Key Verified
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Difficulty Calibrated
+                            <CheckCircle2 className="w-3.5 h-3.5 text-success" /> Difficulty Calibrated
                           </div>
                         </div>
                       )}
@@ -581,23 +548,23 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
           {activeTab === 'history' && (
             <div className="space-y-4">
-              <h3 className="text-xs font-semibold text-slate-900">Audit Trail & Version History</h3>
+              <h3 className="text-xs font-semibold text-ink">Audit Trail & Version History</h3>
               {!question.history || question.history.length === 0 ? (
-                <div className="text-center py-10 bg-slate-50 rounded-lg border border-dashed border-slate-200 text-slate-500 text-xs">
+                <div className="empty-state">
                   No audit entries recorded.
                 </div>
               ) : (
-                <div className="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+                <div className="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-line">
                   {question.history.map((entry) => (
                     <div key={entry.id} className="relative text-xs">
-                      <div className="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-indigo-600 ring-4 ring-white" />
+                      <div className="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-primary-600 ring-4 ring-white" />
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-slate-800">{entry.action}</span>
-                        <span className="text-[11px] text-slate-400 font-mono">{entry.timestamp}</span>
+                        <span className="font-semibold text-ink">{entry.action}</span>
+                        <span className="text-[11px] text-ink-muted font-mono">{entry.timestamp}</span>
                       </div>
-                      <p className="text-slate-600 mt-0.5">By {entry.userName}</p>
+                      <p className="text-ink-secondary mt-0.5">By {entry.userName}</p>
                       {entry.note && (
-                        <p className="text-slate-500 text-[11px] italic mt-0.5 bg-slate-50 p-1.5 rounded">
+                        <p className="text-ink-muted text-[11px] italic mt-0.5 bg-background p-1.5 rounded">
                           {entry.note}
                         </p>
                       )}
@@ -610,10 +577,10 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
         </div>
 
         {/* Modal Footer Actions */}
-        <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-          <div className="text-xs text-slate-500">
+        <div className="p-4 border-t border-line bg-background flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+          <div className="text-xs text-ink-muted">
             {question.status === 'Approved' ? (
-              <span className="text-emerald-700 font-medium">✓ Ready for examination sets</span>
+              <span className="text-success-fg font-medium">✓ Ready for examination sets</span>
             ) : (
               <span>Status: {question.status}</span>
             )}
@@ -626,7 +593,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                   onClose();
                   onEdit(question.id);
                 }}
-                className="px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+                className="btn btn-secondary"
               >
                 Edit Question
               </button>
@@ -638,7 +605,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                   onClose();
                   onSubmitForReview(question.id);
                 }}
-                className="px-3 py-1.5 text-xs font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors"
+                className="px-3 py-1.5 text-xs font-medium text-white bg-warning hover:bg-warning-fg rounded-lg transition-colors"
               >
                 Submit for Review
               </button>
@@ -650,7 +617,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
                   onClose();
                   onReview(question.id);
                 }}
-                className="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+                className="px-3 py-1.5 text-xs font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
               >
                 Review & Deliberate
               </button>
@@ -658,7 +625,7 @@ export const QuestionPreviewModal: React.FC<QuestionPreviewModalProps> = ({
 
             <button
               onClick={onClose}
-              className="px-4 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+              className="btn btn-secondary"
             >
               Close
             </button>

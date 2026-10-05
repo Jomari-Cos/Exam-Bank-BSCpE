@@ -1,0 +1,14 @@
+{
+  // Tailwind CSS v4 uses custom at-rules (@theme, @layer, @apply, @utility, @variant)
+  // that VS Code's built-in CSS language service does not recognize.
+  // Silence the false-positive "Unknown at rule" diagnostics; the real
+  // validation for these is the Tailwind compiler itself (vite build).
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+  "css.customData": ["./.vscode/css-custom-data.json"],
+  // Plain-JS helper scripts are not part of the TS program (see tsconfig
+  // "exclude"), so don't surface checkJs noise for them in the editor.
+  "typescript.checkJs": false,
+  "javascript.checkJs": false
+}

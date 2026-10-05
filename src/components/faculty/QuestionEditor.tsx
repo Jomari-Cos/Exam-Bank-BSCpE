@@ -382,7 +382,7 @@ export const QuestionEditor: React.FC = () => {
         console.error('Failed to save question:', err);
         setSaveError(
           'Could not save the question to the shared database. ' +
-            'It is still shown locally — please check your connection and try again.'
+            'It is still shown locally - please check your connection and try again.'
         );
       } finally {
         setIsSaving(false);
@@ -395,7 +395,7 @@ export const QuestionEditor: React.FC = () => {
         console.error('Failed to save question:', err);
         setSaveError(
           'Could not save the question to the shared database. ' +
-            'It is still shown locally — please check your connection and try again.'
+            'It is still shown locally - please check your connection and try again.'
         );
       } finally {
         setIsSaving(false);
@@ -406,17 +406,17 @@ export const QuestionEditor: React.FC = () => {
   if (courses.length === 0 || !activeCourse) {
     return (
       <div className="space-y-6 max-w-5xl">
-        <div className="bg-white rounded-xl border border-slate-200 p-12 shadow-xs text-center">
-          <h2 className="text-sm font-bold text-slate-900">Loading question workspace…</h2>
-          <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto leading-relaxed">
+        <div className="bg-white rounded-xl border border-line p-12 shadow-xs text-center">
+          <h2 className="text-sm font-bold text-ink">Loading question workspace…</h2>
+          <p className="text-xs text-ink-muted mt-1 max-w-md mx-auto leading-relaxed">
             Waiting for course data from the shared database. If this persists, check your
             connection or add a course under Course Management first.
           </p>
           <button
             onClick={() => setCurrentView('my_questions')}
-            className="mt-4 px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
+            className="mt-4 px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
           >
-            ← Back to My Questions
+            Back to My Questions
           </button>
         </div>
       </div>
@@ -426,21 +426,21 @@ export const QuestionEditor: React.FC = () => {
   return (
     <div className="space-y-6 max-w-5xl">
       {/* Top action header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-line pb-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
               setCurrentView('my_questions');
             }}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-surface-secondary transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">
+            <h1 className="text-xl font-bold text-ink tracking-tight">
               {existingQuestion ? `Edit Question: ${existingQuestion.id}` : 'Create Examination Question'}
             </h1>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-ink-muted">
               BSCpE accredited question authoring workspace with multi-type configuration.
             </p>
           </div>
@@ -451,7 +451,7 @@ export const QuestionEditor: React.FC = () => {
             type="button"
             onClick={() => handleSave('Draft')}
             disabled={isSaving}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-xs disabled:opacity-60 disabled:cursor-wait"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
           >
             <Save className="w-4 h-4" />
             <span>{isSaving ? 'Saving…' : 'Save as Draft'}</span>
@@ -461,7 +461,7 @@ export const QuestionEditor: React.FC = () => {
             type="button"
             onClick={() => handleSave('Submitted')}
             disabled={isSaving}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors shadow-xs disabled:opacity-60 disabled:cursor-wait"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors shadow-xs disabled:opacity-60 disabled:cursor-wait"
           >
             <Send className="w-4 h-4" />
             <span>{isSaving ? 'Saving…' : 'Submit for Review'}</span>
@@ -470,15 +470,15 @@ export const QuestionEditor: React.FC = () => {
       </div>
 
       {saveError && (
-        <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-700">
+        <div className="p-3 bg-danger-soft border border-danger-border rounded-lg text-xs text-danger-fg">
           {saveError}
         </div>
       )}
 
       {/* Warning if editing an already approved question */}
       {existingQuestion && (existingQuestion.status === 'Approved' || existingQuestion.status === 'Published') && (
-        <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 flex items-start gap-2">
-          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        <div className="p-3 bg-warning-soft border border-warning-border rounded-lg text-xs text-warning-fg flex items-start gap-2">
+          <AlertTriangle className="w-4 h-4 text-warning shrink-0 mt-0.5" />
           <div>
             <strong>Caution:</strong> This question is already marked as <strong>Approved</strong>. Saving modifications will preserve accreditation history.
           </div>
@@ -486,20 +486,20 @@ export const QuestionEditor: React.FC = () => {
       )}
 
       {/* Step 1: Course & Metadata Matrix */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider text-slate-400">
+      <div className="card p-5 space-y-4">
+        <h3 className="text-xs font-bold text-ink uppercase tracking-wider text-ink-muted">
           Curriculum Classification & Rubric Points
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-ink-secondary mb-1">
               Target Course *
             </label>
             <select
               value={selectedCourseId}
               onChange={(e) => setSelectedCourseId(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:border-indigo-500 font-mono"
+              className="w-full px-3 py-1.5 text-xs rounded-lg border border-line focus:outline-hidden focus:border-primary-500 font-mono"
             >
               {courses.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -510,13 +510,13 @@ export const QuestionEditor: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-ink-secondary mb-1">
               Curriculum Topic *
             </label>
             <select
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:border-indigo-500"
+              className="w-full px-3 py-1.5 text-xs rounded-lg border border-line focus:outline-hidden focus:border-primary-500"
             >
               {activeCourse?.topics.map((t) => (
                 <option key={t} value={t}>
@@ -527,13 +527,13 @@ export const QuestionEditor: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-ink-secondary mb-1">
               Cognitive Difficulty *
             </label>
             <select
               value={difficulty}
               onChange={(e) => setDifficulty(e.target.value as Difficulty)}
-              className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:border-indigo-500"
+              className="w-full px-3 py-1.5 text-xs rounded-lg border border-line focus:outline-hidden focus:border-primary-500"
             >
               <option value="Easy">Easy (Recall & Comprehension)</option>
               <option value="Medium">Medium (Application & Analysis)</option>
@@ -544,13 +544,13 @@ export const QuestionEditor: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-ink-secondary mb-1">
               Course Learning Outcome (CLO) *
             </label>
             <select
               value={learningOutcome}
               onChange={(e) => setLearningOutcome(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:border-indigo-500 font-mono"
+              className="w-full px-3 py-1.5 text-xs rounded-lg border border-line focus:outline-hidden focus:border-primary-500 font-mono"
             >
               {activeCourse?.learningOutcomes.map((clo) => (
                 <option key={clo} value={clo}>
@@ -561,7 +561,7 @@ export const QuestionEditor: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-ink-secondary mb-1">
               Score Weight (Points) *
             </label>
             <input
@@ -570,15 +570,15 @@ export const QuestionEditor: React.FC = () => {
               max="50"
               value={points}
               onChange={(e) => setPoints(parseInt(e.target.value) || 1)}
-              className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:border-indigo-500 font-mono"
+              className="w-full px-3 py-1.5 text-xs rounded-lg border border-line focus:outline-hidden focus:border-primary-500 font-mono"
             />
           </div>
         </div>
       </div>
 
       {/* Step 2: Question Type Selection */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-3">
-        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider text-slate-400">
+      <div className="card p-5 space-y-3">
+        <h3 className="text-xs font-bold text-ink uppercase tracking-wider text-ink-muted">
           Select Question Format (11 Evaluated Types)
         </h3>
 
@@ -592,15 +592,15 @@ export const QuestionEditor: React.FC = () => {
                 onClick={() => setType(qt.type)}
                 className={`p-2.5 rounded-lg border text-left transition-all ${
                   isSelected
-                    ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 font-semibold shadow-xs'
-                    : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                    ? 'border-primary-600 bg-primary-50/70 text-primary-900 font-semibold shadow-xs'
+                    : 'border-line hover:bg-background text-ink-secondary'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xs truncate">{qt.label}</span>
-                  {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
+                  {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-primary-600 shrink-0" />}
                 </div>
-                <p className="text-[10px] text-slate-500 mt-0.5 line-clamp-1">
+                <p className="text-[10px] text-ink-muted mt-0.5 line-clamp-1">
                   {qt.description}
                 </p>
               </button>
@@ -610,13 +610,13 @@ export const QuestionEditor: React.FC = () => {
       </div>
 
       {/* Step 3: Question Prompt & Specialized Inputs */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider text-slate-400">
+      <div className="card p-5 space-y-4">
+        <h3 className="text-xs font-bold text-ink uppercase tracking-wider text-ink-muted">
           Question Content & Format-Specific Configuration
         </h3>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <label className="block text-xs font-semibold text-ink-secondary mb-1">
             Question Prompt / Problem Instructions *
           </label>
           <textarea
@@ -625,31 +625,31 @@ export const QuestionEditor: React.FC = () => {
             placeholder="Type your examination question prompt clearly..."
             value={questionText}
             onChange={(e) => setQuestionText(e.target.value)}
-            className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:border-indigo-500 leading-relaxed font-sans"
+            className="w-full px-3 py-2 text-xs rounded-lg border border-line focus:outline-hidden focus:border-primary-500 leading-relaxed font-sans"
           />
         </div>
 
         {/* 1. Multiple Choice */}
         {type === 'multiple_choice' && (
-          <div className="space-y-3 pt-3 border-t border-slate-100">
+          <div className="space-y-3 pt-3 border-t border-surface-secondary">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <label className="text-xs font-semibold text-slate-700">
+              <label className="text-xs font-semibold text-ink-secondary">
                 Multiple Choice Options (Select radio for correct answer)
               </label>
               <div className="flex flex-wrap items-center gap-3">
-                <label className="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
+                <label className="flex items-center gap-1.5 text-xs text-ink-secondary cursor-pointer">
                   <input
                     type="checkbox"
                     checked={randomizeChoices}
                     onChange={(e) => setRandomizeChoices(e.target.checked)}
-                    className="rounded text-indigo-600"
+                    className="rounded text-primary-600"
                   />
                   <span>Randomize Choices during Exam Generation</span>
                 </label>
                 <button
                   type="button"
                   onClick={handleAddChoice}
-                  className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-semibold"
+                  className="flex items-center gap-1 text-xs text-primary-600 hover:text-primary-800 font-semibold"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add Choice
                 </button>
@@ -668,8 +668,8 @@ export const QuestionEditor: React.FC = () => {
                       onClick={() => setCorrectAnswer(choice)}
                       className={`w-6 h-6 rounded-full flex items-center justify-center font-mono font-bold text-xs shrink-0 transition-colors ${
                         isSelected
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          ? 'bg-success text-white'
+                          : 'bg-surface-secondary text-ink-secondary hover:bg-line'
                       }`}
                       title="Set as correct answer"
                     >
@@ -681,8 +681,8 @@ export const QuestionEditor: React.FC = () => {
                       onChange={(e) => handleChoiceChange(idx, e.target.value)}
                       className={`flex-1 px-3 py-1.5 text-xs rounded-lg border transition-colors ${
                         isSelected
-                          ? 'border-emerald-500 bg-emerald-50/40 text-emerald-950 font-semibold'
-                          : 'border-slate-200'
+                          ? 'border-success bg-success-soft/40 text-success-fg font-semibold'
+                          : 'border-line'
                       }`}
                       placeholder={`Option ${letter}`}
                     />
@@ -690,7 +690,7 @@ export const QuestionEditor: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleRemoveChoice(idx)}
-                        className="p-1 text-slate-400 hover:text-rose-600"
+                        className="p-1 text-ink-muted hover:text-danger"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -704,27 +704,27 @@ export const QuestionEditor: React.FC = () => {
 
         {/* 2. True or False */}
         {type === 'true_false' && (
-          <div className="space-y-2 pt-3 border-t border-slate-100">
-            <label className="text-xs font-semibold text-slate-700">Correct Answer</label>
+          <div className="space-y-2 pt-3 border-t border-surface-secondary">
+            <label className="text-xs font-semibold text-ink-secondary">Correct Answer</label>
             <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-xs font-semibold text-slate-800 p-2.5 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+              <label className="flex items-center gap-2 text-xs font-semibold text-ink p-2.5 rounded-lg border border-line cursor-pointer">
                 <input
                   type="radio"
                   name="tf"
                   checked={tfAnswer === true}
                   onChange={() => setTfAnswer(true)}
-                  className="text-emerald-600 focus:ring-emerald-500"
+                  className="text-success focus:ring-success"
                 />
                 <span>TRUE</span>
               </label>
 
-              <label className="flex items-center gap-2 text-xs font-semibold text-slate-800 p-2.5 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+              <label className="flex items-center gap-2 text-xs font-semibold text-ink p-2.5 rounded-lg border border-line cursor-pointer">
                 <input
                   type="radio"
                   name="tf"
                   checked={tfAnswer === false}
                   onChange={() => setTfAnswer(false)}
-                  className="text-rose-600 focus:ring-rose-500"
+                  className="text-danger focus:ring-danger"
                 />
                 <span>FALSE</span>
               </label>
@@ -734,23 +734,23 @@ export const QuestionEditor: React.FC = () => {
 
         {/* 3. Matching Type */}
         {type === 'matching' && (
-          <div className="space-y-3 pt-3 border-t border-slate-100">
+          <div className="space-y-3 pt-3 border-t border-surface-secondary">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <label className="text-xs font-semibold text-slate-700">Matching Pair Configuration</label>
+              <label className="text-xs font-semibold text-ink-secondary">Matching Pair Configuration</label>
               <div className="flex flex-wrap items-center gap-3">
-                <label className="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
+                <label className="flex items-center gap-1.5 text-xs text-ink-secondary cursor-pointer">
                   <input
                     type="checkbox"
                     checked={randomizeListB}
                     onChange={(e) => setRandomizeListB(e.target.checked)}
-                    className="rounded text-indigo-600"
+                    className="rounded text-primary-600"
                   />
                   <span>Randomize List B Choices</span>
                 </label>
                 <button
                   type="button"
                   onClick={handleAddMatchingPair}
-                  className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-semibold"
+                  className="flex items-center gap-1 text-xs text-primary-600 hover:text-primary-800 font-semibold"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add Pair
                 </button>
@@ -765,7 +765,7 @@ export const QuestionEditor: React.FC = () => {
                     placeholder={`List A Item #${idx + 1}`}
                     value={pair.itemA}
                     onChange={(e) => handleUpdateMatchingPair(idx, 'itemA', e.target.value)}
-                    className="px-3 py-1.5 text-xs rounded-lg border border-slate-200"
+                    className="px-3 py-1.5 text-xs rounded-lg border border-line"
                   />
                   <div className="flex items-center gap-1">
                     <input
@@ -773,12 +773,12 @@ export const QuestionEditor: React.FC = () => {
                       placeholder={`Corresponding List B Match`}
                       value={pair.itemB}
                       onChange={(e) => handleUpdateMatchingPair(idx, 'itemB', e.target.value)}
-                      className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-emerald-300 bg-emerald-50/20"
+                      className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-success-accent bg-success-soft/20"
                     />
                     <button
                       type="button"
                       onClick={() => handleRemoveMatchingPair(idx)}
-                      className="p-1 text-slate-400 hover:text-rose-600"
+                      className="p-1 text-ink-muted hover:text-danger"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -791,9 +791,9 @@ export const QuestionEditor: React.FC = () => {
 
         {/* 4. Fill in the Blanks */}
         {type === 'fill_blank' && (
-          <div className="space-y-3 pt-3 border-t border-slate-100">
+          <div className="space-y-3 pt-3 border-t border-surface-secondary">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 Primary Accepted Answer(s) (comma separated for multiple blanks)
               </label>
               <input
@@ -801,12 +801,12 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="e.g. semaphore, mutex"
                 value={blankAnswers}
                 onChange={(e) => setBlankAnswers(e.target.value)}
-                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 Alternative Accepted Synonyms / Spellings (comma separated)
               </label>
               <input
@@ -814,16 +814,16 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="e.g. binary semaphore, counting semaphore"
                 value={altAnswers}
                 onChange={(e) => setAltAnswers(e.target.value)}
-                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
               />
             </div>
 
-            <label className="flex items-center gap-1.5 text-xs text-slate-700 cursor-pointer">
+            <label className="flex items-center gap-1.5 text-xs text-ink-secondary cursor-pointer">
               <input
                 type="checkbox"
                 checked={isCaseSensitive}
                 onChange={(e) => setIsCaseSensitive(e.target.checked)}
-                className="rounded text-indigo-600"
+                className="rounded text-primary-600"
               />
               <span>Enforce Strict Case Matching</span>
             </label>
@@ -832,16 +832,16 @@ export const QuestionEditor: React.FC = () => {
 
         {/* 5. Coding Problem */}
         {type === 'coding_problem' && (
-          <div className="space-y-4 pt-3 border-t border-slate-100">
+          <div className="space-y-4 pt-3 border-t border-surface-secondary">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-ink-secondary mb-1">
                   Programming Language *
                 </label>
                 <select
                   value={programmingLanguage}
                   onChange={(e) => setProgrammingLanguage(e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
                 >
                   {PROGRAMMING_LANGUAGES.map((lang) => (
                     <option key={lang} value={lang}>
@@ -852,7 +852,7 @@ export const QuestionEditor: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-ink-secondary mb-1">
                   Constraints & Bounds
                 </label>
                 <input
@@ -860,14 +860,14 @@ export const QuestionEditor: React.FC = () => {
                   placeholder="e.g. 1 <= N <= 10^5, Memory <= 64MB"
                   value={constraints}
                   onChange={(e) => setConstraints(e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-ink-secondary mb-1">
                   Sample Standard Input
                 </label>
                 <textarea
@@ -875,12 +875,12 @@ export const QuestionEditor: React.FC = () => {
                   placeholder="5"
                   value={sampleInput}
                   onChange={(e) => setSampleInput(e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-ink-secondary mb-1">
                   Sample Standard Output
                 </label>
                 <textarea
@@ -888,7 +888,7 @@ export const QuestionEditor: React.FC = () => {
                   placeholder="25"
                   value={sampleOutput}
                   onChange={(e) => setSampleOutput(e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
                 />
               </div>
             </div>
@@ -896,22 +896,22 @@ export const QuestionEditor: React.FC = () => {
             {/* Test Cases Table */}
             <div className="space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <label className="text-xs font-semibold text-slate-700">
+                <label className="text-xs font-semibold text-ink-secondary">
                   Automated Test Suites ({testCases.length} Test Cases)
                 </label>
                 <button
                   type="button"
                   onClick={handleAddTestCase}
-                  className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-semibold"
+                  className="flex items-center gap-1 text-xs text-primary-600 hover:text-primary-800 font-semibold"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add Test Case
                 </button>
               </div>
 
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
+              <div className="border border-line rounded-lg overflow-hidden">
                 <div className="overflow-x-auto">
-                <table className="w-full min-w-[560px] text-xs">
-                  <thead className="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <table className="data-table min-w-[560px]">
+                  <thead className="">
                     <tr>
                       <th className="py-2 px-3 text-left">Input</th>
                       <th className="py-2 px-3 text-left">Expected Output</th>
@@ -920,7 +920,7 @@ export const QuestionEditor: React.FC = () => {
                       <th className="py-2 px-3 text-right w-12">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-line">
                     {testCases.map((tc, idx) => (
                       <tr key={tc.id || idx}>
                         <td className="p-2">
@@ -929,7 +929,7 @@ export const QuestionEditor: React.FC = () => {
                             placeholder="Input stdin..."
                             value={tc.input}
                             onChange={(e) => handleUpdateTestCase(idx, { input: e.target.value })}
-                            className="w-full px-2 py-1 text-xs rounded border border-slate-200 font-mono"
+                            className="w-full px-2 py-1 text-xs rounded border border-line font-mono"
                           />
                         </td>
                         <td className="p-2">
@@ -940,7 +940,7 @@ export const QuestionEditor: React.FC = () => {
                             onChange={(e) =>
                               handleUpdateTestCase(idx, { expectedOutput: e.target.value })
                             }
-                            className="w-full px-2 py-1 text-xs rounded border border-slate-200 font-mono"
+                            className="w-full px-2 py-1 text-xs rounded border border-line font-mono"
                           />
                         </td>
                         <td className="p-2 text-center">
@@ -952,7 +952,7 @@ export const QuestionEditor: React.FC = () => {
                             onChange={(e) =>
                               handleUpdateTestCase(idx, { points: parseInt(e.target.value) || 1 })
                             }
-                            className="w-16 px-1.5 py-1 text-xs rounded border border-slate-200 font-mono text-center mx-auto"
+                            className="w-16 px-1.5 py-1 text-xs rounded border border-line font-mono text-center mx-auto"
                           />
                         </td>
                         <td className="p-2 text-center">
@@ -961,8 +961,8 @@ export const QuestionEditor: React.FC = () => {
                             onClick={() => handleUpdateTestCase(idx, { isHidden: !tc.isHidden })}
                             className={`px-2 py-0.5 rounded text-[11px] font-medium border ${
                               tc.isHidden
-                                ? 'bg-slate-100 text-slate-700 border-slate-300'
-                                : 'bg-blue-50 text-blue-700 border-blue-200'
+                                ? 'bg-surface-secondary text-ink-secondary border-line-strong'
+                                : 'bg-info-soft text-info-fg border-info-border'
                             }`}
                           >
                             {tc.isHidden ? 'Hidden' : 'Public'}
@@ -972,7 +972,7 @@ export const QuestionEditor: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleRemoveTestCase(idx)}
-                            className="p-1 text-slate-400 hover:text-rose-600"
+                            className="p-1 text-ink-muted hover:text-danger"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -986,7 +986,7 @@ export const QuestionEditor: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 Expected Reference Solution Code
               </label>
               <textarea
@@ -994,7 +994,7 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="// Enter working reference solution in selected language..."
                 value={expectedSolution}
                 onChange={(e) => setExpectedSolution(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 font-mono bg-slate-900 text-slate-100"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-line font-mono bg-navy-900 text-navy-text"
               />
             </div>
           </div>
@@ -1002,16 +1002,16 @@ export const QuestionEditor: React.FC = () => {
 
         {/* 6. Code Output */}
         {type === 'code_output' && (
-          <div className="space-y-3 pt-3 border-t border-slate-100">
+          <div className="space-y-3 pt-3 border-t border-surface-secondary">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-ink-secondary mb-1">
                   Language
                 </label>
                 <select
                   value={programmingLanguage}
                   onChange={(e) => setProgrammingLanguage(e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono"
                 >
                   {PROGRAMMING_LANGUAGES.map((l) => (
                     <option key={l} value={l}>
@@ -1022,7 +1022,7 @@ export const QuestionEditor: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-ink-secondary mb-1">
                   Expected Console Output *
                 </label>
                 <input
@@ -1030,13 +1030,13 @@ export const QuestionEditor: React.FC = () => {
                   placeholder="e.g. 10 20 35 40 50"
                   value={expectedOutput}
                   onChange={(e) => setExpectedOutput(e.target.value)}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono text-emerald-800 font-semibold"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono text-success-fg font-semibold"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 Code Snippet to Evaluate
               </label>
               <textarea
@@ -1044,7 +1044,7 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="// Paste code snippet here..."
                 value={codeSnippet}
                 onChange={(e) => setCodeSnippet(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 font-mono bg-slate-900 text-slate-100"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-line font-mono bg-navy-900 text-navy-text"
               />
             </div>
           </div>
@@ -1052,9 +1052,9 @@ export const QuestionEditor: React.FC = () => {
 
         {/* 7. Debugging */}
         {type === 'debugging' && (
-          <div className="space-y-4 pt-3 border-t border-slate-100">
+          <div className="space-y-4 pt-3 border-t border-surface-secondary">
             <div>
-              <label className="block text-xs font-semibold text-rose-700 mb-1 flex items-center gap-1">
+              <label className="block text-xs font-semibold text-danger-fg mb-1 flex items-center gap-1">
                 <AlertTriangle className="w-3.5 h-3.5" /> Buggy Code Given to Student
               </label>
               <textarea
@@ -1062,12 +1062,12 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="// Buggy code snippet..."
                 value={buggyCode}
                 onChange={(e) => setBuggyCode(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-rose-200 font-mono bg-slate-900 text-rose-300"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-danger-border font-mono bg-navy-900 text-danger-accent"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-emerald-700 mb-1 flex items-center gap-1">
+              <label className="block text-xs font-semibold text-success-fg mb-1 flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Expected Correction
               </label>
               <textarea
@@ -1075,7 +1075,7 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="// Fixed corrected code..."
                 value={expectedCorrection}
                 onChange={(e) => setExpectedCorrection(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-lg border border-emerald-200 font-mono bg-slate-900 text-emerald-300"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-success-border font-mono bg-navy-900 text-success-accent"
               />
             </div>
           </div>
@@ -1083,9 +1083,9 @@ export const QuestionEditor: React.FC = () => {
 
         {/* 8. Problem Solving */}
         {type === 'problem_solving' && (
-          <div className="space-y-3 pt-3 border-t border-slate-100">
+          <div className="space-y-3 pt-3 border-t border-surface-secondary">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 Expected Quantitative / Derivation Answer
               </label>
               <input
@@ -1093,7 +1093,7 @@ export const QuestionEditor: React.FC = () => {
                 placeholder="e.g. CPI = 1.365; Execution Time = 0.546 ms"
                 value={psAnswer}
                 onChange={(e) => setPsAnswer(e.target.value)}
-                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono text-emerald-800 font-semibold"
+                className="w-full px-3 py-1.5 text-xs rounded-lg border border-line font-mono text-success-fg font-semibold"
               />
             </div>
           </div>
@@ -1101,9 +1101,9 @@ export const QuestionEditor: React.FC = () => {
 
         {/* 9, 10, 11: Algorithm Tracing, Pseudocode, Flowchart */}
         {(type === 'algorithm_tracing' || type === 'pseudocode' || type === 'flowchart') && (
-          <div className="space-y-4 pt-3 border-t border-slate-100">
+          <div className="space-y-4 pt-3 border-t border-surface-secondary">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-ink-secondary mb-1">
                 {type === 'flowchart'
                   ? 'Flowchart Diagram / Graph Text / State Diagram'
                   : 'Algorithm / Pseudocode Content'}
@@ -1117,33 +1117,33 @@ export const QuestionEditor: React.FC = () => {
                     ? setFlowchartContent(e.target.value)
                     : setCodeSnippet(e.target.value)
                 }
-                className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 font-mono bg-slate-900 text-slate-100"
+                className="w-full px-3 py-2 text-xs rounded-lg border border-line font-mono bg-navy-900 text-navy-text"
               />
             </div>
 
             {/* Sub-questions builder */}
             <div className="space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <label className="text-xs font-semibold text-slate-700">
+                <label className="text-xs font-semibold text-ink-secondary">
                   Comprehension Sub-Questions & Correct Answers
                 </label>
                 <button
                   type="button"
                   onClick={handleAddSubQuestion}
-                  className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-semibold"
+                  className="flex items-center gap-1 text-xs text-primary-600 hover:text-primary-800 font-semibold"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add Sub-Question
                 </button>
               </div>
 
               {subQuestions.map((sq, idx) => (
-                <div key={sq.id || idx} className="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+                <div key={sq.id || idx} className="p-3 bg-background border border-line rounded-lg space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-xs text-slate-700">Question #{idx + 1}</span>
+                    <span className="font-semibold text-xs text-ink-secondary">Question #{idx + 1}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveSubQuestion(idx)}
-                      className="text-slate-400 hover:text-rose-600"
+                      className="text-ink-muted hover:text-danger"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -1154,7 +1154,7 @@ export const QuestionEditor: React.FC = () => {
                       placeholder="Sub-question prompt..."
                       value={sq.prompt}
                       onChange={(e) => handleUpdateSubQuestion(idx, { prompt: e.target.value })}
-                      className="sm:col-span-2 px-2.5 py-1 text-xs rounded border border-slate-200 bg-white"
+                      className="sm:col-span-2 px-2.5 py-1 text-xs rounded border border-line bg-white"
                     />
                     <input
                       type="number"
@@ -1164,7 +1164,7 @@ export const QuestionEditor: React.FC = () => {
                       onChange={(e) =>
                         handleUpdateSubQuestion(idx, { points: parseInt(e.target.value) || 1 })
                       }
-                      className="px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono"
+                      className="px-2 py-1 text-xs rounded border border-line bg-white font-mono"
                       placeholder="Points"
                     />
                   </div>
@@ -1173,7 +1173,7 @@ export const QuestionEditor: React.FC = () => {
                     placeholder="Expected response..."
                     value={sq.answer}
                     onChange={(e) => handleUpdateSubQuestion(idx, { answer: e.target.value })}
-                    className="w-full px-2.5 py-1 text-xs rounded border border-emerald-300 bg-emerald-50/20 font-medium"
+                    className="w-full px-2.5 py-1 text-xs rounded border border-success-accent bg-success-soft/20 font-medium"
                   />
                 </div>
               ))}
@@ -1182,8 +1182,8 @@ export const QuestionEditor: React.FC = () => {
         )}
 
         {/* Step 4: Pedagogical Explanation & Marking Solution */}
-        <div className="pt-3 border-t border-slate-100">
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+        <div className="pt-3 border-t border-surface-secondary">
+          <label className="block text-xs font-semibold text-ink-secondary mb-1">
             Complete Derivation / Explanation & Scoring Rubric *
           </label>
           <textarea
@@ -1191,14 +1191,14 @@ export const QuestionEditor: React.FC = () => {
             placeholder="Explain the step-by-step logic, relevant formulas, and rationale so reviewers and examiners understand the grading key..."
             value={explanation}
             onChange={(e) => setExplanation(e.target.value)}
-            className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 focus:outline-hidden focus:border-indigo-500 leading-relaxed font-sans"
+            className="w-full px-3 py-2 text-xs rounded-lg border border-line focus:outline-hidden focus:border-primary-500 leading-relaxed font-sans"
           />
         </div>
       </div>
 
       {/* Bottom Save & Submit Actions */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
-        <span className="text-xs text-slate-500 font-mono min-w-0">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-background rounded-xl border border-line">
+        <span className="text-xs text-ink-muted font-mono min-w-0">
           Author: {currentUser.name} · Academic Term: {systemSettings.academicYear}
         </span>
 
@@ -1206,14 +1206,14 @@ export const QuestionEditor: React.FC = () => {
           <button
             type="button"
             onClick={() => handleSave('Draft')}
-            className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-xs"
+            className="px-4 py-2 text-xs font-semibold text-ink-secondary bg-white border border-line-strong rounded-lg"
           >
             Save as Draft
           </button>
           <button
             type="button"
             onClick={() => handleSave('Submitted')}
-            className="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors shadow-xs"
+            className="px-4 py-2 text-xs font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors shadow-xs"
           >
             Submit for Review
           </button>
