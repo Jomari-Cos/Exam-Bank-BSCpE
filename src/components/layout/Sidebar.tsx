@@ -244,9 +244,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Active Role Card */}
       <div className="p-4 border-b border-navy-800 bg-navy-950/50">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-primary-600/20 text-primary-300 border border-primary-500/40 flex items-center justify-center font-mono font-bold text-xs shrink-0">
-            {currentUser.avatarInitials}
-          </div>
+          <img
+            src="/Computer_Engineer_Logo.png"
+            alt="Computer Engineering logo"
+            className="w-10 h-10 rounded-xl object-contain bg-white ring-1 ring-navy-800 shrink-0 p-0.5"
+          />
           <div className="min-w-0 flex-1">
             <h3 className="text-xs font-semibold text-white truncate">{currentUser.name}</h3>
             <span className="text-[10px] text-navy-muted capitalize block truncate">
@@ -331,11 +333,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
       {/* Footer System Info */}
       <div className="p-3 border-t border-navy-800 text-[11px] text-navy-muted">
-        <div className="flex items-center justify-between">
-          <span>BSCpE Accreditation</span>
-          <span className="text-success-accent font-mono">v1.2</span>
+        <div className="flex items-center gap-2">
+          <img
+            src="/Computer_Engineer_Logo.png"
+            alt="Computer Engineering logo"
+            className="w-6 h-6 rounded-md object-contain bg-white ring-1 ring-navy-800 shrink-0 p-px"
+          />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <span>BSCpE Accreditation</span>
+              <span className="text-success-accent font-mono">v1.2</span>
+            </div>
+            <p className="text-[10px] text-navy-muted mt-0.5">CHED CMO 92 Compliant</p>
+          </div>
         </div>
-        <p className="text-[10px] text-navy-muted mt-0.5">CHED CMO 92 Compliant</p>
       </div>
       </aside>
     </>

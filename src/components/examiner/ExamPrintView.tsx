@@ -61,10 +61,10 @@ export const ExamPrintView: React.FC = () => {
     window.print();
   };
 
-  const handleDownloadPdf = () => {
+  const handleDownloadPdf = async () => {
     try {
       setIsPdfGenerating(true);
-      generateExamPdf({
+      await generateExamPdf({
         exam,
         version: activeVersion,
         isAnswerKey: viewMode === 'answer_key',
@@ -77,16 +77,16 @@ export const ExamPrintView: React.FC = () => {
     }
   };
 
-  const handleDownloadAllSetsPdf = () => {
+  const handleDownloadAllSetsPdf = async () => {
     try {
       setIsPdfGenerating(true);
-      exam.versions.forEach((ver) => {
-        generateExamPdf({
+      for (const ver of exam.versions) {
+        await generateExamPdf({
           exam,
           version: ver,
           isAnswerKey: viewMode === 'answer_key',
         });
-      });
+      }
     } catch (err) {
       console.error('PDF generation error:', err);
     } finally {
@@ -94,8 +94,18 @@ export const ExamPrintView: React.FC = () => {
     }
   };
 
-  const handleDownloadHTML = () => {
+  const handleDownloadHTML = async () => {
     const isAnswerKey = viewMode === 'answer_key';
+    let logoImgTag = '';
+    try {
+      const { loadBrandLogoDataUrl } = await import('../../lib/pdfGenerator');
+      const logoDataUrl = await loadBrandLogoDataUrl();
+      if (logoDataUrl) {
+        logoImgTag = `<img src="${logoDataUrl}" alt="Computer Engineering logo" style="width: 80px; height: 80px; object-fit: contain;" />`;
+      }
+    } catch {
+      logoImgTag = '';
+    }
     const content = `
 <!DOCTYPE html>
 <html>
@@ -120,6 +130,7 @@ export const ExamPrintView: React.FC = () => {
 </head>
 <body>
   <div class="header">
+    ${logoImgTag}
     <div style="font-size: 11pt; font-weight: bold;">${exam.settings.headerInstitution}</div>
     <div style="font-size: 10pt;">${exam.settings.departmentName}</div>
     <div class="title">${exam.title} (${activeVersion.versionLabel}) ${isAnswerKey ? '· MASTER ANSWER KEY' : ''}</div>
@@ -308,6 +319,13 @@ export const ExamPrintView: React.FC = () => {
       <div className="bg-white rounded-xl border border-line-strong p-4 sm:p-8 lg:p-12 shadow-sm font-sans text-ink print:border-0 print:p-0 print:shadow-none">
         {/* University Header */}
         <div className="text-center border-b-2 border-ink pb-4 mb-6">
+          <div className="flex justify-center mb-2 print:mb-1">
+            <img
+              src="/Computer_Engineer_Logo.png"
+              alt="Computer Engineering logo"
+              className="w-20 h-20 object-contain"
+            />
+          </div>
           <p className="text-xs uppercase font-bold tracking-widest text-ink-secondary">
             {exam.settings.headerInstitution || 'COLLEGE OF ENGINEERING AND ARCHITECTURE'}
           </p>
